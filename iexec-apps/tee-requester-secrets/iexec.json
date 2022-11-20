@@ -1,0 +1,32 @@
+{
+  "description": "My iExec ressource description, must be at least 150 chars long in order to pass the validation checks. Describe your application, dataset or workerpool to your users",
+  "license": "MIT",
+  "author": "?",
+  "social": {
+    "website": "?",
+    "github": "?"
+  },
+  "logo": "logo.png",
+  "buyConf": {
+    "params": {
+      "iexec_args": ""
+    },
+    "tag": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "trust": "0",
+    "callback": "0x0000000000000000000000000000000000000000"
+  },
+  "app": {
+    "owner": "<your wallet address>",
+    "name": "tee-requester-secrets",
+    "type": "DOCKER",
+    "multiaddr": "docker.io/chrissc96/tee-requester-secrets:1.0.0",
+    "checksum": "0x3de8d06c73895c10b2d053fdbbd3d6e4fdb37d4f6618e2e37c72ac961c8b1c0a",
+    "mrenclave": {
+      "provider": "SCONE",
+      "version": "v5",
+      "entrypoint": "python /app/app.py",
+      "heapSize": 1073741824,
+      "fingerprint": "677357ba0b7fa8eaf723458b10bc5e639d915ce2eecefc5d776478099b4e008d"
+    }
+  }
+}
