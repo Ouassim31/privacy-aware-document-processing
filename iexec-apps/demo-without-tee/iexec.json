@@ -1,0 +1,25 @@
+{
+  "description": "My iExec ressource description, must be at least 150 chars long in order to pass the validation checks. Describe your application, dataset or workerpool to your users",
+  "license": "MIT",
+  "author": "<wallet address>",
+  "social": {
+    "website": "?",
+    "github": "?"
+  },
+  "logo": "logo.png",
+  "buyConf": {
+    "params": {
+      "iexec_args": ""
+    },
+    "tag": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "trust": "0",
+    "callback": "0x0000000000000000000000000000000000000000"
+  },
+  "app": {
+    "owner": "<wallet address>",
+    "name": "iexec-test-app",
+    "type": "DOCKER",
+    "multiaddr": "registry.hub.docker.com/chrissc96/iexec-test-app:1.0.0",
+    "checksum": "0x222f6c98033af364699af15f9021e4dd062f48df0a9c170d3720bd9d5e3140e1"
+  }
+}
