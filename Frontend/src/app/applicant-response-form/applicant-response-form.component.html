@@ -1,1 +1,30 @@
-<p>applicant-response-form works!</p>
+<div>
+  <h1 center_focus_strong>Applicant Verification Form</h1>
+  <p>Please answer the following question by uploading a valid document. The requesting landlord will only be
+    informed about a yes or no answer to the question without any details.
+  </p>
+  <p> Put question here - however to get it.</p>
+  <div class="form-group">
+    <mat-form-field appearance="fill">
+      <mat-label>First name</mat-label>
+      <input matInput #first [(ngModel)]="firstName" type="text">
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <!-- Give user a flying text that informs him, that first and last name have to be the same as in his document? -->
+      <mat-label>Last name</mat-label>
+      <input matInput #last [(ngModel)]="lastName">
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <!-- Verify that mail address has a valid format? -->
+      <mat-label>Mail address</mat-label>
+      <input matInput #mail [(ngModel)]="mailAddress">
+    </mat-form-field>
+    <p></p>
+    <label for="file" class="form-label">Choose File</label>
+    <input type="file"  accept=".pdf" id="file" class="form-control" [style.width.px]=500 (change)="this.handleFileInput($event)">
+  </div>
+    <p></p>
+    <button mat-raised-button type="button" (click)="uploadPdf(firstName, lastName, mailAddress, file)">Submit</button>
+
+</div>
+
