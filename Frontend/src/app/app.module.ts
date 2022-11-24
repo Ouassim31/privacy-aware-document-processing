@@ -14,9 +14,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { NavbarComponent } from './navbar/navbar.component';
 
 const routes: Routes = [
   { path: 'home', component: BasicPageComponent },
+  { path: 'applicant-form', component: ApplicantResponseFormComponent },
+  { path: 'landlord-form', component: LandlordRequestFormComponent },
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: '**', redirectTo: '/home', pathMatch: 'full'}
 ]
@@ -25,7 +28,8 @@ const routes: Routes = [
     AppComponent,
     LandlordRequestFormComponent,
     ApplicantResponseFormComponent,
-    BasicPageComponent
+    BasicPageComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,
