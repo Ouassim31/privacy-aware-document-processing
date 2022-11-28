@@ -1,0 +1,32 @@
+{
+  "description": "My iExec ressource description, must be at least 150 chars long in order to pass the validation checks. Describe your application, dataset or workerpool to your users",
+  "license": "MIT",
+  "author": "?",
+  "social": {
+    "website": "?",
+    "github": "?"
+  },
+  "logo": "logo.png",
+  "buyConf": {
+    "params": {
+      "iexec_args": ""
+    },
+    "tag": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "trust": "0",
+    "callback": "0x0000000000000000000000000000000000000000"
+  },
+  "app": {
+    "owner": "0x127bc6a1860d66438D645C54585E2fFD10Ea5289",
+    "name": "rent-income-app",
+    "type": "DOCKER",
+    "multiaddr": "docker.io/chrissc96/rent-income-app:1.0.0",
+    "checksum": "0x3bbb14c01fcacca2f0558dd6a128608871fa6d086989deadd08c05387d2b8b2f",
+    "mrenclave": {
+      "provider": "SCONE",
+      "version": "v5",
+      "entrypoint": "python /app/app.py",
+      "heapSize": 1073741824,
+      "fingerprint": "e5dafa379799909a0683ef657a8175927defcfed9971976cd1e16867556f257a"
+    }
+  }
+}
