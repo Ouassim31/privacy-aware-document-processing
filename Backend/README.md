@@ -1,4 +1,4 @@
-# Backend setup
+# Backend Setup
 
 The backend was created using the following commands
 ```bash
