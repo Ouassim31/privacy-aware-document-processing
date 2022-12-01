@@ -2,7 +2,7 @@
 
 This app features the basic functionality for reading and analysing
 an encrypted input file. The input file is a .txt one-liner contianing
-"income: <income>". The
+"income: \<income\>".
 
 ## Deployment of the app
 Navigate into the app folder
@@ -86,8 +86,26 @@ iexec requester push-secret rent --chain bellecour
 sed -i 's|"bellecour": { "sms": "https://v7.sms.debug-tee-services.bellecour.iex.ec" },|"bellecour": {},|g' chain.json
 ```
 
-## Run the app
+## Run the publicly available app
+The app is publicly available in debug mode. You can run it with the following command.
+Remember that you need to run it from within a directory that is initialized with iexec init.
+Also, make sure that you have a valid dataset address and pushed the rent secret, both under your
+wallet address, to the sms of the debug workerpool 
+(see [Push the rent as requester secret](#push-the-rent-as-requester-secret)).
+```bash
+# set a custom bellecour SMS in chain.json
+sed -i 's|"bellecour": {},|"bellecour": { "sms": "https://v7.sms.debug-tee-services.bellecour.iex.ec" },|g' chain.json
 
+iexec app run 0x5A5dA284EEFCB37d1b8218e4Ae40ca1D5dc699A3 \
+  --tag tee \
+  --dataset 0x-your-dataset-address \
+  --workerpool v7-debug.main.pools.iexec.eth \
+  --secret 1=rent \
+  --watch \
+  --chain bellecour
+```
+
+## Run the app (deployed locally)
 ```bash
 cd app
 
