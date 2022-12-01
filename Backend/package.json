@@ -1,0 +1,33 @@
+{
+  "name": "backend",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "async": "^3.2.4",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "http-errors": "~1.6.3",
+    "jade": "~1.11.0",
+    "mongoose": "^6.7.5",
+    "morgan": "~1.9.1"
+  },
+  "description": "Backend for PA_Security project",
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ouassim31/IoSL_PA_Processing.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ouassim31/IoSL_PA_Processing/issues"
+  },
+  "homepage": "https://github.com/Ouassim31/IoSL_PA_Processing#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
