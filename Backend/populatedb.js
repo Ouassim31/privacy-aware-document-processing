@@ -26,7 +26,7 @@ var landlords = []
 var processes = []
 
 function landlordCreate(identifier,cb) {
-  var landlord = new Landlord({identifier:identifier});
+  var landlord = new Landlord({identifier});
   
   landlord.save(function (err) {
     if (err) {

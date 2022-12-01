@@ -14,7 +14,7 @@ To load the dependencies (listed in package.json file) in your local environment
 npm install
 ```
 
-A MongoDB database needs to be installed locally: (https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-os-x/).
+A MongoDB database needs to be installed locally: https://www.mongodb.com/docs/manual/administration/install-community/
 
 To start the server use
 ```bash
