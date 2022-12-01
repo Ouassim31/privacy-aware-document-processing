@@ -98,7 +98,7 @@ sed -i 's|"bellecour": {},|"bellecour": { "sms": "https://v7.sms.debug-tee-servi
 
 iexec app run 0x5A5dA284EEFCB37d1b8218e4Ae40ca1D5dc699A3 \
   --tag tee \
-  --dataset 0x-your-dataset-address \
+  --dataset 0xFc045266dc0ca0b9dA22e8cF751F21c21eA48b4a \
   --workerpool v7-debug.main.pools.iexec.eth \
   --secret 1=rent \
   --watch \
