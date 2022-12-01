@@ -15,7 +15,7 @@
     "mongoose": "^6.7.5",
     "morgan": "~1.9.1"
   },
-  "description": "Backend for PA_Security project",
+  "description": "Backend for IoSL_PA_Processing project",
   "main": "app.js",
   "repository": {
     "type": "git",
