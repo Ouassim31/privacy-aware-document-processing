@@ -4,10 +4,12 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const ProcessSchema = new Schema({
-  question: { type: String, required: true, maxLength: 100 },
+  // Basics
+  created_on: { type: Date, default: Date.now(), immutable: true},
+  landlord_id: { type: Schema.Types.ObjectId, required:true},
+  question: { type: String, required: true, maxLength: 200 },
   state: { type: Number, required: true, default: 1, enum: [1,2,3]},
-  //Time stamp could be useful
-  //updated: { type: Date, default: Date.now() },
+  // iExec infos
   dataset_address: { type: String},
   applicant_address: { type: String},
   task_id: { type: String},
