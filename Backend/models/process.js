@@ -7,8 +7,8 @@ const ProcessSchema = new Schema({
   // Basics
   created_on: { type: Date, default: Date.now(), immutable: true},
   landlord_id: { type: Schema.Types.ObjectId, required:true},
-  question: { type: String, required: true, maxLength: 200 },
-  state: { type: Number, required: true, default: 1, enum: [1,2,3]},
+  question: { type: String, maxLength: 200 },
+  state: { type: Number, default: 1, enum: [1,2,3]},
   // iExec infos
   dataset_address: { type: String},
   applicant_address: { type: String},
