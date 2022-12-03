@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 
 const ProcessSchema = new Schema({
   // Basics
-  created_on: { type: Date, default: Date.now(), immutable: true},
+  created_on: { type: Date, immutable: true},
   landlord_id: { type: Schema.Types.ObjectId, required:true},
   question: { type: String, maxLength: 200 },
   state: { type: Number, default: 1, enum: [1,2,3]},

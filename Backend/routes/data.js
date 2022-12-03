@@ -27,4 +27,7 @@ router.post("/process/:lid/:question/create", process_controller.process_create_
 // POST request to update process. Params are process_id, dataset_address and applicant_address
 router.post("/process/:pid/:dataset/:aaddr/update", process_controller.process_update_post);
 
+// POST request to update process. Params are process_id, task_id
+router.post("/process/:pid/:tid/updatetask", process_controller.process_updatetask_post);
+
 module.exports = router;

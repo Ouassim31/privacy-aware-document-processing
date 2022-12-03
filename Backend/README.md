@@ -25,3 +25,31 @@ To run database-test-script use
 ```bash
 node populatedb <your mongodb url> 
 ```
+
+## API Endpoints
+
+In order to test the endpoints make sure to run a MongoDB database locally. Then start the server (in debug mode)
+
+```bash
+DEBUG=Backend:* npm start
+```
+
+Now you can test the following endpoints:
+
+POST
+http://localhost:3000/data/landlord/:identifier/create
+
+GET
+http://localhost:3000/data/landlord/:identifier
+
+POST
+http://localhost:3000/data/process/:lid/:question/create
+
+POST
+http://localhost:3000/data/process/:pid/:dataset/:aaddr/update
+
+POST
+http://localhost:3000/data/process/:pid/:tid/updatetask
+
+GET
+http://localhost:3000/data/process/:lid
