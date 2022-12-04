@@ -1,8 +1,10 @@
 
 //imports
+
 export const   { IExec} = require('iexec')
 const FileSaver = require('file-saver');
 const detectEthereumProvider= require('@metamask/detect-provider');
+
 
 
 
@@ -142,13 +144,15 @@ const getMyLastTaskResult = async () =>{
 }
 
 
- 
+
 
 
 function App() {
   
   return (
+    
     <div className="App">
+       
       <button onClick={connect}>connect</button>
       <button onClick={getNetwork}>getNetwork</button>
       <button onClick={getAccount}>getAccount</button>
