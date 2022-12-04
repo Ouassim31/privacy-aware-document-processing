@@ -9,7 +9,7 @@ exports.index = (req, res) => {
 // Return Landlord _id on GET with identifier as argument.
 exports.landloard_loadId_get = function (req, res, next) {
   Landlord.findOne(
-    { identifier: req.params.identifier },
+    { username: req.params.username },
     function (err, landlord) {
       // Do something if there is an err.
       if (err) {
@@ -24,7 +24,7 @@ exports.landloard_loadId_get = function (req, res, next) {
 // Handle Landlord create on POST.
 exports.landlord_create_post = function (req, res, next) {
   Landlord.create(
-    { identifier: req.params.identifier },
+    { username: req.params.username },
     function (err, landlord) {
       // Do something if there is an err.
       if (err) {

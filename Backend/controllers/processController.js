@@ -3,7 +3,7 @@ const Process = require("../models/process");
 // Handle process create on POST with landlord _id and question as arguments
 exports.process_create_post = function (req, res, next) {
     Process.create(
-        { landlord_id: req.params.lid, question: req.params.question, created_on: Date.now() },
+        { landlord_id: req.params.lid, created_on: Date.now() },
         function (err, process) {
             // Do something if there is an err.
             if (err) {
@@ -15,11 +15,11 @@ exports.process_create_post = function (req, res, next) {
     );
 };
 
-// Handle process update on POST with process _id, dataset_address and applicant_address as arguments
+// Handle process update on POST with process _id and download_address as arguments
 exports.process_update_post = function (req, res, next) {
     Process.findByIdAndUpdate(
         req.params.pid,
-        { dataset_address: req.params.dataset, applicant_address: req.params.aaddr, state: 2 },
+        { download_address: req.params.daddr, state: 2 },
         function (err, process) {
             // Do something if there is an err.
             if (err) {
@@ -31,7 +31,7 @@ exports.process_update_post = function (req, res, next) {
     );
 };
 
-// Handle process updatetask on POST with process _id, task_id
+// Handle process updatetask on POST with process _id and task_id as arguments
 exports.process_updatetask_post = function (req, res, next) {
     Process.findByIdAndUpdate(
         req.params.pid,

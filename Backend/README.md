@@ -37,16 +37,16 @@ DEBUG=Backend:* npm start
 Now you can test the following endpoints:
 
 POST
-http://localhost:3000/data/landlord/:identifier/create
+http://localhost:3000/data/landlord/:username/create
 
 GET
-http://localhost:3000/data/landlord/:identifier
+http://localhost:3000/data/landlord/:username
 
 POST
-http://localhost:3000/data/process/:lid/:question/create
+http://localhost:3000/data/process/:lid/create
 
 POST
-http://localhost:3000/data/process/:pid/:dataset/:aaddr/update
+http://localhost:3000/data/process/:pid/:daddr/update
 
 POST
 http://localhost:3000/data/process/:pid/:tid/updatetask
