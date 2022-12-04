@@ -1,12 +1,11 @@
 
 import Table from 'react-bootstrap/Table';
+import Button from 'react-bootstrap/Button';
+import FileSaver from 'file-saver';
 import { useEffect } from 'react';
 import { useState } from 'react';
 
 export const   { IExec} = require('iexec')
-
-
-
 
 
 function LandlordDashboard() {
@@ -14,6 +13,29 @@ function LandlordDashboard() {
     const [requesterAddress,setRequesterAddress] = useState()
     const [myDeals,setMyDeals] = useState([])
     
+    //get last task
+    const getLastTask = async (dealId) => {
+      
+      const iexec_mod = new IExec({ ethProvider: window.ethereum})
+      const taskId = await iexec_mod.deal.computeTaskId(dealId,0)
+      return taskId
+    
+    }
+    //download result of a given task
+    const getResult = async (dealId) => {
+          console.log(dealId)
+          const taskId = await getLastTask(dealId)
+          const iexec_mod = new IExec({ ethProvider: window.ethereum})
+          const response = await iexec_mod.task.fetchResults(taskId);
+          const binary = await response.blob();
+        
+          const task = await iexec_mod.task.show(
+          taskId,
+         );
+          console.log('downloading results')
+          console.log(task);
+         FileSaver.saveAs(binary, "results.zip");
+      }
     //create request order
     const createProcess = async () => {
         const iexec_mod = new IExec({ ethProvider: window.ethereum})
@@ -51,7 +73,14 @@ function LandlordDashboard() {
                     const balance = await iexec_mod.account.checkBalance(address[0]);
                     const { deals, count } = await iexec_mod.deal.fetchRequesterDeals(address[0]);
                     setRequesterAddress(address[0])
-                    setMyDeals(deals)         
+                    const deals_list = []
+                    //add task id to state variable to use it later
+                    for (const deal of deals) {
+                      const lasttaskid = await getLastTask(deal.dealid)
+                      deal.lasttaskid = lasttaskid
+                      deals_list.push(deal) 
+                    }
+                    setMyDeals(deals_list)       
          } 
 
          else{
@@ -79,18 +108,27 @@ function LandlordDashboard() {
           <th>AppAdress</th>
           <th>Workerpooladress</th>
           <th>Dataset</th>
+          <th>Last Task ID</th>
+          <th>Result</th>
         </tr>
       </thead>
       <tbody>
-        {myDeals.map(((deal,index) => (
-            <tr key={'deal-'+index}>
+
+        
+        {
+        myDeals.length > 0 && myDeals.map(((deal,index) => (
+                <tr key={'deal-'+index}>
                 <td>{index}</td>
                 <td>{deal.dealid}</td>
                 <td>{deal.app.pointer}</td>
                 <td>{deal.workerpool.pointer}</td>
                 <td>{deal.dataset.pointer}</td>
+                <td>{deal.lasttaskid}</td>
+
+                <td><Button variant="outline-primary" dealid={deal.dealid} onClick={(e)=>{getResult(deal.dealid)}}>Result</Button></td>
             </tr>
-        )))}
+        )))
+      }
       </tbody>
     </Table>
     </div>
