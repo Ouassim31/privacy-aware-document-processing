@@ -9,8 +9,7 @@ payslip for the net income and decides if it is larger than 3 times of the month
 
 The app is already deployed to the iExec marketplace and can be run using
 ```bash
-iexec app \
-    run 0x90997fe5DA97e43621093CF6412505f5fb157B63 \
+iexec app run 0x90997fe5DA97e43621093CF6412505f5fb157B63 \
     --args "2000" \
     --input-files "https://github.com/ChrisSchahn/raw-files/raw/main/dummy-payslip.pdf" \
     --watch --chain bellecour
