@@ -1,0 +1,25 @@
+{
+  "description": "My iExec ressource description, must be at least 150 chars long in order to pass the validation checks. Describe your application, dataset or workerpool to your users",
+  "license": "MIT",
+  "author": "?",
+  "social": {
+    "website": "?",
+    "github": "?"
+  },
+  "logo": "logo.png",
+  "buyConf": {
+    "params": {
+      "iexec_args": ""
+    },
+    "tag": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "trust": "0",
+    "callback": "0x0000000000000000000000000000000000000000"
+  },
+  "app": {
+    "owner": "0x127bc6a1860d66438D645C54585E2fFD10Ea5289",
+    "name": "pdf-scan-non-tee",
+    "type": "DOCKER",
+    "multiaddr": "docker.io/chrissc96/pdf-scan-non-tee:1.0.0",
+    "checksum": "0xf4dfc8bfc649410f6bdf1196ff423593b0a8f833b777329325f80f4aa8f280f3"
+  }
+}
