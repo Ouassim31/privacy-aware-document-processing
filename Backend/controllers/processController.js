@@ -19,7 +19,7 @@ exports.process_create_post = function (req, res, next) {
 exports.process_update_post = function (req, res, next) {
     Process.findByIdAndUpdate(
         req.params.pid,
-        { download_address: req.params.daddr, state: 2 },
+        { download_address: req.params.daddr, process_state: 2 },
         function (err, process) {
             // Do something if there is an err.
             if (err) {
@@ -35,7 +35,7 @@ exports.process_update_post = function (req, res, next) {
 exports.process_updatetask_post = function (req, res, next) {
     Process.findByIdAndUpdate(
         req.params.pid,
-        { task_id: req.params.tid, state: 3},
+        { task_id: req.params.tid, process_state: 3},
         function (err, process) {
             // Do something if there is an err.
             if (err) {
