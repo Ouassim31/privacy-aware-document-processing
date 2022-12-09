@@ -4,6 +4,7 @@ import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
 import { useEffect } from "react";
 import { useState } from "react";
+import { NFTStorage, File } from 'nft.storage'
 
 export const { IExec } = require("iexec");
 function ApplicantDashbord() {
@@ -14,6 +15,11 @@ function ApplicantDashbord() {
   const [encryptedDataset, setEncryptedDataset] = useState(undefined);
   const [count, setCount] = useState(0);
   const [datasetList, setDatasetList] = useState([]);
+
+  // Log into NFT.Storage via GitHub and create API token
+  // Paste your NFT.Storage API key into the quotes:
+  const NFT_STORAGE_KEY = '<API Token>';
+
 
   //init requester address and datasets count
   useEffect(() => {
@@ -69,12 +75,24 @@ function ApplicantDashbord() {
     console.log("deployed at", address);
   };
 
+
+  async function uploadToIpfs(file) {
+    const nftstorage = new NFTStorage({ token: NFT_STORAGE_KEY });
+    const cid = await nftstorage.storeBlob(file);
+    return 'https://' + cid + '.ipfs.nftstorage.link';
+  }
+
   //handle file submit event
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     toArrayBuffer(selectedFile);
+    const uploadUrl = await uploadToIpfs(selectedFile);
+    console.log("uploaded file to: " + uploadUrl);
+    // TODO: API call update
+    
     //you_function(selectFile)
   };
+
   //handle file change event
   const handleChange = (event) => {
     setSelectedFile(event.target.files[0]);
