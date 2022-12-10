@@ -5,15 +5,20 @@ import {
   Dropdown,
   Form,
   FormGroup,
+  Container,
 } from "react-bootstrap";
 import FileSaver from "file-saver";
 
 import { useEffect, useState, useRef } from "react";
+import { useLocation } from "react-router-dom";
 
 export const { IExec } = require("iexec");
 
-function LandlordDashboard() {
+function LandlordDashboard(props) {
   //State variables
+  const { landlord, fetchProcesses, createProcess, setTask } = props;
+  const [currentLandlord, setCurrentLandlord] = useState(landlord);
+  const [processList, setProcessList] = useState([]);
   const [requesterAddress, setRequesterAddress] = useState();
   const [myDeals, setMyDeals] = useState([]);
   const [appAddress, setAppaddress] = useState();
@@ -25,12 +30,11 @@ function LandlordDashboard() {
   const getLastTask = async (dealId) => {
     const iexec_mod = new IExec({ ethProvider: window.ethereum });
     const taskId = await iexec_mod.deal.computeTaskId(dealId, 0);
+    console.log(taskId);
     return taskId;
   };
   //download result of a given task
-  const getResult = async (dealId) => {
-    console.log(dealId);
-    const taskId = await getLastTask(dealId);
+  const getResult = async (taskId) => {
     const iexec_mod = new IExec({ ethProvider: window.ethereum });
     const response = await iexec_mod.task.fetchResults(taskId);
     const binary = await response.blob();
@@ -41,7 +45,7 @@ function LandlordDashboard() {
     FileSaver.saveAs(binary, "results.zip");
   };
   //create request order
-  const createProcess = async (appAddress, iexec_params) => {
+  const createIexecTask = async (appAddress, iexec_params) => {
     const iexec_mod = new IExec({ ethProvider: window.ethereum });
 
     //fetch app from marketplace
@@ -71,6 +75,11 @@ function LandlordDashboard() {
     console.log(`created deal ${dealid} in tx ${txHash}`);
     return dealid;
   };
+  /**
+   *
+   * EVENT HANDLING
+   *
+   */
   const handleIexecArgsChange = () => {
     if (rentRef.current.value && incomeRef.current.value) {
       if (appAddress == "0x5e4017Bd35CbA7827e0Fa193F4B9F4f158FA254E")
@@ -87,7 +96,11 @@ function LandlordDashboard() {
   const handleIexecArgsSubmit = (event) => {
     event.preventDefault();
     if (appAddress && iexecParams) {
-      createProcess(appAddress, iexecParams);
+      createProcess(currentLandlord.id, null).then((res) =>
+        console.log("created process id : " + res)
+      );
+
+      //createIexecTask(appAddress, iexecParams);
     } else {
       window.alert("Both values need to be entred");
     }
@@ -98,9 +111,39 @@ function LandlordDashboard() {
     else if (e == "non-tee-file")
       setAppaddress("0x90997fe5DA97e43621093CF6412505f5fb157B63");
   };
-  useEffect(() => {
-    console.log(iexecParams);
+  const handleExecute = async (pid) => {
+    
+    if (appAddress && iexecParams) {
+     const dealid = await createIexecTask(appAddress,iexecParams)
+     console.log('deal id : '+dealid)
+     const tid = await getLastTask(dealid)
+     console.log('task id : '+tid)
+     setTask(pid, tid);
+    } else {
+      window.alert("Both values need to be entred");
+    }
+  };
+  const handleResults = async (tid) => {
+    getResult(tid)
+  }
+  /**
+   *
+   * useEffect Hooks
+   *
+   */
+   useEffect(() => {
+    console.log(iexecParams)
   }, [iexecParams]);
+  useEffect(() => {
+    const getprocesses = async () => {
+      const result = await fetchProcesses();
+      setProcessList(result);
+    };
+    getprocesses();
+  }, [currentLandlord]);
+  useEffect(() => {
+    console.log(processList);
+  }, [processList]);
   useEffect(() => {
     //connect and set requester adress and my deals
     const connect = async () => {
@@ -128,15 +171,25 @@ function LandlordDashboard() {
     };
     connect();
   }, []);
-
+  /**
+   *
+   * Rendering
+   *
+   */
   var incomeInput, iexec_params;
   if (appAddress == "0x5e4017Bd35CbA7827e0Fa193F4B9F4f158FA254E")
     incomeInput = "text";
   else if (appAddress == "0x90997fe5DA97e43621093CF6412505f5fb157B63")
     incomeInput = "file";
+
   return (
     <div>
-      <div>Welcome {requesterAddress}</div>
+      <Container>
+        <h3>
+          Welcome {currentLandlord.username} ({currentLandlord.id})
+        </h3>
+      </Container>
+
       <DropdownButton
         onSelect={handleAppSelect}
         variant="success"
@@ -156,29 +209,31 @@ function LandlordDashboard() {
         /* Display form only if we chose an app  */
         appAddress && (
           <Form onSubmit={handleIexecArgsSubmit}>
-            <FormGroup controlId="rent">
-              <Form.Label>Rent</Form.Label>
-              <Form.Control
-                ref={rentRef}
-                onChange={handleIexecArgsChange}
-                type="text"
-              />
-            </FormGroup>
-            <FormGroup controlId="income">
-              <Form.Label>
-                Income{" "}
-                {appAddress == "0x90997fe5DA97e43621093CF6412505f5fb157B63" &&
-                  "(File Link)"}
-              </Form.Label>
-              <Form.Control
-                ref={incomeRef}
-                onChange={handleIexecArgsChange}
-                type="text"
-              />
-            </FormGroup>
-            <Button variant="primary" type="submit">
-              Submit
-            </Button>
+            <Container>
+              <FormGroup controlId="rent">
+                <Form.Label>Rent</Form.Label>
+                <Form.Control
+                  ref={rentRef}
+                  onChange={handleIexecArgsChange}
+                  type="text"
+                />
+              </FormGroup>
+              <FormGroup controlId="income">
+                <Form.Label>
+                  Income{" "}
+                  {appAddress == "0x90997fe5DA97e43621093CF6412505f5fb157B63" &&
+                    "(File Link)"}
+                </Form.Label>
+                <Form.Control
+                  ref={incomeRef}
+                  onChange={handleIexecArgsChange}
+                  type="text"
+                />
+              </FormGroup>
+              <Button variant="primary" type="submit">
+                Submit
+              </Button>
+            </Container>
           </Form>
         )
       }
@@ -192,28 +247,41 @@ function LandlordDashboard() {
             <th>Link for Applicant</th>
             <th>Iexec Task ID</th>
             <th>Result</th>
+            <th>Execute</th>
           </tr>
         </thead>
         <tbody>
-          {myDeals.length > 0 &&
-            myDeals.map((deal, index) => (
-              <tr key={"deal-" + index}>
+          {processList.length > 0 &&
+            processList.map((process, index) => (
+              <tr key={"process-" + index}>
                 <td>{index}</td>
-                <td>{deal.dealid}</td>
-                <td>State</td>
-                <td>Sent</td>
-                <td>{deal.lasttaskid}</td>
+                <td>{process._id}</td>
+                <td>{process.process_state}</td>
+                <td></td>
+                <td><a target="_blank" href={'https://explorer.iex.ec/bellecour/task/'+process.task_id}  >{process.task_id}  </a></td>
 
                 <td>
-                  <Button
-                    variant="outline-primary"
-                    dealid={deal.dealid}
+                  { process.process_state === 3 && (<Button
+                    variant="outline-success"
+                    processid={index}
                     onClick={(e) => {
-                      getResult(deal.dealid);
+                      process.task_id && handleResults(process.task_id);
                     }}
                   >
                     Result
-                  </Button>
+                  </Button>)}
+                </td>
+                <td>
+                  {process.process_state === 2 && (<Button
+                    variant="outline-primary"
+                    processid={index}
+                    onClick={(e) => {
+                    
+                      handleExecute(process._id);
+                    }}
+                  >
+                    Execute
+                  </Button>)}
                 </td>
               </tr>
             ))}

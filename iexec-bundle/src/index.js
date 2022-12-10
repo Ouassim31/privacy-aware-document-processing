@@ -3,42 +3,20 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { BrowserRouter } from 'react-router-dom';
 // Bootstrap CSS
 import "bootstrap/dist/css/bootstrap.min.css";
 // Bootstrap Bundle JS
 import "bootstrap/dist/js/bootstrap.bundle.min";
 
-import NavBar from './navBar/NavBar';
-import LandlordDashboard from './landlordDashboard/landlordDashboard';
-import ApplicantDashbord from './applicantDashboard/applicantDashboard';
-import {
-  createBrowserRouter,
-  RouterProvider,
-  Route,
-} from "react-router-dom";
-//Add route here
-const router =  createBrowserRouter([
-  {
-    path:"/",
-    element:<App/>
-  },
-  {
-    path:"/landlord",
-    element:<LandlordDashboard/>
-  },
-  {
-  path:"/applicant",
-  element:<ApplicantDashbord/>
-}
-  
-])
+
       
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <NavBar/>
-    <RouterProvider router={router} />
-  </React.StrictMode>
+  <>
+    <BrowserRouter><App></App></BrowserRouter>
+    
+  </>
 );
 
 // If you want to start measuring performance in your app, pass a function
