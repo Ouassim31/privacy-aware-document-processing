@@ -271,7 +271,7 @@ function LandlordDashboard(props) {
                         onClick={(e) => {
                           let url = window.location.origin;
                           navigator.clipboard.writeText(
-                            url + "/" + process._id
+                            url + "/applicant/" + process._id
                           );
                         }}
                       >
@@ -292,7 +292,7 @@ function LandlordDashboard(props) {
                   </td>
 
                   <td>
-                    {process.process_state === 3 && (
+                    {process.process_state === 3 && requesterAddress && (
                       <Button
                         variant="outline-success"
                         processid={index}
@@ -305,7 +305,7 @@ function LandlordDashboard(props) {
                     )}
                   </td>
                   <td>
-                    {process.process_state === 2 && (
+                    {process.process_state === 2  && requesterAddress && (
                       <Button
                         variant="outline-primary"
                         processid={index}
