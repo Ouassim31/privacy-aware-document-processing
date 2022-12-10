@@ -13,6 +13,7 @@
     "iexec": "^7.2.2",
     "ipfs-http-client": "^59.0.0",
     "jszip": "^3.10.1",
+    "mdb-react-ui-kit": "^5.0.0",
     "metamask": "^0.0.1-security",
     "react": "^18.2.0",
     "react-bootstrap": "^2.6.0",

@@ -11,6 +11,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min";
 import NavBar from './navBar/NavBar';
 import LandlordDashboard from './landlordDashboard/landlordDashboard';
 import ApplicantDashbord from './applicantDashboard/applicantDashboard';
+import LoginAndRegister from './loginAndRegister/loginAndRegister';
 import {
   createBrowserRouter,
   RouterProvider,
@@ -27,9 +28,13 @@ const router =  createBrowserRouter([
     element:<LandlordDashboard/>
   },
   {
-  path:"/applicant",
-  element:<ApplicantDashbord/>
-}
+    path:"/applicant",
+    element:<ApplicantDashbord/>
+  },
+  {
+    path:"/login-or-register",
+    element:<LoginAndRegister/>
+  }
   
 ])
       

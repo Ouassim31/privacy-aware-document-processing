@@ -14,8 +14,8 @@ function NavBar() {
             <Nav.Link href="/">Home</Nav.Link>
             <Nav.Link href="/applicant">For Applicants</Nav.Link>
             <Nav.Link href="/landlord">For Landlords</Nav.Link>
-            <Nav.Link href="">Login</Nav.Link>
-            <Nav.Link href="#link">Register</Nav.Link>
+            <Nav.Link href="/login-or-register">Login</Nav.Link>
+            <Nav.Link href="/login-or-register">Register</Nav.Link>
             
           </Nav>
         </Navbar.Collapse>
