@@ -59,6 +59,15 @@ const setTask = async (pid,tid) => {
    })
    return  res.data
 }
+const setFileLink = async(pid,cid) =>{
+  console.log('setting file to process ' + pid)
+  let res = await axios({
+    method: 'post',
+    headers: { 'Content-Type': 'application/json'},
+    url: 'http://localhost:3000/data/process/'+pid+'/'+cid+'/update',
+   })
+   return  res.data
+}
 
 
 function App() {
@@ -83,7 +92,9 @@ useEffect(()=>{
       <Routes>
       <Route exact path='/' element={<Homepage/>} />
       <Route  path='/landlord' element={<LandlordDashboard setTask = {setTask} createProcess={()=>createProcess(currentLandlord.id)} fetchProcesses={()=>fetchProcesses(currentLandlord.id)} landlord={currentLandlord}/>}/>
-      <Route  path='/applicant' element={<ApplicantDashbord/>}/>
+      <Route  path='/applicant/:pid' element={<ApplicantDashbord setFileLink = {setFileLink}/>} />
+      
+
       </Routes>
       
       
