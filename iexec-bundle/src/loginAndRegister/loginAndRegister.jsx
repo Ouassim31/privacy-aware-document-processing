@@ -25,12 +25,12 @@ function LoginAndRegister() {
   };
 
   const handleLogin= (e) => {
-    console.log("test");
+    console.log(e.target.username.value);
     e.preventDefault();
   }
 
   const handleRegister= (e) => {
-    console.log("test2");
+    console.log(e.target.username.value);
     e.preventDefault();
   }
 
@@ -53,24 +53,25 @@ function LoginAndRegister() {
       <MDBTabsContent>
 
         <MDBTabsPane show={justifyActive === 'tab1'}>
-          <MDBInput wrapperClass='mb-4' label='Username' id='form1' type='username'/>
-          <MDBInput wrapperClass='mb-4' label='Password' id='form2' type='password'/>
+        <form onSubmit={handleLogin}>
+          <MDBInput wrapperClass='mb-4' label='Username' id='username' type='text'/>
+          <MDBInput wrapperClass='mb-4' label='Password' id='password' type='password'/>
 
           <div className="d-flex justify-content-between mx-4 mb-4">
             <MDBCheckbox name='flexCheck' value='' id='flexCheckDefault' label='Remember me' />
             <a href="!#">Forgot password?</a>
           </div>
-
-          <MDBBtn className="mb-4 w-100" onClick={(handleLogin)}>Sign in</MDBBtn>
+          <MDBBtn className="mb-4 w-100">Sign in</MDBBtn>
+          </form>
         </MDBTabsPane>
 
         <MDBTabsPane show={justifyActive === 'tab2'}>
+        <form onSubmit={handleRegister}>
+          <MDBInput wrapperClass='mb-4' label='Username' id='username' type='text'/>
+          <MDBInput wrapperClass='mb-4' label='Password' id='password' type='password'/>
 
-          <MDBInput wrapperClass='mb-4' label='Username' id='form1' type='text'/>
-          <MDBInput wrapperClass='mb-4' label='Password' id='form1' type='password'/>
-
-          <MDBBtn className="mb-4 w-100" onClick={(handleRegister)}>Sign up</MDBBtn>
-
+          <MDBBtn className="mb-4 w-100">Sign up</MDBBtn>
+        </form>
         </MDBTabsPane>
 
       </MDBTabsContent>
