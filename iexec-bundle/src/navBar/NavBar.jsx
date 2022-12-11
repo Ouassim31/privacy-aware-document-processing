@@ -12,11 +12,13 @@ function NavBar() {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">  
+
             <NavLink className="nav-link active" to="/" >Home</NavLink>
             <NavLink className="nav-link active" to="/applicant/6394c555d61f5be48f2a3d77">For Applicants</NavLink>
             <NavLink className="nav-link active"  to="/landlord">For Landlords</NavLink>
-            <NavLink className="nav-link active" to="">Login</NavLink>
-            <NavLink className="nav-link active" to="#link">Register</NavLink>
+            <NavLink className="nav-link active" to="/login-or-register">Login</NavLink>
+            <NavLink className="nav-link active" to="/login-or-register">Register</NavLink>
+
             
           </Nav>
         </Navbar.Collapse>
