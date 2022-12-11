@@ -21,15 +21,16 @@ To start the server use
 npm start
 ```
 
-To run database-test-script use
-```bash
-node populatedb <your mongodb url> 
-```
-
 ## API Endpoints
 
-In order to test the endpoints make sure to run a MongoDB database locally. Then start the server (in debug mode)
+In order to test the endpoints make sure to run a MongoDB database locally.
 
+Then start the server using
+```bash
+npm start
+```
+
+or in debug mode using
 ```bash
 DEBUG=Backend:* npm start
 ```

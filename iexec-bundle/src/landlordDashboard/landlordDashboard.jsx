@@ -1,4 +1,5 @@
 import {
+  Card,
   Table,
   Button,
   DropdownButton,
@@ -10,7 +11,6 @@ import {
 import FileSaver from "file-saver";
 
 import { useEffect, useState, useRef } from "react";
-import { useLocation } from "react-router-dom";
 
 export const { IExec } = require("iexec");
 
@@ -30,7 +30,6 @@ function LandlordDashboard(props) {
   const getLastTask = async (dealId) => {
     const iexec_mod = new IExec({ ethProvider: window.ethereum });
     const taskId = await iexec_mod.deal.computeTaskId(dealId, 0);
-    console.log(taskId);
     return taskId;
   };
   //download result of a given task
@@ -41,7 +40,6 @@ function LandlordDashboard(props) {
 
     const task = await iexec_mod.task.show(taskId);
     console.log("downloading results");
-    console.log(task);
     FileSaver.saveAs(binary, "results.zip");
   };
   //create request order
@@ -96,9 +94,10 @@ function LandlordDashboard(props) {
   const handleIexecArgsSubmit = (event) => {
     event.preventDefault();
     if (appAddress && iexecParams) {
-      createProcess(currentLandlord.id, null).then((res) =>
-        console.log("created process id : " + res)
-      );
+      createProcess(currentLandlord.id, null).then((res) => {
+        console.log("created process id : " + res);
+        fetchProcesses(currentLandlord.id).then((res) => setProcessList(res));
+      });
 
       //createIexecTask(appAddress, iexecParams);
     } else {
@@ -112,27 +111,26 @@ function LandlordDashboard(props) {
       setAppaddress("0x90997fe5DA97e43621093CF6412505f5fb157B63");
   };
   const handleExecute = async (pid) => {
-    
     if (appAddress && iexecParams) {
-     const dealid = await createIexecTask(appAddress,iexecParams)
-     console.log('deal id : '+dealid)
-     const tid = await getLastTask(dealid)
-     console.log('task id : '+tid)
-     setTask(pid, tid);
+      const dealid = await createIexecTask(appAddress, iexecParams);
+      const tid = await getLastTask(dealid);
+      setTask(pid, tid).then((res) => {
+        fetchProcesses(currentLandlord.id).then((res) => setProcessList(res));
+      });
     } else {
       window.alert("Both values need to be entred");
     }
   };
   const handleResults = async (tid) => {
-    getResult(tid)
-  }
+    getResult(tid);
+  };
   /**
    *
    * useEffect Hooks
    *
    */
-   useEffect(() => {
-    console.log(iexecParams)
+  useEffect(() => {
+    console.log(iexecParams);
   }, [iexecParams]);
   useEffect(() => {
     const getprocesses = async () => {
@@ -183,18 +181,13 @@ function LandlordDashboard(props) {
     incomeInput = "file";
 
   return (
-    <div>
-      <Container>
-        <h3>
-          Welcome {currentLandlord.username} ({currentLandlord.id})
-        </h3>
-      </Container>
-
+    <Card className="m-3 p-2">
       <DropdownButton
         onSelect={handleAppSelect}
         variant="success"
         id="dropdown-basic-button"
         title="Create Request"
+        className="mb-3 sticky-top"
       >
         <Dropdown.Item eventKey="non-tee-args">
           Non Tee App With Args
@@ -204,90 +197,132 @@ function LandlordDashboard(props) {
         </Dropdown.Item>
         <Dropdown.Item disabled>Tee App With File</Dropdown.Item>
       </DropdownButton>
+      <Card.Body>
+        <Container className="d-flex flex-column align-items-center">
+          <Card.Title className="mb-3">
+            Welcome {currentLandlord.username} ({currentLandlord.id})
+          </Card.Title>
+          <Card.Subtitle className="mb-3">
+            Connected with the Wallet ID : {requesterAddress}
+          </Card.Subtitle>
+        </Container>
 
-      {
-        /* Display form only if we chose an app  */
-        appAddress && (
-          <Form onSubmit={handleIexecArgsSubmit}>
-            <Container>
-              <FormGroup controlId="rent">
-                <Form.Label>Rent</Form.Label>
-                <Form.Control
-                  ref={rentRef}
-                  onChange={handleIexecArgsChange}
-                  type="text"
-                />
-              </FormGroup>
-              <FormGroup controlId="income">
-                <Form.Label>
-                  Income{" "}
-                  {appAddress == "0x90997fe5DA97e43621093CF6412505f5fb157B63" &&
-                    "(File Link)"}
-                </Form.Label>
-                <Form.Control
-                  ref={incomeRef}
-                  onChange={handleIexecArgsChange}
-                  type="text"
-                />
-              </FormGroup>
-              <Button variant="primary" type="submit">
-                Submit
-              </Button>
-            </Container>
-          </Form>
-        )
-      }
+        {
+          /* Display form only if we chose an app  */
+          appAddress && (
+            <Form onSubmit={handleIexecArgsSubmit}>
+              <Container
+                fluid
+                className="m-2 gap-2 d-flex flex-column align-items-center"
+              >
+                <FormGroup className="input-group w-50" controlId="rent">
+                  <span className="input-group-text">Rent</span>
+                  <Form.Control
+                    ref={rentRef}
+                    onChange={handleIexecArgsChange}
+                    type="text"
+                  />
+                </FormGroup>
+                <FormGroup className="input-group w-50" controlId="income">
+                  <span className="input-group-text">
+                    Income{" "}
+                    {appAddress ==
+                      "0x90997fe5DA97e43621093CF6412505f5fb157B63" &&
+                      "(File Link)"}
+                  </span>
+                  <Form.Control
+                    ref={incomeRef}
+                    onChange={handleIexecArgsChange}
+                    type="text"
+                  />
+                </FormGroup>
+                <Button variant="primary" type="submit">
+                  Submit
+                </Button>
+              </Container>
+            </Form>
+          )
+        }
 
-      <Table responsive striped bordered hover>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>ProcessID</th>
-            <th>Process State</th>
-            <th>Link for Applicant</th>
-            <th>Iexec Task ID</th>
-            <th>Result</th>
-            <th>Execute</th>
-          </tr>
-        </thead>
-        <tbody>
-          {processList.length > 0 &&
-            processList.map((process, index) => (
-              <tr key={"process-" + index}>
-                <td>{index}</td>
-                <td>{process._id}</td>
-                <td>{process.process_state}</td>
-                <td></td>
-                <td><a target="_blank" href={'https://explorer.iex.ec/bellecour/task/'+process.task_id}  >{process.task_id}  </a></td>
+        <Table responsive striped bordered hover>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>ProcessID</th>
+              <th>Process State</th>
+              <th>Link for Applicant</th>
+              <th>Iexec Task ID</th>
+              <th>Result</th>
+              <th>Execute</th>
+            </tr>
+          </thead>
+          <tbody>
+            {processList.length > 0 &&
+              processList.map((process, index) => (
+                <tr key={"process-" + index}>
+                  <td>{index}</td>
+                  <td>{process._id}</td>
+                  <td>{process.process_state}</td>
+                  <td>
+                    {process.process_state === 1 && (
+                      <Button
+                        variant="outline-primary"
+                        processid={index}
+                        onClick={(e) => {
+                          let url = window.location.origin;
+                          navigator.clipboard.writeText(
+                            url + "/applicant/" + process._id
+                          );
+                        }}
+                      >
+                        Copy Link
+                      </Button>
+                    )}
+                  </td>
+                  <td>
+                    <a
+                      target="_blank"
+                      href={
+                        "https://explorer.iex.ec/bellecour/task/" +
+                        process.task_id
+                      }
+                    >
+                      {process.task_id}{" "}
+                    </a>
+                  </td>
 
-                <td>
-                  { process.process_state === 3 && (<Button
-                    variant="outline-success"
-                    processid={index}
-                    onClick={(e) => {
-                      process.task_id && handleResults(process.task_id);
-                    }}
-                  >
-                    Result
-                  </Button>)}
-                </td>
-                <td>
-                  {process.process_state === 2 && (<Button
-                    variant="outline-primary"
-                    processid={index}
-                    onClick={(e) => {
-                    
-                      handleExecute(process._id);
-                    }}
-                  >
-                    Execute
-                  </Button>)}
-                </td>
-              </tr>
-            ))}
-        </tbody>
-      </Table>
-    </div>
+                  <td>
+                    {process.process_state === 3 && requesterAddress && (
+                      <Button
+                        variant="outline-success"
+                        processid={index}
+                        onClick={(e) => {
+                          process.task_id && handleResults(process.task_id);
+                        }}
+                      >
+                        Result
+                      </Button>
+                    )}
+                  </td>
+                  <td>
+                    {process.process_state === 2  && requesterAddress && (
+                      <Button
+                        variant="outline-primary"
+                        processid={index}
+                        onClick={(e) => {
+                          handleExecute(process._id);
+                        }}
+                      >
+                        Execute
+                      </Button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        </Table>
+      </Card.Body>
+    </Card>
   );
 }
 
