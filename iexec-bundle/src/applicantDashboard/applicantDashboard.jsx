@@ -4,9 +4,9 @@ import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
 import { useEffect } from "react";
 import { useState } from "react";
-
+import { useParams } from "react-router-dom";
 export const { IExec } = require("iexec");
-function ApplicantDashbord() {
+function ApplicantDashbord(props) {
   //State variables
   const [requesterAddress, setRequesterAddress] = useState();
   const [selectedFile, setSelectedFile] = useState("");
@@ -14,7 +14,8 @@ function ApplicantDashbord() {
   const [encryptedDataset, setEncryptedDataset] = useState(undefined);
   const [count, setCount] = useState(0);
   const [datasetList, setDatasetList] = useState([]);
-
+  const {setFileLink} = props
+  const {pid} = useParams()
   //init requester address and datasets count
   useEffect(() => {
     const connect = async () => {
@@ -59,6 +60,7 @@ function ApplicantDashbord() {
     const checksum = await iexec_mod.dataset.computeEncryptedFileChecksum(
       encryptedDataset
     );
+  
 
     const { address } = await iexec_mod.dataset.deployDataset({
       owner: requesterAddress,
@@ -72,8 +74,9 @@ function ApplicantDashbord() {
   //handle file submit event
   const handleSubmit = (event) => {
     event.preventDefault();
-    toArrayBuffer(selectedFile);
+    //toArrayBuffer(selectedFile);
     //you_function(selectFile)
+    setFileLink(pid,'test_cid')
   };
   //handle file change event
   const handleChange = (event) => {
@@ -106,7 +109,7 @@ function ApplicantDashbord() {
 
   return (
     <div>
-      <p>Welcome {requesterAddress}</p>
+      <h3>Process id : {pid}</h3>
       <Form onSubmit={handleSubmit}>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>File</Form.Label>
@@ -119,7 +122,8 @@ function ApplicantDashbord() {
           Submit
         </Button>
       </Form>
-      <p>Uploaded Datasets : {count}</p>
+      
+      <>{/**<p>Uploaded Datasets : {count}</p>
       <Table responsive striped bordered hover>
         <thead>
           <tr>
@@ -141,9 +145,9 @@ function ApplicantDashbord() {
               <td>{dataset.owner}</td>
               <td>{dataset.registry}</td>
             </tr>
-          ))}
+          ))
         </tbody>
-      </Table>
+      </Table>*/}</>
     </div>
   );
 }
