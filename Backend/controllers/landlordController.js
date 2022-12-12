@@ -8,7 +8,7 @@ exports.index = (req, res) => {
 
 // Return Landlord _id on GET with identifier as argument.
 exports.landloard_loadId_get = function (req, res, next) {
-  res.set('Access-Control-Allow-Origin', '*');
+  
   Landlord.findOne(
     { username: req.params.username },
     function (err, landlord) {
@@ -17,6 +17,7 @@ exports.landloard_loadId_get = function (req, res, next) {
         return next(err);
       }
       // On success, return landlord _id
+      res.set('Access-Control-Allow-Origin', '*');
       res.send(landlord._id);
     }
   );
@@ -24,7 +25,7 @@ exports.landloard_loadId_get = function (req, res, next) {
 
 // Handle Landlord create on POST.
 exports.landlord_create_post = function (req, res, next) {
-  res.set('Access-Control-Allow-Origin', '*');
+  
   Landlord.create(
     { username: req.params.username },
     function (err, landlord) {
@@ -33,6 +34,7 @@ exports.landlord_create_post = function (req, res, next) {
         return next(err);
       }
       // On success, return landlord _id
+      res.set('Access-Control-Allow-Origin', '*');
       res.send(landlord._id);
     }
   );

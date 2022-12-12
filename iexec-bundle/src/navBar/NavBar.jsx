@@ -1,4 +1,5 @@
 import Container from 'react-bootstrap/Container';
+import {Button} from 'bootstrap';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
@@ -17,7 +18,7 @@ function NavBar() {
             <NavLink className="nav-link active" to="/applicant/6394c555d61f5be48f2a3d77">For Applicants</NavLink>
             <NavLink className="nav-link active"  to="/landlord">For Landlords</NavLink>
             <NavLink className="nav-link active" to="/login-or-register">Login</NavLink>
-            <NavLink className="nav-link active" to="/login-or-register">Register</NavLink>
+            <NavLink  className="nav-link active" to="login-or-register" as="button" onClick={()=> localStorage.clear()}>Logout</NavLink>
 
             
           </Nav>

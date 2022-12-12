@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import NavBar from './navBar/NavBar';
 import LandlordDashboard from './landlordDashboard/landlordDashboard';
 import ApplicantDashbord from './applicantDashboard/applicantDashboard';
+
 import {
   
   Routes,
@@ -85,6 +86,10 @@ const login = async(username) =>{
     headers: { 'Content-Type': 'application/json'},
     url: 'http://localhost:3000/data/landlord/'+username,
    })
+   
+   localStorage.setItem("logged_user_username", username)
+   localStorage.setItem("logged_user_id", res.data)
+   
    return  res.data
 }
 
@@ -94,12 +99,17 @@ function App() {
 const TestcurrentLandlord = {id : '639482f617bf5b744e5a5e71', username:'bill'}
 const [currentLandlord,setCurrentLandlord] = useState(TestcurrentLandlord)
 
-
+console.log(currentLandlord)
 
 useEffect(()=>{
- 
+  if (localStorage.getItem("logged_user_id")){
+  setCurrentLandlord({id:localStorage.getItem("logged_user_id"), username: localStorage.getItem("logged_user_username")})
+  }
+  else {
+    setCurrentLandlord(null)
+  }
   
-},[currentLandlord])
+},[localStorage.getItem("logged_user_id")])
 
 
 
@@ -109,8 +119,9 @@ useEffect(()=>{
            
       <NavBar />
       <Routes>
+      
+      {currentLandlord && (<><Route  path='/landlord' element={<LandlordDashboard setTask = {setTask} createProcess={()=>createProcess(currentLandlord.id)} fetchProcesses={()=>fetchProcesses(currentLandlord.id)} landlord={currentLandlord}/>}/></>)}
       <Route exact path='/' element={<Homepage/>} />
-      <Route  path='/landlord' element={<LandlordDashboard setTask = {setTask} createProcess={()=>createProcess(currentLandlord.id)} fetchProcesses={()=>fetchProcesses(currentLandlord.id)} landlord={currentLandlord}/>}/>
       <Route  path='/applicant/:pid' element={<ApplicantDashbord setFileLink = {setFileLink}/>} />
       <Route  path='/login-or-register' element={<LoginAndRegister login={login} register={register}/>} />
       </Routes>
