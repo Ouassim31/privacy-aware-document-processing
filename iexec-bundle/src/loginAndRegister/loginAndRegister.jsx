@@ -12,9 +12,10 @@ import {
 }
 from 'mdb-react-ui-kit';
 
-function LoginAndRegister() {
+function LoginAndRegister(props) {
 
   const [justifyActive, setJustifyActive] = useState('tab1');
+  const {login, register} = props
 
   const handleJustifyClick = (value) => {
     if (value === justifyActive) {
@@ -27,11 +28,17 @@ function LoginAndRegister() {
   const handleLogin= (e) => {
     console.log(e.target.username.value);
     e.preventDefault();
+    login(e.target.username.value).then(
+      (e) => console.log(e + " - Login handled.")
+    );
   }
 
   const handleRegister= (e) => {
     console.log(e.target.username.value);
     e.preventDefault();
+    register(e.target.username.value).then(
+      (e) => console.log(e + " - Register handled.")
+    );
   }
 
   return (

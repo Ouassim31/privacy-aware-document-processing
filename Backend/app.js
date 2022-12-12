@@ -12,6 +12,7 @@ var app = express();
 
 // Set up mongoose connection
 var mongoose = require('mongoose');
+mongoose.set('strictQuery', true);
 var dev_db_url = 'mongodb://127.0.0.1:27017';
 var mongoDB = process.env.MONGODB_URI || dev_db_url;
 mongoose.connect(mongoDB, {useNewUrlParser: true, useUnifiedTopology: true});
