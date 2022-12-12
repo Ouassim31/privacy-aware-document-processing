@@ -29,7 +29,8 @@ function LoginAndRegister(props) {
     console.log(e.target.username.value);
     e.preventDefault();
     login(e.target.username.value).then(
-      (e) => console.log(e + " - Login handled.")
+      (e) => window.location.replace('/')
+
     );
   }
 

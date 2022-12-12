@@ -6,9 +6,10 @@ import { useEffect, useState } from 'react';
 import NavBar from './navBar/NavBar';
 import LandlordDashboard from './landlordDashboard/landlordDashboard';
 import ApplicantDashbord from './applicantDashboard/applicantDashboard';
+import {create} from 'ipfs-http-client'
 
 import {
-  
+  Navigate as Redirect,
   Routes,
   Route,
   useLocation,
@@ -90,9 +91,15 @@ const login = async(username) =>{
    localStorage.setItem("logged_user_username", username)
    localStorage.setItem("logged_user_id", res.data)
    
+   
    return  res.data
 }
 
+const uploadtoIPFS = async (file) => {
+  const client = create({url:'http://127.0.0.1:5001'})
+  const { cid } = await client.add(file)
+  return cid.toString()
+}
 
 function App() {
 
@@ -117,12 +124,12 @@ useEffect(()=>{
     
     <div className="App">
            
-      <NavBar />
+       {currentLandlord && <NavBar/>}
       <Routes>
       
-      {currentLandlord && (<><Route  path='/landlord' element={<LandlordDashboard setTask = {setTask} createProcess={()=>createProcess(currentLandlord.id)} fetchProcesses={()=>fetchProcesses(currentLandlord.id)} landlord={currentLandlord}/>}/></>)}
-      <Route exact path='/' element={<Homepage/>} />
-      <Route  path='/applicant/:pid' element={<ApplicantDashbord setFileLink = {setFileLink}/>} />
+      <Route  path='/landlord' element={localStorage.getItem("logged_user_id") ? <LandlordDashboard setTask = {setTask} createProcess={()=>createProcess(currentLandlord.id) } fetchProcesses={()=>fetchProcesses(currentLandlord.id)} landlord={currentLandlord}/> : <Redirect to="/login-or-register"/>}/>
+      <Route exact path='/' element={localStorage.getItem("logged_user_id") ? <Homepage landlord={currentLandlord}/> : <Redirect to="/login-or-register"/>} />
+      <Route  path='/applicant/:pid' element={<ApplicantDashbord setFileLink = {setFileLink} uploadtoIPFS={uploadtoIPFS}/> } />
       <Route  path='/login-or-register' element={<LoginAndRegister login={login} register={register}/>} />
       </Routes>
       

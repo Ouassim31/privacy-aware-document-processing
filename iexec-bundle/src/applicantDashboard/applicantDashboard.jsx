@@ -1,10 +1,11 @@
 import Button from "react-bootstrap/Button";
 
-import Table from "react-bootstrap/Table";
+import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
+import { Container } from "react-bootstrap";
 export const { IExec } = require("iexec");
 function ApplicantDashbord(props) {
   //State variables
@@ -14,7 +15,7 @@ function ApplicantDashbord(props) {
   const [encryptedDataset, setEncryptedDataset] = useState(undefined);
   const [count, setCount] = useState(0);
   const [datasetList, setDatasetList] = useState([]);
-  const {setFileLink} = props
+  const {setFileLink,uploadtoIPFS} = props
   const {pid} = useParams()
   //init requester address and datasets count
   useEffect(() => {
@@ -74,10 +75,8 @@ function ApplicantDashbord(props) {
   //handle file submit event
   const handleSubmit = (event) => {
     event.preventDefault();
-    //toArrayBuffer(selectedFile);
-    //you_function(selectFile)
-    setFileLink(pid,'test_cid')
-  };
+    uploadtoIPFS(selectedFile).then((res) => setFileLink(pid,res))
+    };
   //handle file change event
   const handleChange = (event) => {
     setSelectedFile(event.target.files[0]);
@@ -108,12 +107,13 @@ function ApplicantDashbord(props) {
   }, [count]);
 
   return (
-    <div>
+    <Card className="m-3 p-3">
       <h3>Process id : {pid}</h3>
+    
       <Form onSubmit={handleSubmit}>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>File</Form.Label>
-          <Form.Control onChange={handleChange} type="file" />
+          <Form.Control className="w-100" onChange={handleChange} type="file"  />
           <Form.Text className="text-muted">
             We'll never share your data with anyone else.
           </Form.Text>
@@ -122,33 +122,7 @@ function ApplicantDashbord(props) {
           Submit
         </Button>
       </Form>
-      
-      <>{/**<p>Uploaded Datasets : {count}</p>
-      <Table responsive striped bordered hover>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>datasetChecksum</th>
-            <th>datasetMultiaddr</th>
-            <th>datasetName</th>
-            <th>owner</th>
-            <th>registry</th>
-          </tr>
-        </thead>
-        <tbody>
-          {datasetList.map((dataset, index) => (
-            <tr key={"dataset-" + index}>
-              <td>{index}</td>
-              <td>{dataset.datasetChecksum}</td>
-              <td>{dataset.datasetMultiaddr}</td>
-              <td>{dataset.datasetName}</td>
-              <td>{dataset.owner}</td>
-              <td>{dataset.registry}</td>
-            </tr>
-          ))
-        </tbody>
-      </Table>*/}</>
-    </div>
+    </Card>
   );
 }
 export default ApplicantDashbord;
