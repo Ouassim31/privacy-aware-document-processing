@@ -14,6 +14,7 @@ import {
 } from "react-router-dom";
 import Homepage from './homepage/homepage';
 import axios from 'axios';
+import LoginAndRegister from './loginAndRegister/loginAndRegister';
 export const   { IExec} = require('iexec')
 const FileSaver = require('file-saver');
 const detectEthereumProvider= require('@metamask/detect-provider');
@@ -68,6 +69,24 @@ const setFileLink = async(pid,cid) =>{
    })
    return  res.data
 }
+const register = async(username) =>{
+  console.log('registering a landlord ' + username)
+  let res = await axios({
+    method: 'post',
+    headers: { 'Content-Type': 'application/json'},
+    url: 'http://localhost:3000/data/landlord/'+username+'/create',
+   })
+   return  res.data
+}
+const login = async(username) =>{
+  console.log('logging in as landlord ' + username)
+  let res = await axios({
+    method: 'get',
+    headers: { 'Content-Type': 'application/json'},
+    url: 'http://localhost:3000/data/landlord/'+username,
+   })
+   return  res.data
+}
 
 
 function App() {
@@ -93,8 +112,7 @@ useEffect(()=>{
       <Route exact path='/' element={<Homepage/>} />
       <Route  path='/landlord' element={<LandlordDashboard setTask = {setTask} createProcess={()=>createProcess(currentLandlord.id)} fetchProcesses={()=>fetchProcesses(currentLandlord.id)} landlord={currentLandlord}/>}/>
       <Route  path='/applicant/:pid' element={<ApplicantDashbord setFileLink = {setFileLink}/>} />
-      
-
+      <Route  path='/login-or-register' element={<LoginAndRegister login={login} register={register}/>} />
       </Routes>
       
       
