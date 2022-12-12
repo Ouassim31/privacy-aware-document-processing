@@ -97,7 +97,7 @@ const login = async(username) =>{
 function App() {
 
 const TestcurrentLandlord = {id : '639482f617bf5b744e5a5e71', username:'bill'}
-const [currentLandlord,setCurrentLandlord] = useState(TestcurrentLandlord)
+const [currentLandlord,setCurrentLandlord] = useState({id:localStorage.getItem("logged_user_id"), username: localStorage.getItem("logged_user_username")})
 
 console.log(currentLandlord)
 
