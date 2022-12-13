@@ -25,7 +25,7 @@ function LandlordDashboard(props) {
   const [iexecParams, setIexecParams] = useState();
   const incomeRef = useRef();
   const rentRef = useRef();
-
+  
   //get last task
   const getLastTask = async (dealId) => {
     const iexec_mod = new IExec({ ethProvider: window.ethereum });
@@ -79,30 +79,23 @@ function LandlordDashboard(props) {
    *
    */
   const handleIexecArgsChange = () => {
-    if (rentRef.current.value && incomeRef.current.value) {
-      if (appAddress == "0x5e4017Bd35CbA7827e0Fa193F4B9F4f158FA254E")
+    if (rentRef.current.value  && appAddress == "0x5e4017Bd35CbA7827e0Fa193F4B9F4f158FA254E") {
+      
         setIexecParams({
           iexec_args: rentRef.current.value + " " + incomeRef.current.value,
         });
-      else if (appAddress == "0x90997fe5DA97e43621093CF6412505f5fb157B63")
-        setIexecParams({
-          iexec_args: rentRef.current.value,
-          iexec_input_files: [incomeRef.current.value],
-        });
-    }
-  };
+     
+  }};
   const handleIexecArgsSubmit = (event) => {
     event.preventDefault();
-    if (appAddress && iexecParams) {
+    
       createProcess(currentLandlord.id, null).then((res) => {
         console.log("created process id : " + res);
         fetchProcesses(currentLandlord.id).then((res) => setProcessList(res));
       });
 
       //createIexecTask(appAddress, iexecParams);
-    } else {
-      window.alert("Both values need to be entred");
-    }
+  
   };
   const handleAppSelect = (e) => {
     if (e == "non-tee-args")
@@ -111,15 +104,28 @@ function LandlordDashboard(props) {
       setAppaddress("0x90997fe5DA97e43621093CF6412505f5fb157B63");
   };
   const handleExecute = async (pid) => {
-    if (appAddress && iexecParams) {
+    
+      if (appAddress === "0x90997fe5DA97e43621093CF6412505f5fb157B63") {
+        let daddr = processList.filter((process)=>process._id === pid)[0].download_address
+        console.log(daddr)
+        setIexecParams({
+        iexec_args: rentRef.current.value,
+        iexec_input_files: [daddr],
+      })
+    }
+    else if (appAddress === "0x5e4017Bd35CbA7827e0Fa193F4B9F4f158FA254E") {
+      setIexecParams({
+        iexec_args: rentRef.current.value + " " + incomeRef.current.value,
+      });
+    }
+    if(iexecParams && appAddress){
       const dealid = await createIexecTask(appAddress, iexecParams);
       const tid = await getLastTask(dealid);
+
       setTask(pid, tid).then((res) => {
         fetchProcesses(currentLandlord.id).then((res) => setProcessList(res));
       });
-    } else {
-      window.alert("Both values need to be entred");
-    }
+    } 
   };
   const handleResults = async (tid) => {
     getResult(tid);
@@ -174,20 +180,21 @@ function LandlordDashboard(props) {
    * Rendering
    *
    */
-  var incomeInput, iexec_params;
+  var app_name
   if (appAddress == "0x5e4017Bd35CbA7827e0Fa193F4B9F4f158FA254E")
-    incomeInput = "text";
+    app_name = "Non TEE App using arguments";
   else if (appAddress == "0x90997fe5DA97e43621093CF6412505f5fb157B63")
-    incomeInput = "file";
+    app_name = "Non TEE App using file";
 
   return (
-    <Card className="m-3 p-2">
+    <Card className="mb-3 p-2">
+      <Container fluid className="d-inline-flex align-items-center gap-2">
       <DropdownButton
         onSelect={handleAppSelect}
         variant="success"
         id="dropdown-basic-button"
-        title="Create Request"
-        className="mb-3 sticky-top"
+        title="Chose Dapp"
+        className="m-3 sticky-top"
       >
         <Dropdown.Item eventKey="non-tee-args">
           Non Tee App With Args
@@ -197,6 +204,8 @@ function LandlordDashboard(props) {
         </Dropdown.Item>
         <Dropdown.Item disabled>Tee App With File</Dropdown.Item>
       </DropdownButton>
+      {appAddress && <Button className="h-50" variant="primary" onClick={handleIexecArgsSubmit}>Add Process</Button>}
+      </Container>
       <Card.Body>
         <Container className="d-flex flex-column align-items-center">
           <Card.Title className="mb-3">
@@ -205,11 +214,12 @@ function LandlordDashboard(props) {
           <Card.Subtitle className="mb-3">
             Connected with the Wallet ID : {requesterAddress}
           </Card.Subtitle>
+          <span>{app_name}</span>
         </Container>
-
+    <Card.Body/>
         {
-          /* Display form only if we chose an app  */
-          appAddress && (
+            <>
+            
             <Form onSubmit={handleIexecArgsSubmit}>
               <Container
                 fluid
@@ -223,25 +233,22 @@ function LandlordDashboard(props) {
                     type="text"
                   />
                 </FormGroup>
-                <FormGroup className="input-group w-50" controlId="income">
+                {appAddress === "0x5e4017Bd35CbA7827e0Fa193F4B9F4f158FA254E" && <FormGroup className="input-group w-50" controlId="income">
                   <span className="input-group-text">
-                    Income{" "}
-                    {appAddress ==
-                      "0x90997fe5DA97e43621093CF6412505f5fb157B63" &&
-                      "(File Link)"}
+                    Income 
                   </span>
                   <Form.Control
                     ref={incomeRef}
                     onChange={handleIexecArgsChange}
                     type="text"
                   />
-                </FormGroup>
+                </FormGroup>}
                 <Button variant="primary" type="submit">
-                  Submit
+                  Add Process
                 </Button>
               </Container>
             </Form>
-          )
+          </>
         }
 
         <Table responsive striped bordered hover>

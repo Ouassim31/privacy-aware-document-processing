@@ -14,13 +14,9 @@ function ApplicantDashbord(props) {
   //State variables
   const [requesterAddress, setRequesterAddress] = useState();
   const [selectedFile, setSelectedFile] = useState("");
-  const [datasetFile, setDatasetFile] = useState(undefined);
-  const [encryptedDataset, setEncryptedDataset] = useState(undefined);
-  const [count, setCount] = useState(0);
-  const [datasetList, setDatasetList] = useState([]);
   // Log into NFT.Storage via GitHub and create API token
   // Paste your NFT.Storage API key into the quotes:
-  const NFT_STORAGE_KEY = '<API Token>';
+  const NFT_STORAGE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweEM2NDI5Qjg3QjM0ODE2NDg2Y2I1N2U5MzQyQ0NCMjQyRTU4NjExRjciLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY3MDkyNjYxOTczMSwibmFtZSI6IklPU0wifQ.dTPIU8YNbQ-oUyfbxJUOaaGNycF3Y238yRkpnmU2pfI';
 
   const {setFileLink,uploadtoIPFS} = props
   const {pid} = useParams()
@@ -34,52 +30,17 @@ function ApplicantDashbord(props) {
         });
         const iexec_mod = new IExec({ ethProvider: window.ethereum });
         const balance = await iexec_mod.account.checkBalance(address[0]);
-        const count = await iexec_mod.dataset.countUserDatasets(address[0]);
+        
         setRequesterAddress(address[0]);
-        setCount(count.words[0]);
+        
       } else {
         alert("install metamask extension!!");
       }
     };
     connect();
   }, []);
-  //helper function to convert file to BufferArray
-  const toArrayBuffer = async (file) => {
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      setDatasetFile(reader.result);
-    };
-    reader.readAsArrayBuffer(file);
-  };
-  //helper function to encrypt ArrayBuffer
-  const encrypt = async (datasetFile) => {
-    const iexec_mod = new IExec({ ethProvider: window.ethereum });
-    // generate a key DO NOT leak this key
-    const encryptionKey = iexec_mod.dataset.generateEncryptionKey();
-    // encrypt
-    const encryptedDataset = await iexec_mod.dataset.encrypt(
-      datasetFile,
-      encryptionKey
-    );
-    setEncryptedDataset(encryptedDataset);
-  };
-  //helper function to deploy dataset
-  const deploy = async (encrypted_file) => {
-    const iexec_mod = new IExec({ ethProvider: window.ethereum });
-    const checksum = await iexec_mod.dataset.computeEncryptedFileChecksum(
-      encryptedDataset
-    );
+
   
-
-    const { address } = await iexec_mod.dataset.deployDataset({
-      owner: requesterAddress,
-      name: "testing.txt",
-      multiaddr: "/ipfs/QmXuLadkMiZRmLJRbsdQAEWwNnGcZLALJi4pn5FBA5oN5s",
-      checksum: checksum,
-    });
-    console.log("deployed at", address);
-  };
-
 
   async function uploadToIpfs(file) {
     const nftstorage = new NFTStorage({ token: NFT_STORAGE_KEY });
@@ -92,37 +53,15 @@ function ApplicantDashbord(props) {
     event.preventDefault();
     const uploadUrl = await uploadToIpfs(selectedFile);
     console.log("uploaded file to: " + uploadUrl);
-    // TODO: API call update
+    setFileLink(pid,uploadUrl)
   };
 
   //handle file change event
   const handleChange = (event) => {
     setSelectedFile(event.target.files[0]);
   };
-  //encrypt when dataset converted to array buffer
-  useEffect(() => {
-    if (datasetFile) encrypt(datasetFile);
-  }, [datasetFile]);
-  //deploy when ArrayBuffer encrypted
-  useEffect(() => {
-    if (encryptedDataset) deploy(encryptedDataset);
-  }, [encryptedDataset]);
-  //set Dataset list when count > 0
-  useEffect(() => {
-    const getDataset = async (userAddress, index) => {
-      const iexec_mod = new IExec({ ethProvider: window.ethereum });
-      const { dataset } = await iexec_mod.dataset.showUserDataset(
-        index,
-        userAddress
-      );
-      setDatasetList((current) => [...current, dataset]);
-    };
-    if (count > 0) {
-      for (let index = 0; index < count; index++) {
-        getDataset(requesterAddress, index);
-      }
-    }
-  }, [count]);
+  
+ 
 
   return (
     <Card className="m-3 p-3">

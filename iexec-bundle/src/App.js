@@ -64,11 +64,8 @@ const setTask = async (pid,tid) => {
 }
 const setFileLink = async(pid,cid) =>{
   console.log('setting file to process ' + pid)
-  let res = await axios({
-    method: 'post',
-    headers: { 'Content-Type': 'application/json'},
-    url: 'http://localhost:3000/data/process/'+pid+'/'+cid+'/update',
-   })
+  
+  let res = await axios.post('http://localhost:3000/data/process/'+pid+'/daddr/update',cid)
    return  res.data
 }
 const register = async(username) =>{
