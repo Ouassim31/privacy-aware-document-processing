@@ -1,6 +1,22 @@
 
 //imports
 
+import { useEffect, useState } from 'react';
+
+import NavBar from './navBar/NavBar';
+import LandlordDashboard from './landlordDashboard/landlordDashboard';
+import ApplicantDashbord from './applicantDashboard/applicantDashboard';
+import {create} from 'ipfs-http-client'
+
+import {
+  Navigate as Redirect,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
+import Homepage from './homepage/homepage';
+import axios from 'axios';
+import LoginAndRegister from './loginAndRegister/loginAndRegister';
 export const   { IExec} = require('iexec')
 const FileSaver = require('file-saver');
 const detectEthereumProvider= require('@metamask/detect-provider');
@@ -17,155 +33,107 @@ const connect = async () => {
     console.log('Please install MetaMask!');
   }
 }
-//console log balance
-export const getAccount = async () => {
-  //wallet address
-  
-  const requesterAddress = await window.ethereum.request({ method: 'eth_requestAccounts' });
-  const iexec_mod = new IExec({ ethProvider: window.ethereum})
-  const balance = await iexec_mod.account.checkBalance(requesterAddress[0]);
-  
-  console.log('Nano RLC staked:', balance.stake.toString());
-  console.log('Nano RLC locked:', balance.locked.toString());
+
+const fetchProcesses = async (landlordid) => {
+  console.log('fetching processes')
+  let res = await axios({
+    method: 'get',
+    headers: { 'Content-Type': 'application/json'},
+    url: 'http://localhost:3000/data/process/'+landlordid,
+   })
+
+  return res.data
 }
-//console log chain id
-export const getNetwork = async () => {
-  const iexec_mod = new IExec({ ethProvider: window.ethereum})
-  const { chainId, isNative } = await iexec_mod.network.getNetwork();
-  console.log(`working on chain ${chainId}, using native token: ${isNative}`); 
-  return { chainId, isNative };
-  
+const createProcess = async (lid,process) => {
+  console.log('creating process')
+  let res = await axios({
+    method: 'post',
+    headers: { 'Content-Type': 'application/json'},
+    url: 'http://localhost:3000/data/process/'+lid+'/create/',
+   })
+   return  res.data
 }
-//console log App object
-const getApp = async() => {
-  //app adress
-  const appAddress = "0x5e4017Bd35CbA7827e0Fa193F4B9F4f158FA254E"
-  const iexec_mod = new IExec({ ethProvider: window.ethereum})
-  const { app } = await iexec_mod.app.showApp(appAddress);
-  
-  console.log('app:', app);
+const setTask = async (pid,tid) => {
+  console.log('setting task to process ' + pid)
+  let res = await axios({
+    method: 'post',
+    headers: { 'Content-Type': 'application/json'},
+    url: 'http://localhost:3000/data/process/'+pid+'/'+tid+'/updatetask',
+   })
+   return  res.data
 }
-//console log requestorder
-const createRequestorder = async () => {
-  const iexec_mod = new IExec({ ethProvider: window.ethereum})
-  
-  const appAddress = "0x5e4017Bd35CbA7827e0Fa193F4B9F4f158FA254E"
-  const requesterAddress = await window.ethereum.request({ method: 'eth_requestAccounts' });
-  //fetch app from marketplace
-  const { count:app_count, orders:app_orders } = await iexec_mod.orderbook.fetchAppOrderbook(appAddress);
-  console.log('app orders')
-  console.log('best order:', app_orders[0]?.order);
-  console.log('total orders:', app_count);
-  
-  //fetch workerpool from marketplace
-  const { count:wp_count, orders:wp_orders }  = await (await iexec_mod.orderbook.fetchWorkerpoolOrderbook({category:0}));
-  console.log('workpool orders :')
-  console.log('best order:', wp_orders[0]?.order);
-  console.log('total orders:', wp_count);
-  //create and sign request order
-  const requestorderTemplate = await iexec_mod.order.createRequestorder({
-  
-    app: appAddress,
-    category: 0,
-    //iexec args
-    params: { iexec_args: '400 300'}
-   });
-   const signedrequestorder = await iexec_mod.order.signRequestorder(requestorderTemplate)
-   //match orders
-   const { dealid, txHash } = await iexec_mod.order.matchOrders({
-    apporder:app_orders[0]?.order,
-    workerpoolorder:wp_orders[0]?.order,
-    requestorder:signedrequestorder,
-  });
-  console.log(`created deal ${dealid} in tx ${txHash}`);
-  return dealid
+const setFileLink = async(pid,cid) =>{
+  console.log('setting file to process ' + pid)
+  let res = await axios({
+    method: 'post',
+    headers: { 'Content-Type': 'application/json'},
+    url: 'http://localhost:3000/data/process/'+pid+'/'+cid+'/update',
+   })
+   return  res.data
+}
+const register = async(username) =>{
+  console.log('registering a landlord ' + username)
+  let res = await axios({
+    method: 'post',
+    headers: { 'Content-Type': 'application/json'},
+    url: 'http://localhost:3000/data/landlord/'+username+'/create',
+   })
+   return  res.data
+}
+const login = async(username) =>{
+  console.log('logging in as landlord ' + username)
+  let res = await axios({
+    method: 'get',
+    headers: { 'Content-Type': 'application/json'},
+    url: 'http://localhost:3000/data/landlord/'+username,
+   })
    
-}
-//console log fetched worker pool
-const getWorkerpool = async () => {
-  const iexec_mod = new IExec({ ethProvider: window.ethereum})
-  const { count, orders } = await iexec_mod.orderbook.fetchWorkerpoolOrderbook({category:0});
-  console.log('best order:', orders[0]?.order);
-  console.log('total orders:', count);
-  return orders[0]?.order
-}
-//console log last deal of wallet owner
-const getMyLastDeal = async () => {
-  const iexec_mod = new IExec({ ethProvider: window.ethereum})
-  const requesterAddress = await window.ethereum.request({ method: 'eth_requestAccounts' });
-  const { deals, count } = await iexec_mod.deal.fetchRequesterDeals(requesterAddress[0]);
-  console.log('deals count:', count);
-  console.log('last deal:', deals[0]);
-  return deals[0].dealid
-}
-//console log last task of a given deal
-const getLastTask = async (dealId) => {
-  const iexec_mod = new IExec({ ethProvider: window.ethereum})
-  const taskId = await iexec_mod.deal.computeTaskId(dealId,0)
-  console.log('task id  is ',taskId)
-  return taskId
-
-}
-//get status of a given task
-const getStatus = async (taskId,dealId) => {
-
-  const iexec_mod = new IExec({ ethProvider: window.ethereum})
-  const taskObservable = await iexec_mod.task.obsTask(taskId,{dealid:dealId});
-  const unsubscribe = taskObservable.subscribe({
-    next: ({ message, task }) => console.log(message, task.statusName),
-    error: (e) => console.error(e),
-    complete: () => console.log('final state reached'),
-   });
-}
-//get last task status of the wallet owner
-const getMyLastTaskStatus = async () => {
-  const dealId = await getMyLastDeal()
-  const taskId = await  getLastTask(dealId)
-  getStatus(taskId,dealId)
-}
-//download result of a given task
-const getResult = async (taskId) => {
-  const iexec_mod = new IExec({ ethProvider: window.ethereum})
-  const response = await iexec_mod.task.fetchResults(taskId);
-  const binary = await response.blob();
-  
-  const task = await iexec_mod.task.show(
-    taskId,
-   );
-   console.log('downloading results')
-   console.log(task);
-   FileSaver.saveAs(binary, "results.zip");
-}
-//download result of my last task
-const getMyLastTaskResult = async () =>{
-  const dealId = await getMyLastDeal()
-  const taskId = await  getLastTask(dealId)
-  getResult(taskId,dealId)
+   localStorage.setItem("logged_user_username", username)
+   localStorage.setItem("logged_user_id", res.data)
+   
+   
+   return  res.data
 }
 
-
-
-
+const uploadtoIPFS = async (file) => {
+  const client = create({url:'http://127.0.0.1:5001'})
+  const { cid } = await client.add(file)
+  return cid.toString()
+}
 
 function App() {
+
+const TestcurrentLandlord = {id : '639482f617bf5b744e5a5e71', username:'bill'}
+const [currentLandlord,setCurrentLandlord] = useState({id:localStorage.getItem("logged_user_id"), username: localStorage.getItem("logged_user_username")})
+
+console.log(currentLandlord)
+
+useEffect(()=>{
+  if (localStorage.getItem("logged_user_id")){
+  setCurrentLandlord({id:localStorage.getItem("logged_user_id"), username: localStorage.getItem("logged_user_username")})
+  }
+  else {
+    setCurrentLandlord(null)
+  }
   
+},[localStorage.getItem("logged_user_id")])
+
+
+
   return (
     
     <div className="App">
-       
-      <button onClick={connect}>connect</button>
-      <button onClick={getNetwork}>getNetwork</button>
-      <button onClick={getAccount}>getAccount</button>
-      <button onClick={getApp}>getApp</button>
-      <button onClick={getWorkerpool}>fetch workerpool from marketplace</button>
-      <button onClick={createRequestorder}>create request order</button>
-      <button onClick={getMyLastDeal}>get my deals</button>
-      <button onClick={getLastTask}>getTask</button>
-      <button onClick={getMyLastTaskStatus}>get last Task status</button>
-      <button onClick={getMyLastTaskResult}>get last Task result</button>
+           
+       {currentLandlord && <NavBar/>}
+      <Routes>
       
-
-
+      <Route  path='/landlord' element={localStorage.getItem("logged_user_id") ? <LandlordDashboard setTask = {setTask} createProcess={()=>createProcess(currentLandlord.id) } fetchProcesses={()=>fetchProcesses(currentLandlord.id)} landlord={currentLandlord}/> : <Redirect to="/login-or-register"/>}/>
+      <Route exact path='/' element={localStorage.getItem("logged_user_id") ? <Homepage landlord={currentLandlord}/> : <Redirect to="/login-or-register"/>} />
+      <Route  path='/applicant/:pid' element={<ApplicantDashbord setFileLink = {setFileLink} uploadtoIPFS={uploadtoIPFS}/> } />
+      <Route  path='/login-or-register' element={<LoginAndRegister login={login} register={register}/>} />
+      </Routes>
+      
+      
       
     </div>
   );

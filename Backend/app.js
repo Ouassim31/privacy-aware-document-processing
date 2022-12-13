@@ -3,7 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
+const cors = require('cors')
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 const dataRouter = require('./routes/data'); //Import routes for data
@@ -12,6 +12,7 @@ var app = express();
 
 // Set up mongoose connection
 var mongoose = require('mongoose');
+mongoose.set('strictQuery', true);
 var dev_db_url = 'mongodb://127.0.0.1:27017';
 var mongoDB = process.env.MONGODB_URI || dev_db_url;
 mongoose.connect(mongoDB, {useNewUrlParser: true, useUnifiedTopology: true});
@@ -22,7 +23,9 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
-
+app.use(cors({
+    origin: ['http://localhost:3000/','*']
+}));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

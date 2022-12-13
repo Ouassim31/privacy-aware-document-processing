@@ -2,12 +2,13 @@
 __pycache__/
 *.py[cod]
 *$py.class
-#node_modules
+#node modules
 */node_modules
 */package-lock.json
 # C extensions
 *.so
-
+# node_modules
+*/node_modules
 # Distribution / packaging
 .Python
 build/

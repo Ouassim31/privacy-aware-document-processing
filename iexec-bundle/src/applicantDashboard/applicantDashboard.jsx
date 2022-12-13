@@ -1,13 +1,16 @@
 import Button from "react-bootstrap/Button";
 
-import Table from "react-bootstrap/Table";
+import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 import { useEffect } from "react";
 import { useState } from "react";
+
 import { NFTStorage, File } from 'nft.storage'
+import { useParams } from "react-router-dom";
+import { Container } from "react-bootstrap";
 
 export const { IExec } = require("iexec");
-function ApplicantDashbord() {
+function ApplicantDashbord(props) {
   //State variables
   const [requesterAddress, setRequesterAddress] = useState();
   const [selectedFile, setSelectedFile] = useState("");
@@ -15,12 +18,13 @@ function ApplicantDashbord() {
   const [encryptedDataset, setEncryptedDataset] = useState(undefined);
   const [count, setCount] = useState(0);
   const [datasetList, setDatasetList] = useState([]);
-
   // Log into NFT.Storage via GitHub and create API token
   // Paste your NFT.Storage API key into the quotes:
   const NFT_STORAGE_KEY = '<API Token>';
 
-
+  const {setFileLink,uploadtoIPFS} = props
+  const {pid} = useParams()
+  
   //init requester address and datasets count
   useEffect(() => {
     const connect = async () => {
@@ -65,6 +69,7 @@ function ApplicantDashbord() {
     const checksum = await iexec_mod.dataset.computeEncryptedFileChecksum(
       encryptedDataset
     );
+  
 
     const { address } = await iexec_mod.dataset.deployDataset({
       owner: requesterAddress,
@@ -85,12 +90,9 @@ function ApplicantDashbord() {
   //handle file submit event
   const handleSubmit = async (event) => {
     event.preventDefault();
-    toArrayBuffer(selectedFile);
     const uploadUrl = await uploadToIpfs(selectedFile);
     console.log("uploaded file to: " + uploadUrl);
     // TODO: API call update
-    
-    //you_function(selectFile)
   };
 
   //handle file change event
@@ -123,12 +125,13 @@ function ApplicantDashbord() {
   }, [count]);
 
   return (
-    <div>
-      <p>Welcome {requesterAddress}</p>
+    <Card className="m-3 p-3">
+      <h3>Process id : {pid}</h3>
+    
       <Form onSubmit={handleSubmit}>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>File</Form.Label>
-          <Form.Control onChange={handleChange} type="file" />
+          <Form.Control className="w-100" onChange={handleChange} type="file"  />
           <Form.Text className="text-muted">
             We'll never share your data with anyone else.
           </Form.Text>
@@ -137,32 +140,7 @@ function ApplicantDashbord() {
           Submit
         </Button>
       </Form>
-      <p>Uploaded Datasets : {count}</p>
-      <Table responsive striped bordered hover>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>datasetChecksum</th>
-            <th>datasetMultiaddr</th>
-            <th>datasetName</th>
-            <th>owner</th>
-            <th>registry</th>
-          </tr>
-        </thead>
-        <tbody>
-          {datasetList.map((dataset, index) => (
-            <tr key={"dataset-" + index}>
-              <td>{index}</td>
-              <td>{dataset.datasetChecksum}</td>
-              <td>{dataset.datasetMultiaddr}</td>
-              <td>{dataset.datasetName}</td>
-              <td>{dataset.owner}</td>
-              <td>{dataset.registry}</td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-    </div>
+    </Card>
   );
 }
 export default ApplicantDashbord;
