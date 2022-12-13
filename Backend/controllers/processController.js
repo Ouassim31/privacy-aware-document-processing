@@ -18,10 +18,13 @@ exports.process_create_post = function (req, res, next) {
 
 // Handle process update on POST with process _id and download_address as arguments
 exports.process_update_post = function (req, res, next) {
+    
     res.set('Access-Control-Allow-Origin', '*');
+    
     Process.findByIdAndUpdate(
         req.params.pid,
-        { download_address: req.params.daddr, process_state: 2 },
+        //TODO change Object.keys(req.body)[0] to a convienet way to get to request body
+        { download_address: Object.keys(req.body)[0], process_state: 2 },
         function (err, process) {
             // Do something if there is an err.
             if (err) {
