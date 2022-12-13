@@ -23,8 +23,8 @@ function NavBar(props) {
             <NavLink className="nav-link active"  to="/landlord">Dashboard</NavLink>
             </Nav.Item>
             <Nav.Item className='d-flex flex-row'>
-            <NavLink className="nav-link active" to="/login-or-register">Login</NavLink>
-            <NavLink  className="me-3 nav-link active" to="login-or-register" as="button" onClick={logout}>Logout</NavLink>
+            {!localStorage.getItem('logged_user_id') ? <NavLink className="nav-link active" to="/login-or-register">Login</NavLink> :
+            <NavLink  className="me-3 nav-link active" to="login-or-register" as="button" onClick={logout}>Logout</NavLink>}
             <span className="ms-3 text-center align-self-center">Welcome, {localStorage.getItem('logged_user_username')}</span>
             </Nav.Item>
             

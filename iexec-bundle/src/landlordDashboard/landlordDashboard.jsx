@@ -189,6 +189,7 @@ function LandlordDashboard(props) {
   return (
     <Card className="mb-3 p-2">
       <Container fluid className="d-inline-flex align-items-center gap-2">
+      <Button className="h-50" variant="primary" onClick={handleIexecArgsSubmit}>Add Process</Button>
       <DropdownButton
         onSelect={handleAppSelect}
         variant="success"
@@ -204,7 +205,6 @@ function LandlordDashboard(props) {
         </Dropdown.Item>
         <Dropdown.Item disabled>Tee App With File</Dropdown.Item>
       </DropdownButton>
-      {appAddress && <Button className="h-50" variant="primary" onClick={handleIexecArgsSubmit}>Add Process</Button>}
       </Container>
       <Card.Body>
         <Container className="d-flex flex-column align-items-center">
@@ -243,9 +243,7 @@ function LandlordDashboard(props) {
                     type="text"
                   />
                 </FormGroup>}
-                <Button variant="primary" type="submit">
-                  Add Process
-                </Button>
+                
               </Container>
             </Form>
           </>
