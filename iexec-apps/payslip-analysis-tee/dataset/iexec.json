@@ -1,0 +1,43 @@
+{
+  "description": "My iExec ressource description, must be at least 150 chars long in order to pass the validation checks. Describe your application, dataset or workerpool to your users",
+  "license": "MIT",
+  "author": "?",
+  "social": {
+    "website": "?",
+    "github": "?"
+  },
+  "logo": "logo.png",
+  "dapps": [
+    {
+      "name": "Recomanded-dapp-for-MyDataset",
+      "addresses": {
+        "5": "0x0000000000000000000000000000000000000000"
+      },
+      "buyConf": {
+        "params": {
+          "iexec_args": ""
+        },
+        "tag": "0x0000000000000000000000000000000000000000000000000000000000000000",
+        "trust": "0",
+        "callback": "0x0000000000000000000000000000000000000000"
+      }
+    }
+  ],
+  "dataset": {
+    "owner": "0x127bc6a1860d66438D645C54585E2fFD10Ea5289",
+    "name": "payslip",
+    "multiaddr": "https://bafkreielxpqxklccixth3lzztkjxy7sjpezbmzijq7hxswyufgi7xu6tv4.ipfs.nftstorage.link",
+    "checksum": "0x8bbbe1752c4245e67daf399a937c7e49793216650987cf795b142991fbd3d3af"
+  },
+  "order": {
+    "datasetorder": {
+      "dataset": "0xD5Ae05607730f9590C06f71187B1980c74C8f1Bb",
+      "datasetprice": "0",
+      "volume": "1000000",
+      "tag": ["tee"],
+      "apprestrict": "0x0000000000000000000000000000000000000000",
+      "workerpoolrestrict": "0x0000000000000000000000000000000000000000",
+      "requesterrestrict": "0x0000000000000000000000000000000000000000"
+    }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "description": "TEE App that gets a payslip as encrypted dataset and a rent value as requester secret. The result specifies if the income from the payslip is larger than 3 times the rent.",
+  "license": "MIT",
+  "author": "Christopher Schahn",
+  "social": {
+    "website": "?",
+    "github": "?"
+  },
+  "logo": "logo.png",
+  "buyConf": {
+    "params": {
+      "iexec_args": ""
+    },
+    "tag": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "trust": "0",
+    "callback": "0x0000000000000000000000000000000000000000"
+  },
+  "app": {
+    "owner": "0x127bc6a1860d66438D645C54585E2fFD10Ea5289",
+    "name": "payslip-analysis-tee",
+    "type": "DOCKER",
+    "multiaddr": "docker.io/chrissc96/payslip-analysis-tee:1.0.1",
+    "checksum": "0x579eefa783164bf424ded580cb1cc50abb217192ec460c511d176ea94772cb50",
+    "mrenclave": {
+      "provider": "SCONE",
+      "version": "v5",
+      "entrypoint": "python /app/app.py",
+      "heapSize": 1073741824,
+      "fingerprint": "15c5026aeea48024fb95676d0a7f3c1b9aff865389ec10a4390a72aff018326c"
+    }
+  },
+  "order": {
+    "apporder": {
+      "app": "0x6Ae714B60eCF85F232760E33986dE0957006c8ed",
+      "appprice": "0",
+      "volume": "1000000",
+      "tag": ["tee"],
+      "datasetrestrict": "0x0000000000000000000000000000000000000000",
+      "workerpoolrestrict": "0x0000000000000000000000000000000000000000",
+      "requesterrestrict": "0x0000000000000000000000000000000000000000"
+    }
+  }
+}
