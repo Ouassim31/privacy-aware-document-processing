@@ -7,7 +7,7 @@ import NavBar from './navBar/NavBar';
 import LandlordDashboard from './landlordDashboard/landlordDashboard';
 import ApplicantDashbord from './applicantDashboard/applicantDashboard';
 import {create} from 'ipfs-http-client'
-
+import { useAuth0 } from "@auth0/auth0-react";
 import {
   Navigate as Redirect,
   Routes,
@@ -99,21 +99,24 @@ const uploadtoIPFS = async (file) => {
 }
 
 function App() {
-
+  const {user, isAuthenticated, isLoading} = useAuth0();
 const TestcurrentLandlord = {id : '639482f617bf5b744e5a5e71', username:'bill'}
-const [currentLandlord,setCurrentLandlord] = useState({id:localStorage.getItem("logged_user_id"), username: localStorage.getItem("logged_user_username")})
+const [currentUser,setCurrentUser] = useState()
 
-console.log(currentLandlord)
 
-useEffect(()=>{
-  if (localStorage.getItem("logged_user_id")){
-  setCurrentLandlord({id:localStorage.getItem("logged_user_id"), username: localStorage.getItem("logged_user_username")})
+useEffect(()=>{ 
+  if(!isLoading){
+    //call api get landlord by google_id
+    const landlord = {}
+    setCurrentUser({
+      ...user,
+      ...landlord 
+    })
+    console.log(currentUser)
   }
-  else {
-    setCurrentLandlord(null)
-  }
-  
-},[localStorage.getItem("logged_user_id")])
+},[user])
+
+
 
 
 
@@ -121,13 +124,19 @@ useEffect(()=>{
     
     <div className="App">
            
-       {currentLandlord && <NavBar/>}
+       {currentUser && <NavBar user={currentUser}/>}
       <Routes>
       
-      <Route  path='/landlord' element={localStorage.getItem("logged_user_id") ? <LandlordDashboard setTask = {setTask} createProcess={()=>createProcess(currentLandlord.id) } fetchProcesses={()=>fetchProcesses(currentLandlord.id)} landlord={currentLandlord}/> : <Redirect to="/login-or-register"/>}/>
-      <Route exact path='/' element={localStorage.getItem("logged_user_id") ? <Homepage landlord={currentLandlord}/> : <Redirect to="/login-or-register"/>} />
-      <Route  path='/applicant/:pid' element={<ApplicantDashbord setFileLink = {setFileLink} uploadtoIPFS={uploadtoIPFS}/> } />
-      <Route  path='/login-or-register' element={<LoginAndRegister login={login} register={register}/>} />
+      {currentUser &&
+      <>
+      <Route exact path='/'  element={currentUser ? <Homepage user={currentUser}/> : <Redirect to='/login-or-register'/> }/>
+      <Route exact path='landlord' element={ currentUser ? <LandlordDashboard setTask = {setTask} createProcess={()=>createProcess(currentUser.id) } fetchProcesses={()=>fetchProcesses(currentUser.id)} currentLandlord ={currentUser}/> : <Redirect to='/login-or-register'/>}/>
+      <Route exact path='/applicant/:pid' element={currentUser ? <ApplicantDashbord currentUser={user} setFileLink = {setFileLink} uploadtoIPFS={uploadtoIPFS}/> : <Redirect to='/login-or-register'/>} />
+      </>
+       }
+      
+       
+      <Route exact path='/login-or-register'element= {currentUser ? <LoginAndRegister/> : <Redirect to='/'/>} /> 
       </Routes>
       
       

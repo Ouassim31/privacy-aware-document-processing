@@ -1,16 +1,12 @@
 import Container from 'react-bootstrap/Container';
-import {Button} from 'bootstrap';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
 import { NavLink } from 'react-router-dom';
-import NavbarCollapse from 'react-bootstrap/esm/NavbarCollapse';
-
+import { useAuth0 } from "@auth0/auth0-react";
 function NavBar(props) {
-  const logout = () => {
-    localStorage.clear()
-    window.location.replace('/login-or-register')
-  }
+  const {user} = props
+  const { logout } = useAuth0();
+  
   return (
     <Navbar bg="light" expand="lg">
       <Container>
@@ -23,9 +19,8 @@ function NavBar(props) {
             <NavLink className="nav-link active"  to="/landlord">Dashboard</NavLink>
             </Nav.Item>
             <Nav.Item className='d-flex flex-row'>
-            {!localStorage.getItem('logged_user_id') ? <NavLink className="nav-link active" to="/login-or-register">Login</NavLink> :
-            <NavLink  className="me-3 nav-link active" to="login-or-register" as="button" onClick={logout}>Logout</NavLink>}
-            <span className="ms-3 text-center align-self-center">Welcome, {localStorage.getItem('logged_user_username')}</span>
+            <span className="ms-3 text-center align-self-center">Welcome, {user.nickname}</span>
+            <NavLink  className="me-3 nav-link active"  as="button" onClick={() => logout({ returnTo: window.location.origin + '/login-or-register' })}>Logout</NavLink>
             </Nav.Item>
             
             

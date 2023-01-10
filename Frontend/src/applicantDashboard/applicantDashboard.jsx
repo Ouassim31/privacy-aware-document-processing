@@ -18,7 +18,7 @@ function ApplicantDashbord(props) {
   // Paste your NFT.Storage API key into the quotes:
   const NFT_STORAGE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweEM2NDI5Qjg3QjM0ODE2NDg2Y2I1N2U5MzQyQ0NCMjQyRTU4NjExRjciLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY3MDkyNjYxOTczMSwibmFtZSI6IklPU0wifQ.dTPIU8YNbQ-oUyfbxJUOaaGNycF3Y238yRkpnmU2pfI';
 
-  const {setFileLink,uploadtoIPFS} = props
+  const {currentUser,setFileLink,uploadtoIPFS} = props
   const {pid} = useParams()
   
   //init requester address and datasets count
