@@ -54,17 +54,13 @@ function ApplicantDashbord(props) {
     });
 
     const iexec_mod = new IExec({ ethProvider: window.ethereum });
-    
-    // generate a key
     const encryptionKey = iexec_mod.dataset.generateEncryptionKey();
-    
-    // encrypt
     const encryptedDataset = await iexec_mod.dataset.encrypt(
       fileBytes,
       encryptionKey
     );
 
-    return [new Blob([encryptedDataset]), encryptionKey];
+    return [encryptedDataset, encryptionKey];
   };
 
 
@@ -78,7 +74,10 @@ function ApplicantDashbord(props) {
 
 
   async function deployEncryptedDataset(encryptedDataset, ipfsAddress) {
-    const iexec_mod = new IExec({ ethProvider: window.ethereum });
+    const configArgs = { ethProvider: window.ethereum,  chainId : 134};
+    const configOptions = { smsURL: 'https://v7.sms.debug-tee-services.bellecour.iex.ec' };
+    const iexec_mod = new IExec(configArgs, configOptions);
+
     const checksum = await iexec_mod.dataset.computeEncryptedFileChecksum(
       encryptedDataset
     );
@@ -95,46 +94,59 @@ function ApplicantDashbord(props) {
   };
 
 
-  async function publishDataset(address) {
-    // TODO
-  }
-
-  async function signDatasetOrder(address) {
-    // TODO
-  }
-
   async function pushDatasetSecretToSMS(datasetAddress, encryptionKey) {
-    const iexec_mod = new IExec({ ethProvider: window.ethereum });
-    const pushed = await iexec_mod.dataset.pushDatasetSecret(datasetAddress, encryptionKey);
+    const configArgs = { ethProvider: window.ethereum,  chainId : 134};
+    const configOptions = { smsURL: 'https://v7.sms.debug-tee-services.bellecour.iex.ec' };
+    const iexec = new IExec(configArgs, configOptions);
+    const pushed = await iexec.dataset.pushDatasetSecret(datasetAddress, encryptionKey);
     console.log('secret pushed:', pushed);
   }
 
 
-  async function createDataset(file) {
-    let encryptedKeyValue = await encryptDataset(file);
-    let encryptedDataset = encryptedKeyValue.at(0);
-    const encryptionKey = encryptedKeyValue.at(1);
-    const ipfsUrl = await uploadToIpfs(encryptedDataset);
-    // const datasetAddress = deployEncryptedDataset(encryptedDataset, ipfsAddress);
-    // pushDatasetSecretToSMS(datasetAddress, encryptionKey);
+  async function publishDataset(datasetAddress) {
+    const configArgs = { ethProvider: window.ethereum,  chainId : 134};
+    const configOptions = { smsURL: 'https://v7.sms.debug-tee-services.bellecour.iex.ec' };
+    const iexec = new IExec(configArgs, configOptions);
+
+    const signedOrder = await iexec.order.signDatasetorder(
+      await iexec.order.createDatasetorder({
+        dataset: datasetAddress,
+        datasetprice: "0",
+        volume: "1000",
+        tag: ["tee"]
+      })
+    );
+
+    const orderHash = await iexec.order.publishDatasetorder(signedOrder);
+    return orderHash;
   }
 
-  //handle file submit event
+
+  async function handlePdfDocument(file) {
+    const encryptedKeyValue = await encryptDataset(file);
+    const encryptedDataset = encryptedKeyValue.at(0);
+    const encryptionKey = encryptedKeyValue.at(1);
+    const ipfsUrl = await uploadToIpfs(new Blob([encryptedDataset]));
+    const datasetAddress = await deployEncryptedDataset(encryptedDataset, ipfsUrl);
+    await pushDatasetSecretToSMS(datasetAddress, encryptionKey);
+    await publishDataset(datasetAddress);
+    return datasetAddress;
+  }
+
+
+  // handle file submit event
   const handleSubmit = async (event) => {
     event.preventDefault();
-    createDataset(selectedFile);
-    // const uploadUrl = await uploadToIpfs(selectedFile);
-    // console.log("uploaded file to: " + uploadUrl);
-    // setFileLink(pid,uploadUrl)
+    const datasetAddress = await handlePdfDocument(selectedFile);
+    setFileLink(pid, datasetAddress);
   };
 
-  //handle file change event
+  // handle file change event
   const handleChange = (event) => {
     setSelectedFile(event.target.files[0]);
   };
   
  
-
   return (
     <Card className="m-3 p-3">
       <h3>Process id : {pid}</h3>
