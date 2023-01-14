@@ -26,9 +26,6 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 // Enable all cors requests
 app.use(cors())
 
-// Eanble logger middleware in 'dev' format
-app.use(logger('dev'));
-
 // Enable parsing middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
