@@ -9,6 +9,9 @@ const process_controller = require("../controllers/processController");
 // POST: Create process
 router.post("/", process_controller.process_create);
 
+// DELETE: Delete process
+router.delete("/:pid", process_controller.process_delete);
+
 // POST: Update description
 router.post("/:pid/update/description", process_controller.process_update_description);
 
@@ -16,10 +19,7 @@ router.post("/:pid/update/description", process_controller.process_update_descri
 router.post("/:pid/update/applicant_dataset", process_controller.process_update_applicant_dataset);
 
 // POST: Set iExec task-id
-router.post("/:pid/update/task", process_controller.process_update_post);
-
-// DELETE: Delete process
-router.delete("/:pid", process_controller.process_delete);
+router.post("/:pid/update/task", process_controller.process_update_task);
 
 // GET: Get processes by applicant
 router.get("/applicant?applicant=:applicant", process_controller.process_get_applicant);
