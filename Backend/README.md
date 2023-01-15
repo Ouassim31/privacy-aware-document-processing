@@ -1,56 +1,50 @@
-# Backend Setup
+## Backend Setup
 
-The backend was created using the following commands
-```bash
-npx express-generator Backend
-npm init
-npm install --save-dev nodemon
-npm install mongoose
-npm install async
-```
-
-To load the dependencies (listed in package.json file) in your local environment use
+# Install dependencies 
 ```bash
 npm install
 ```
+# Install MongoDB
+https://www.mongodb.com/docs/manual/administration/install-community/
 
-A MongoDB database needs to be installed locally: https://www.mongodb.com/docs/manual/administration/install-community/
-
-To start the server use
+# Start Server
 ```bash
 npm start
 ```
 
 ## API Endpoints
 
-In order to test the endpoints make sure to run a MongoDB database locally.
+In order to test the endpoints make sure database is running.
 
-Then start the server using
-```bash
-npm start
-```
+# POST: Create process 
+http://localhost:3000/process
 
-or in debug mode using
-```bash
-DEBUG=Backend:* npm start
-```
+In request body: landlord_id (required) and description (optional)
 
-Now you can test the following endpoints:
+# DELETE: Delete process
+http://localhost:3000/process/:pid
 
-POST
-http://localhost:3000/data/landlord/:username/create
+# POST: Update description
+http://localhost:3000/process/:pid/update/description
 
-GET
-http://localhost:3000/data/landlord/:username
+In request body: description
 
-POST
-http://localhost:3000/data/process/:lid/create
+# POST: Set applicant and dataset
+http://localhost:3000/process/:pid/update/applicant_dataset
 
-POST
-http://localhost:3000/data/process/:pid/:daddr/update
+In request body: applicant-id and dataset-address
 
-POST
-http://localhost:3000/data/process/:pid/:tid/updatetask
+# POST: Set iExec task-id
+http://localhost:3000/process/:pid/update/task
 
-GET
-http://localhost:3000/data/process/:lid
+In request body: task_id
+
+# GET: Get processes by applicant
+http://localhost:3000/process/by_applicant
+
+Query parameters: ?applicant=applicant-id
+
+# GET: Get processes by landlord
+http://localhost:3000/process/by_landlord
+
+Query parameters: ?landlord=landlord-id

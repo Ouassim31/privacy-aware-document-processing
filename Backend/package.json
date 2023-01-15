@@ -14,6 +14,7 @@
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
     "mongoose": "^6.7.5",
+    "mongoose-type-email": "^1.1.2",
     "morgan": "~1.9.1"
   },
   "description": "Backend for IoSL_PA_Processing project",
