@@ -124,7 +124,7 @@ useEffect(()=>{
        {currentLandlord && <NavBar/>}
       <Routes>
       
-      <Route  path='/landlord' element={localStorage.getItem("logged_user_id") ? <LandlordDashboard setTask = {setTask} createProcess={()=>createProcess(currentLandlord.id) } fetchProcesses={()=>fetchProcesses(currentLandlord.id)} landlord={currentLandlord}/> : <Redirect to="/login-or-register"/>}/>
+      <Route  path='/landlord' element={ <LandlordDashboard setTask = {setTask} createProcess={()=>createProcess(currentLandlord.id) } fetchProcesses={()=>fetchProcesses(currentLandlord.id)} landlord={currentLandlord}/>}/>
       <Route exact path='/' element={localStorage.getItem("logged_user_id") ? <Homepage landlord={currentLandlord}/> : <Redirect to="/login-or-register"/>} />
       <Route  path='/applicant/:pid' element={<ApplicantDashbord setFileLink = {setFileLink} uploadtoIPFS={uploadtoIPFS}/> } />
       <Route  path='/login-or-register' element={<LoginAndRegister login={login} register={register}/>} />
