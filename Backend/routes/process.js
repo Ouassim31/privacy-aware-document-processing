@@ -22,9 +22,9 @@ router.post("/:pid/update/applicant_dataset", process_controller.process_update_
 router.post("/:pid/update/task", process_controller.process_update_task);
 
 // GET: Get processes by applicant
-router.get("/applicant?applicant=:applicant", process_controller.process_get_applicant);
+router.get("/by_applicant", process_controller.process_get_applicant);
 
 // GET: Get processes by landlord
-router.get("/landlord?landlord=:landlord", process_controller.process_get_landlord);
+router.get("/by_landlord", process_controller.process_get_landlord);
 
 module.exports = router;

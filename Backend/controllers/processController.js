@@ -3,12 +3,12 @@ const Process = require("../models/process");
 // CREATE PROCESS 
 exports.process_create = (req, res, next) => {
     Process.create(
-        { created_on: Date.now() },
+        { created_on: Date.now(), landlord_id: Object.values(req.body)[0], description: Object.values(req.body)[1] },
         (err, process) => {
             // If error, then log and pass to error handling middleware
             if (err) {
                 console.log(`error ${err.message}`)
-                const error = new Error('Creating new object failed');
+                const error = new Error(`${err.message}`);
                 error.status = 500;
                 next(error);
                 return
@@ -27,7 +27,7 @@ exports.process_delete = (req, res, next) => {
             // If error, then log and pass to error handling middleware
             if (err) {
                 console.log(`error ${err.message}`)
-                const error = new Error('Deleting object failed');
+                const error = new Error(`${err.message}`);
                 error.status = 404;
                 next(error);
                 return
@@ -42,12 +42,12 @@ exports.process_delete = (req, res, next) => {
 exports.process_update_description = (req, res, next) => {
     Process.findByIdAndUpdate(
         req.params.pid,
-        { description: Object.keys(req.body)[0] },
+        { description: Object.values(req.body)[0] },
         (err, process) => {
             // If error, then log and pass to error handling middleware
             if (err) {
                 console.log(`error ${err.message}`)
-                const error = new Error('Updating description failed');
+                const error = new Error(`${err.message}`);
                 error.status = 500;
                 next(error);
                 return
@@ -62,12 +62,12 @@ exports.process_update_description = (req, res, next) => {
 exports.process_update_applicant_dataset = (req, res, next) => {
     Process.findByIdAndUpdate(
         req.params.pid,
-        { applicant_id: Object.keys(req.body)[0], dataset_address: Object.keys(req.body)[1], process_state: 2 },
+        { applicant_id: Object.values(req.body)[0], dataset_address: Object.values(req.body)[1], process_state: 2 },
         (err, process) => {
             // If error, then log and pass to error handling middleware
             if (err) {
                 console.log(`error ${err.message}`)
-                const error = new Error('Setting landlord and dataset failed');
+                const error = new Error(`${err.message}`);
                 error.status = 500;
                 next(error);
                 return
@@ -82,12 +82,12 @@ exports.process_update_applicant_dataset = (req, res, next) => {
 exports.process_update_task = (req, res, next) => {
     Process.findByIdAndUpdate(
         req.params.pid,
-        { task_id: Object.keys(req.body)[0], process_state: 3 },
+        { task_id: Object.values(req.body)[0], process_state: 3 },
         (err, process) => {
             // If error, then log and pass to error handling middleware
             if (err) {
                 console.log(`error ${err.message}`)
-                const error = new Error('Setting task failed');
+                const error = new Error(`${err.message}`);
                 error.status = 500;
                 next(error);
                 return
@@ -101,12 +101,12 @@ exports.process_update_task = (req, res, next) => {
 // GET PROCESSES BY APPLICANT
 exports.process_get_applicant = (req, res, next) => {
     Process.find(
-        { applicant_id: req.params.applicant },
+        { applicant_id: req.query.applicant },
         (err, process) => {
             // If error, then log and pass to error handling middleware
             if (err) {
                 console.log(`error ${err.message}`)
-                const error = new Error('Fetching processes by applicant failed');
+                const error = new Error(`${err.message}`);
                 error.status = 400;
                 next(error);
                 return
@@ -120,12 +120,12 @@ exports.process_get_applicant = (req, res, next) => {
 // GET PROCESSES BY LANDLORD
 exports.process_get_landlord = (req, res, next) => {
     Process.find(
-        { landlord_id: req.params.landlord },
+        { landlord_id: req.query.landlord },
         (err, process) => {
             // If error, then log and pass to error handling middleware
             if (err) {
                 console.log(`error ${err.message}`)
-                const error = new Error('Fetching processes by landlord failed');
+                const error = new Error(`${err.message}`);
                 error.status = 400;
                 next(error);
                 return
