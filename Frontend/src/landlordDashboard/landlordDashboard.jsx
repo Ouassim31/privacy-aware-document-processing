@@ -9,8 +9,8 @@ import {
   Container,
 } from "react-bootstrap";
 import FileSaver from "file-saver";
-
 import { useEffect, useState, useRef } from "react";
+import {v4 as uuidv4} from 'uuid';
 
 export const { IExec } = require("iexec");
 
@@ -73,14 +73,26 @@ function LandlordDashboard(props) {
     console.log(`created deal ${dealid} in tx ${txHash}`);
     return dealid;
   };
+
+  const pushRentAsSecret = async (rent) => {
+    const configArgs = { ethProvider: window.ethereum,  chainId : 134};
+    const configOptions = { smsURL: 'https://v7.sms.debug-tee-services.bellecour.iex.ec' };
+    const iexec = new IExec(configArgs, configOptions);
+    const secretName = "rent-" + uuidv4();
+    const { isPushed } = await iexec.secrets.pushRequesterSecret(secretName, rent);
+    console.log('pushed secret ' + secretName + ':', isPushed);
+    return secretName;
+  }
+
   /**
    *
    * EVENT HANDLING
    *
    */
   const handleIexecArgsChange = () => {
+    pushRentAsSecret("350");
     if (rentRef.current.value  && appAddress == "0x5e4017Bd35CbA7827e0Fa193F4B9F4f158FA254E") {
-      
+
         setIexecParams({
           iexec_args: rentRef.current.value + " " + incomeRef.current.value,
         });
