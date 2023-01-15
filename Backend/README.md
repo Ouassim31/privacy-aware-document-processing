@@ -1,6 +1,6 @@
 # Backend Setup
 
-### Install dependencies 
+### Install Dependencies 
 ```bash
 npm install
 ```
@@ -12,7 +12,7 @@ https://www.mongodb.com/docs/manual/administration/install-community/
 npm start
 ```
 
-# API Endpoints
+# Endpoints
 
 - In order to test the endpoints make sure the database is running
 - On local host access via: http://localhost:3000
