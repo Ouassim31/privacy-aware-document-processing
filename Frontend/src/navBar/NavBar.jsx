@@ -16,7 +16,8 @@ function NavBar(props) {
           <Nav className="me-auto w-100 d-flex justify-content-between">  
             <Nav.Item className='d-flex flex-row'>
             <NavLink className="nav-link active" to="/" >Home</NavLink>
-            <NavLink className="nav-link active"  to="/landlord">Dashboard</NavLink>
+            <NavLink className="nav-link active"  to="/landlord">Landlord</NavLink>
+            <NavLink className="nav-link active"  to="/applicant">Applicant</NavLink>
             </Nav.Item>
             <Nav.Item className='d-flex flex-row'>
             <span className="ms-3 text-center align-self-center">Welcome, {user.nickname}</span>

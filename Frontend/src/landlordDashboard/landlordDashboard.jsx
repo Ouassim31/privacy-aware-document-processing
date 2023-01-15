@@ -186,7 +186,9 @@ function LandlordDashboard(props) {
     app_name = "Non TEE App using file";
 
   return (
+     processList.length > 0 ?
     <Card className="mb-3 p-2">
+      
       <Container fluid className="d-inline-flex align-items-center gap-2">
       <Button className="h-50" variant="primary" onClick={handleIexecArgsSubmit}>Add Process</Button>
       <DropdownButton
@@ -327,7 +329,10 @@ function LandlordDashboard(props) {
         </Table>
       </Card.Body>
     </Card>
-  );
+  :
+  <Card className="mb-3 p-2">
+    No Processes available ..
+  </Card>);
 }
 
 export default LandlordDashboard;
