@@ -90,7 +90,6 @@ function LandlordDashboard(props) {
    *
    */
   const handleIexecArgsChange = () => {
-    pushRentAsSecret("350");
     if (rentRef.current.value  && appAddress == "0x5e4017Bd35CbA7827e0Fa193F4B9F4f158FA254E") {
 
         setIexecParams({
