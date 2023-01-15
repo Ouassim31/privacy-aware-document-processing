@@ -14,9 +14,9 @@ npm start
 
 # API Endpoints
 
-In order to test the endpoints make sure the database is running.
-
-On local host access via: http://localhost:3000
+- In order to test the endpoints make sure the database is running
+- On local host access via: http://localhost:3000
+- **landlord-id** and **applicant-id** are required to be an email address
 
 | Endpoint    | Method      | Input (Request Body) | Output (Status Code)  | Output (Response Body)  | Description     |
 | :---        |    :---   |    :---   |    :---   |     :---   |          :--- |
@@ -25,5 +25,5 @@ On local host access via: http://localhost:3000
 | /process/:pid/update/description     | POST       | description   | 200; 500    |json object| update description   |
 | /process/:pid/update/applicant_dataset      | POST       | applicant-id, dataset-address   | 200; 500    |json object  | update applicant-id and dataset-address; set state == 2   |
 | /process/:pid/update/task      | POST       | task-id   | 200; 500    |json object | update iExec task-id; set state == 3  |
-| /process/by_applicant?apllicant=applicant-id     | GET      |    | 200; 400    |json object     | get processes by applicant   |
-| /process/by_landlord?landlord=landlord-id     | GET       |    | 200; 400    |json object   | get processes by landlord    |
+| /process/by_applicant?apllicant=applicant-id     | GET      |    | 200; 400    |json object     | get processes by applicant-id   |
+| /process/by_landlord?landlord=landlord-id     | GET       |    | 200; 400    |json object   | get processes by landlord-id    |
