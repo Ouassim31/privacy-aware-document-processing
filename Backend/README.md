@@ -25,5 +25,5 @@ npm start
 | /process/:pid/update/description     | POST       | description   | 200; 500    |json object| update description   |
 | /process/:pid/update/applicant_dataset      | POST       | applicant-id, dataset-address   | 200; 500    |json object  | update applicant-id and dataset-address; set state == 2   |
 | /process/:pid/update/task      | POST       | task-id   | 200; 500    |json object | update iExec task-id; set state == 3  |
-| /process/by_applicant?apllicant=applicant-id     | GET      |    | 200; 400    |json object     | get processes by applicant-id   |
+| /process/by_applicant?applicant=applicant-id     | GET      |    | 200; 400    |json object     | get processes by applicant-id   |
 | /process/by_landlord?landlord=landlord-id     | GET       |    | 200; 400    |json object   | get processes by landlord-id    |
