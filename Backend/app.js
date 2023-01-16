@@ -11,7 +11,7 @@ const errorHandler = (error, request, response, next) => {
 
 var app = express();
 
-// Set up mongoose connection
+// Set up mongodb connection
 var mongoose = require('mongoose');
 mongoose.set('strictQuery', true);
 var dev_db_url = 'mongodb://127.0.0.1:27017';
@@ -20,8 +20,6 @@ mongoose.connect(mongoDB, {useNewUrlParser: true, useUnifiedTopology: true});
 mongoose.Promise = global.Promise;
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-
-/// Load middleware modules
 
 // Enable all cors requests
 app.use(cors())
@@ -32,9 +30,9 @@ app.use(express.urlencoded({ extended: false }));
 
 // Load route handlers
 app.use('/', indexRouter);
-app.use('/process', processRouter); // Add process routes to middleware chain.
+app.use('/process', processRouter);
 
-/// TODO -> error handling
+// Load error handler
 app.use(errorHandler);
 
 module.exports = app;
