@@ -1,24 +1,28 @@
-# Backend Setup
+# Setup
 
-### Install Dependencies 
+## Backend Server
+
+Install dependencies
 ```bash
 npm install
 ```
-### Install MongoDB
-https://www.mongodb.com/docs/manual/administration/install-community/
 
-### Start Server
+Start server
 ```bash
 npm start
 ```
+## Database
+
+Install [MongoDB](https://www.mongodb.com/docs/manual/administration/install-community/) on your local machine and **make sure the database is running** whenever testing the backend and in particular the endpoints.
 
 # Endpoints
 
-- In order to test the endpoints make sure the database is running
-- On local host access via: http://localhost:3000
-- **landlord-id** and **applicant-id** are required to be an email address
+## Notes
+- On local host access server via URL: http://localhost:3000
+- **landlord-id** and **applicant-id** are required to be an **email address**
+## Overview
 
-| Endpoint    | Method      | Input (Request Body as JSON) | Output (Status Code)  | Output (Response Body as JSON)  | Description     |
+| Endpoint    | Method      | Input (in Request Body as JSON) | Output (Status Code)  | Output (in Response Body as JSON)  | Description     |
 | :---        |    :---   |    :---   |    :---   |     :---   |          :--- |
 | /process      | POST      | landlord-id, description (optional)  | 200; 500  |process object| create process; set state == 1 |
 | /process/:pid      | DELETE       |    | 200; 404  || delete process  |
