@@ -26,4 +26,4 @@ npm start
 | /process/:pid/update/applicant_dataset      | POST       | applicant-id, dataset-address   | 200; 500    |process object  | update applicant-id and dataset-address; set state == 2   |
 | /process/:pid/update/task      | POST       | task-id   | 200; 500    |process object | update iExec task-id; set state == 3  |
 | /process/by_applicant?applicant=applicant-id     | GET      |    | 200; 400    |list of process objects     | get processes by applicant-id   |
-| /process/by_landlord?landlord=landlord-id     | GET       |    | 200; 400    |list of process object   | get processes by landlord-id    |
+| /process/by_landlord?landlord=landlord-id     | GET       |    | 200; 400    |list of process objects   | get processes by landlord-id    |
