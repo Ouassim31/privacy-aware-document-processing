@@ -16,8 +16,7 @@ export const { IExec } = require("iexec");
 
 function LandlordDashboard(props) {
   //State variables
-  const { landlord, fetchProcesses, createProcess, setTask } = props;
-  const [currentLandlord, setCurrentLandlord] = useState(landlord);
+  const { currentLandlord, fetchProcesses, createProcess, setTask } = props;
   const [processList, setProcessList] = useState([]);
   const [requesterAddress, setRequesterAddress] = useState();
   const [myDeals, setMyDeals] = useState([]);
@@ -25,7 +24,7 @@ function LandlordDashboard(props) {
   const [iexecParams, setIexecParams] = useState();
   const incomeRef = useRef();
   const rentRef = useRef();
-  
+  console.log(currentLandlord)
   //get last task
   const getLastTask = async (dealId) => {
     const iexec_mod = new IExec({ ethProvider: window.ethereum });
@@ -198,7 +197,9 @@ function LandlordDashboard(props) {
     app_name = "Non TEE App using file";
 
   return (
+     processList.length > 0 ?
     <Card className="mb-3 p-2">
+      
       <Container fluid className="d-inline-flex align-items-center gap-2">
       <Button className="h-50" variant="primary" onClick={handleIexecArgsSubmit}>Add Process</Button>
       <DropdownButton
@@ -220,7 +221,7 @@ function LandlordDashboard(props) {
       <Card.Body>
         <Container className="d-flex flex-column align-items-center">
           <Card.Title className="mb-3">
-            Welcome {currentLandlord.username} ({currentLandlord.id})
+            Welcome {currentLandlord.given_name +' ' + currentLandlord.family_name}
           </Card.Title>
           <Card.Subtitle className="mb-3">
             Connected with the Wallet ID : {requesterAddress}
@@ -339,7 +340,10 @@ function LandlordDashboard(props) {
         </Table>
       </Card.Body>
     </Card>
-  );
+  :
+  <Card className="mb-3 p-2">
+    No Processes available ..
+  </Card>);
 }
 
 export default LandlordDashboard;
