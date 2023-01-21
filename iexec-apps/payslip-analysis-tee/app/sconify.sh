@@ -14,7 +14,7 @@ docker build . --progress=plain -t ${IMG_FROM}
 # run the sconifier to build the TEE image based on the non-TEE image
 docker run -it \
             -v /var/run/docker.sock:/var/run/docker.sock \
-            registry.scontain.com:5050/scone-production/iexec-sconify-image:5.3.15 \
+            registry.scontain.com:5050/scone-production/iexec-sconify-image:5.3.15-v5 \
             sconify_iexec \
             --name=${IMG_NAME} \
             --from=${IMG_FROM} \

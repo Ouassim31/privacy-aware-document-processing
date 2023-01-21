@@ -1,70 +1,137 @@
 const Process = require("../models/process");
 
-// Handle process create on POST with landlord _id and question as arguments
-exports.process_create_post = function (req, res, next) {
-    res.set('Access-Control-Allow-Origin', '*');
+// CREATE PROCESS 
+exports.process_create = (req, res, next) => {
     Process.create(
-        { landlord_id: req.params.lid, created_on: Date.now() },
-        function (err, process) {
-            // Do something if there is an err.
+        { created_on: Date.now(), landlord_id: Object.values(req.body)[0], description: Object.values(req.body)[1] },
+        (err, process) => {
+            // If error, then log and pass to error handling middleware
             if (err) {
-                return next(err);
+                console.log(`error ${err.message}`)
+                const error = new Error(`${err.message}`);
+                error.status = 500;
+                next(error);
+                return
             }
-            // On success, return process _id
-            res.send(process._id);
+            // On success, return process object in json format
+            res.json(process)
         }
     );
 };
 
-// Handle process update on POST with process _id and download_address as arguments
-exports.process_update_post = function (req, res, next) {
-    
-    res.set('Access-Control-Allow-Origin', '*');
-    
+// DELETE PROCESS
+exports.process_delete = (req, res, next) => {
+    Process.findByIdAndRemove(
+        req.params.pid,
+        (err, process) => {
+            // If error, then log and pass to error handling middleware
+            if (err) {
+                console.log(`error ${err.message}`)
+                const error = new Error(`${err.message}`);
+                error.status = 404;
+                next(error);
+                return
+            }
+            // On success, return message
+            res.json("Process deleted successfully")
+        }
+    );
+};
+
+// UPDATE DESCRIPTION
+exports.process_update_description = (req, res, next) => {
     Process.findByIdAndUpdate(
         req.params.pid,
-        //TODO change Object.keys(req.body)[0] to a convienet way to get to request body
-        { download_address: Object.keys(req.body)[0], process_state: 2 },
-        function (err, process) {
-            // Do something if there is an err.
+        { description: Object.values(req.body)[0] },
+        (err, process) => {
+            // If error, then log and pass to error handling middleware
             if (err) {
-                return next(err);
+                console.log(`error ${err.message}`)
+                const error = new Error(`${err.message}`);
+                error.status = 500;
+                next(error);
+                return
             }
-            // On success, return process _id
-            res.send(process._id);
+            // On success, return process object in json format
+            res.json(process)
         }
     );
 };
 
-// Handle process updatetask on POST with process _id and task_id as arguments
-exports.process_updatetask_post = function (req, res, next) {
-    res.set('Access-Control-Allow-Origin', '*');
+// SET APPLICANT & DATASET (set state == 2)
+exports.process_update_applicant_dataset = (req, res, next) => {
     Process.findByIdAndUpdate(
         req.params.pid,
-        { task_id: req.params.tid, process_state: 3},
-        function (err, process) {
-            // Do something if there is an err.
+        { applicant_id: Object.values(req.body)[0], dataset_address: Object.values(req.body)[1], process_state: 2 },
+        (err, process) => {
+            // If error, then log and pass to error handling middleware
             if (err) {
-                return next(err);
+                console.log(`error ${err.message}`)
+                const error = new Error(`${err.message}`);
+                error.status = 500;
+                next(error);
+                return
             }
-            // On success, return process _id
-            res.send(process._id);
+            // On success, return process object in json format
+            res.json(process)
         }
     );
 };
 
-// Return (load) all processes assosiated to specified landlord on GET with landlord object _id as argument
-exports.processes_load_get = (req, res) => {
-    res.set('Access-Control-Allow-Origin', '*');
+// SET TASK (set state == 3)
+exports.process_update_task = (req, res, next) => {
+    Process.findByIdAndUpdate(
+        req.params.pid,
+        { task_id: Object.values(req.body)[0], process_state: 3 },
+        (err, process) => {
+            // If error, then log and pass to error handling middleware
+            if (err) {
+                console.log(`error ${err.message}`)
+                const error = new Error(`${err.message}`);
+                error.status = 500;
+                next(error);
+                return
+            }
+            // On success, return process object in json format
+            res.json(process)
+        }
+    );
+};
+
+// GET PROCESSES BY APPLICANT
+exports.process_get_applicant = (req, res, next) => {
     Process.find(
-        { landlord_id: req.params.lid },
-        function (err, process) {
-            // Do something if there is an err.
+        { applicant_id: req.query.applicant },
+        (err, process) => {
+            // If error, then log and pass to error handling middleware
             if (err) {
-                return next(err);
+                console.log(`error ${err.message}`)
+                const error = new Error(`${err.message}`);
+                error.status = 400;
+                next(error);
+                return
             }
-            // On success, return process _id
-            res.send(process);
+            // On success, return process objects in json format
+            res.json(process)
         }
-    ).sort({created_on: -1});
+    ).sort({ created_on: -1 });
+};
+
+// GET PROCESSES BY LANDLORD
+exports.process_get_landlord = (req, res, next) => {
+    Process.find(
+        { landlord_id: req.query.landlord },
+        (err, process) => {
+            // If error, then log and pass to error handling middleware
+            if (err) {
+                console.log(`error ${err.message}`)
+                const error = new Error(`${err.message}`);
+                error.status = 400;
+                next(error);
+                return
+            }
+            // On success, return process objects in json format
+            res.json(process)
+        }
+    ).sort({ created_on: -1 });
 };

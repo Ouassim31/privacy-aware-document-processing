@@ -1,17 +1,17 @@
-var createError = require('http-errors');
 var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-const cors = require('cors')
+const cors = require('cors');
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const processRouter = require('./routes/process'); 
 
-const dataRouter = require('./routes/data'); //Import routes for data
+const errorHandler = (error, request, response, next) => {
+    console.log( `error ${error.message}`)
+    const status = error.status || 400
+    response.status(status).send(error.message) 
+}
 
 var app = express();
 
-// Set up mongoose connection
+// Set up mongodb connection
 var mongoose = require('mongoose');
 mongoose.set('strictQuery', true);
 var dev_db_url = 'mongodb://127.0.0.1:27017';
@@ -21,36 +21,18 @@ mongoose.Promise = global.Promise;
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
-app.use(cors({
-    origin: ['http://localhost:3000/','*']
-}));
-app.use(logger('dev'));
+// Enable all cors requests
+app.use(cors())
+
+// Enable parsing middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
+// Load route handlers
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/data', dataRouter); // Add data routes to middleware chain.
+app.use('/process', processRouter);
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
-});
-
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
+// Load error handler
+app.use(errorHandler);
 
 module.exports = app;

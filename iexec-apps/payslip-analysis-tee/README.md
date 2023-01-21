@@ -127,9 +127,9 @@ wallet address, to the sms of the debug workerpool
 # set a custom bellecour SMS in chain.json
 sed -i 's|"bellecour": {},|"bellecour": { "sms": "https://v7.sms.debug-tee-services.bellecour.iex.ec" },|g' chain.json
 
-iexec app run 0x315A9e79AeE191cD0256B26e16Bb8419A730Aced \
+iexec app run 0x1ED2F24927A26b8C6a90413EB005562b31aBB345 \
   --tag tee \
-  --dataset 0xD5Ae05607730f9590C06f71187B1980c74C8f1Bb \
+  --dataset 0xCD62368817a0620B1ADe1b1F04Cd313aa54CD2B9 \
   --workerpool v7-debug.main.pools.iexec.eth \
   --secret 1=rent5 \
   --watch \

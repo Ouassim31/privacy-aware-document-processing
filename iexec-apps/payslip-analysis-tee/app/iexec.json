@@ -19,19 +19,19 @@
     "owner": "0x127bc6a1860d66438D645C54585E2fFD10Ea5289",
     "name": "payslip-analysis-tee",
     "type": "DOCKER",
-    "multiaddr": "docker.io/chrissc96/payslip-analysis-tee:1.0.2",
-    "checksum": "0x579eefa783164bf424ded580cb1cc50abb217192ec460c511d176ea94772cb50",
+    "multiaddr": "docker.io/chrissc96/payslip-analysis-tee:1.0.3",
+    "checksum": "0x0cd3c99e4695e1b9c3f752fc88ed7019f8f996823ea963b047c02bcafb5a123a",
     "mrenclave": {
       "provider": "SCONE",
       "version": "v5",
       "entrypoint": "python /app/app.py",
       "heapSize": 1073741824,
-      "fingerprint": "15c5026aeea48024fb95676d0a7f3c1b9aff865389ec10a4390a72aff018326c"
+      "fingerprint": "5944fa468aa71784df30a79516f394d8d3747fe8f01d260b94238d0b6d4d2017"
     }
   },
   "order": {
     "apporder": {
-      "app": "0x315A9e79AeE191cD0256B26e16Bb8419A730Aced",
+      "app": "0x1ED2F24927A26b8C6a90413EB005562b31aBB345",
       "appprice": "0",
       "volume": "1000000",
       "tag": ["tee"],

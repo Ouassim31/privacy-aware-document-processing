@@ -1,56 +1,33 @@
-# Backend Setup
+# Setup
 
-The backend was created using the following commands
-```bash
-npx express-generator Backend
-npm init
-npm install --save-dev nodemon
-npm install mongoose
-npm install async
-```
+## Backend Server
 
-To load the dependencies (listed in package.json file) in your local environment use
+Install dependencies
 ```bash
 npm install
 ```
 
-A MongoDB database needs to be installed locally: https://www.mongodb.com/docs/manual/administration/install-community/
-
-To start the server use
+Start server
 ```bash
 npm start
 ```
+## Database
 
-## API Endpoints
+Install [MongoDB](https://www.mongodb.com/docs/manual/administration/install-community/) on your local machine and **make sure the database is running** whenever testing the backend and in particular the endpoints.
 
-In order to test the endpoints make sure to run a MongoDB database locally.
+# Endpoints
 
-Then start the server using
-```bash
-npm start
-```
+## Notes
+- On local host access server via URL: http://localhost:3000
+- **landlord-id** and **applicant-id** are required to be an **email address**
+## Overview
 
-or in debug mode using
-```bash
-DEBUG=Backend:* npm start
-```
-
-Now you can test the following endpoints:
-
-POST
-http://localhost:3000/data/landlord/:username/create
-
-GET
-http://localhost:3000/data/landlord/:username
-
-POST
-http://localhost:3000/data/process/:lid/create
-
-POST
-http://localhost:3000/data/process/:pid/:daddr/update
-
-POST
-http://localhost:3000/data/process/:pid/:tid/updatetask
-
-GET
-http://localhost:3000/data/process/:lid
+| Endpoint    | Method      | Input (in Request Body as JSON Object) | Output (Status Code)  | Output (in Response Body as JSON Object)  | Description     |
+| :---        |    :---   |    :---   |    :---   |     :---   |          :--- |
+| /process      | POST      | landlord-id, description (optional)  | 200; 500  |process object| create process; set state == 1 |
+| /process/:pid      | DELETE       |    | 200; 404  || delete process  |
+| /process/:pid/update/description     | POST       | description   | 200; 500    |process object| update description   |
+| /process/:pid/update/applicant_dataset      | POST       | applicant-id, dataset-address   | 200; 500    |process object  | update applicant-id and dataset-address; set state == 2   |
+| /process/:pid/update/task      | POST       | task-id   | 200; 500    |process object | update iExec task-id; set state == 3  |
+| /process/by_applicant?applicant=applicant-id     | GET      |    | 200; 400    |list of process objects     | get processes by applicant-id   |
+| /process/by_landlord?landlord=landlord-id     | GET       |    | 200; 400    |list of process objects   | get processes by landlord-id    |
