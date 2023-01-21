@@ -22,7 +22,7 @@ Install [MongoDB](https://www.mongodb.com/docs/manual/administration/install-com
 - **landlord-id** and **applicant-id** are required to be an **email address**
 ## Overview
 
-| Endpoint    | Method      | Input (in Request Body as JSON object) | Output (Status Code)  | Output (in Response Body as JSON object)  | Description     |
+| Endpoint    | Method      | Input (in Request Body as JSON Object) | Output (Status Code)  | Output (in Response Body as JSON Object)  | Description     |
 | :---        |    :---   |    :---   |    :---   |     :---   |          :--- |
 | /process      | POST      | landlord-id, description (optional)  | 200; 500  |process object| create process; set state == 1 |
 | /process/:pid      | DELETE       |    | 200; 404  || delete process  |
