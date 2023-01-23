@@ -1,5 +1,5 @@
 import Button from "react-bootstrap/Button";
-
+import { redirect } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 import { useEffect } from "react";
@@ -138,7 +138,9 @@ function FileUpload(props) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const datasetAddress = await handlePdfDocument(selectedFile);
-    setFileLink(pid, datasetAddress);
+    setFileLink(pid,datasetAddress);
+    redirect('/applicant')
+    
   };
 
   // handle file change event
@@ -149,9 +151,15 @@ function FileUpload(props) {
  
   return (
     <Card className="m-3 p-3">
-      <h3>Process id : {pid}</h3>
-    
-      <Form onSubmit={handleSubmit}>
+      <Container className="d-flex flex-column align-items-center">
+          <Card.Title className="mb-3">
+            Welcome {currentUser.given_name +' ' + currentUser.family_name}
+          </Card.Title>
+          <Card.Subtitle className="mb-3">
+            Connected with the Wallet ID : {requesterAddress}
+          </Card.Subtitle>
+          <h3>Process id : {pid}</h3>
+          <Form onSubmit={handleSubmit} className="w-75">
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>File</Form.Label>
           <Form.Control className="w-100" onChange={handleChange} type="file"  />
@@ -163,6 +171,8 @@ function FileUpload(props) {
           Submit
         </Button>
       </Form>
+        </Container>
+      
     </Card>
   );
 }

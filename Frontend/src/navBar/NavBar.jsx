@@ -21,7 +21,7 @@ function NavBar(props) {
             </Nav.Item>
             <Nav.Item className='d-flex flex-row'>
             <span className="ms-3 text-center align-self-center">Welcome, {user.nickname}</span>
-            <NavLink  className="me-3 nav-link active"  as="button" onClick={() => logout({ returnTo: window.location.origin + '/login-or-register' })}>Logout</NavLink>
+            <NavLink  className="me-3 nav-link active"  as="button" onClick={() => logout({ returnTo: window.location.origin + '/login' })}>Logout</NavLink>
             </Nav.Item>
             
             

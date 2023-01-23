@@ -22,7 +22,11 @@ var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 // Enable all cors requests
-app.use(cors())
+app.use(cors(
+    {
+        origin: '*'
+    }
+))
 
 // Enable parsing middleware
 app.use(express.json());

@@ -16,11 +16,11 @@ export const { IExec } = require("iexec");
 
 function LandlordDashboard(props) {
   //State variables
-  const { currentLandlord, fetchProcesses, createProcess, setTask } = props;
+  const { currentLandlord, fetchProcesses, createProcess,deleteProcess, setTask,connect } = props;
   const [processList, setProcessList] = useState([]);
   const [requesterAddress, setRequesterAddress] = useState();
   const [myDeals, setMyDeals] = useState([]);
-  const [appAddress, setAppaddress] = useState();
+  const [appAddress, setAppaddress] = useState("0x1ED2F24927A26b8C6a90413EB005562b31aBB345");
   const [iexecParams, setIexecParams] = useState();
   const incomeRef = useRef();
   const rentRef = useRef();
@@ -112,8 +112,10 @@ function LandlordDashboard(props) {
       setAppaddress("0x5e4017Bd35CbA7827e0Fa193F4B9F4f158FA254E");
     else if (e == "non-tee-file")
       setAppaddress("0x90997fe5DA97e43621093CF6412505f5fb157B63");
+    else if (e == "tee-file")
+      setAppaddress("0x1ED2F24927A26b8C6a90413EB005562b31aBB345")
   };
-  const handleExecute = async (pid) => {
+  const handleExecute = async (pid,dataset) => {
     
       if (appAddress === "0x90997fe5DA97e43621093CF6412505f5fb157B63") {
         let daddr = processList.filter((process)=>process._id === pid)[0].download_address
@@ -128,6 +130,17 @@ function LandlordDashboard(props) {
         iexec_args: rentRef.current.value + " " + incomeRef.current.value,
       });
     }
+    else if (appAddress === "0x1ED2F24927A26b8C6a90413EB005562b31aBB345"){
+      pushRentAsSecret(rentRef.current.value).then((res)=>{
+      setIexecParams(
+        {
+          dataset : dataset,
+          secret: res,
+          workerpool : 'v7-debug.main.pools.iexec.eth'
+        }
+      )
+    })
+  }
     if(iexecParams && appAddress){
       const dealid = await createIexecTask(appAddress, iexecParams);
       const tid = await getLastTask(dealid);
@@ -153,6 +166,7 @@ function LandlordDashboard(props) {
       const result = await fetchProcesses();
       setProcessList(result);
     };
+    connect().then((res) => setRequesterAddress(res))
     getprocesses();
   }, [currentLandlord]);
   useEffect(() => {
@@ -160,30 +174,8 @@ function LandlordDashboard(props) {
   }, [processList]);
   useEffect(() => {
     //connect and set requester adress and my deals
-    const connect = async () => {
-      if (window.ethereum) {
-        const address = await window.ethereum.request({
-          method: "eth_requestAccounts",
-        });
-        const iexec_mod = new IExec({ ethProvider: window.ethereum });
-        const balance = await iexec_mod.account.checkBalance(address[0]);
-        const { deals, count } = await iexec_mod.deal.fetchRequesterDeals(
-          address[0]
-        );
-        setRequesterAddress(address[0]);
-        const deals_list = [];
-        //add task id to state variable to use it later
-        for (const deal of deals) {
-          const lasttaskid = await getLastTask(deal.dealid);
-          deal.lasttaskid = lasttaskid;
-          deals_list.push(deal);
-        }
-        setMyDeals(deals_list);
-      } else {
-        alert("install metamask extension!!");
-      }
-    };
-    connect();
+    
+    
   }, []);
   /**
    *
@@ -195,9 +187,10 @@ function LandlordDashboard(props) {
     app_name = "Non TEE App using arguments";
   else if (appAddress == "0x90997fe5DA97e43621093CF6412505f5fb157B63")
     app_name = "Non TEE App using file";
-
+    else if (appAddress == "0x1ED2F24927A26b8C6a90413EB005562b31aBB345")
+    app_name = "TEE App using file";
   return (
-     processList.length > 0 ?
+     
     <Card className="mb-3 p-2">
       
       <Container fluid className="d-inline-flex align-items-center gap-2">
@@ -215,7 +208,7 @@ function LandlordDashboard(props) {
         <Dropdown.Item eventKey="non-tee-file">
           Non Tee App With File
         </Dropdown.Item>
-        <Dropdown.Item disabled>Tee App With File</Dropdown.Item>
+        <Dropdown.Item eventKey="tee-file">Tee App With File</Dropdown.Item>
       </DropdownButton>
       </Container>
       <Card.Body>
@@ -260,7 +253,7 @@ function LandlordDashboard(props) {
             </Form>
           </>
         }
-
+        { processList.length > 0 ?
         <Table responsive striped bordered hover>
           <thead>
             <tr>
@@ -270,7 +263,8 @@ function LandlordDashboard(props) {
               <th>Link for Applicant</th>
               <th>Iexec Task ID</th>
               <th>Result</th>
-              <th>Execute</th>
+              <th> </th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -322,28 +316,46 @@ function LandlordDashboard(props) {
                     )}
                   </td>
                   <td>
-                    {process.process_state === 2  && requesterAddress && (
+                    {console.log(requesterAddress)}{process.process_state === 2  && requesterAddress && (
                       <Button
                         variant="outline-primary"
                         processid={index}
                         onClick={(e) => {
-                          handleExecute(process._id);
+                          console.log(process._id,process.dataset_address)
+                          handleExecute(process._id,process.dataset_address);
                         }}
                       >
                         Execute
                       </Button>
                     )}
                   </td>
+                  <td>
+                    
+                      <Button
+                        variant="outline-danger"
+                        processid={index}
+                        onClick={(e) => {
+                        deleteProcess(process._id);
+                        setProcessList(processList.filter(p => p._id != process._id))      
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    
+                  </td>
                 </tr>
               ))}
           </tbody>
         </Table>
+        :
+        <Card className="mb-3 p-2">
+        
+        No Processes available ..
+      </Card>}
       </Card.Body>
     </Card>
-  :
-  <Card className="mb-3 p-2">
-    No Processes available ..
-  </Card>);
-}
-
+  
+)
+                      }
 export default LandlordDashboard;
+                      

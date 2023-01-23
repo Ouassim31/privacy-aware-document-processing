@@ -3,6 +3,7 @@
 
 import { useState } from 'react';
 import { Card,ListGroup } from 'react-bootstrap';
+import { withAuthenticationRequired } from '@auth0/auth0-react';
 export const   { IExec} = require('iexec')
 const FileSaver = require('file-saver');
 const detectEthereumProvider= require('@metamask/detect-provider');
