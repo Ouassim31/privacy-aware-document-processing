@@ -5,9 +5,10 @@ import { useEffect, useState } from 'react';
 
 import NavBar from './navBar/NavBar';
 import LandlordDashboard from './landlordDashboard/landlordDashboard';
-import ApplicantDashbord from './applicantDashboard/applicantDashboard';
-import {create} from 'ipfs-http-client'
+import FileUpload from './applicantDashboard/fileUpload';
 
+import {create} from 'ipfs-http-client'
+import { useAuth0 } from "@auth0/auth0-react";
 import {
   Navigate as Redirect,
   Routes,
@@ -17,6 +18,7 @@ import {
 import Homepage from './homepage/homepage';
 import axios from 'axios';
 import LoginAndRegister from './loginAndRegister/loginAndRegister';
+import ApplicantDashboard from './applicantDashboard/applicantDashbord';
 export const   { IExec} = require('iexec')
 const FileSaver = require('file-saver');
 const detectEthereumProvider= require('@metamask/detect-provider');
@@ -34,16 +36,17 @@ const connect = async () => {
   }
 }
 
-const fetchProcesses = async (landlordid) => {
+const fetchProcesses = async (role,email) => {
   console.log('fetching processes')
   let res = await axios({
     method: 'get',
     headers: { 'Content-Type': 'application/json'},
-    url: 'http://localhost:3000/data/process/'+landlordid,
+    url: `http://localhost:3000/process/${role}?${role}=${email}`,
    })
 
   return res.data
 }
+
 const createProcess = async (lid,process) => {
   console.log('creating process')
   let res = await axios({
@@ -98,22 +101,26 @@ const uploadtoIPFS = async (file) => {
   return cid.toString()
 }
 
+
 function App() {
-
+  const {user, isAuthenticated, isLoading} = useAuth0();
 const TestcurrentLandlord = {id : '639482f617bf5b744e5a5e71', username:'bill'}
-const [currentLandlord,setCurrentLandlord] = useState({id:localStorage.getItem("logged_user_id"), username: localStorage.getItem("logged_user_username")})
+const [currentUser,setCurrentUser] = useState()
 
-console.log(currentLandlord)
 
-useEffect(()=>{
-  if (localStorage.getItem("logged_user_id")){
-  setCurrentLandlord({id:localStorage.getItem("logged_user_id"), username: localStorage.getItem("logged_user_username")})
+useEffect(()=>{ 
+  if(!isLoading){
+    //call api get landlord by google_id
+    const landlord = {}
+    setCurrentUser({
+      ...user,
+      ...landlord 
+    })
+    console.log(currentUser)
   }
-  else {
-    setCurrentLandlord(null)
-  }
-  
-},[localStorage.getItem("logged_user_id")])
+},[user])
+
+
 
 
 
@@ -121,13 +128,20 @@ useEffect(()=>{
     
     <div className="App">
            
-       {currentLandlord && <NavBar/>}
+       {currentUser && <NavBar user={currentUser}/>}
       <Routes>
       
-      <Route  path='/landlord' element={localStorage.getItem("logged_user_id") ? <LandlordDashboard setTask = {setTask} createProcess={()=>createProcess(currentLandlord.id) } fetchProcesses={()=>fetchProcesses(currentLandlord.id)} landlord={currentLandlord}/> : <Redirect to="/login-or-register"/>}/>
-      <Route exact path='/' element={localStorage.getItem("logged_user_id") ? <Homepage landlord={currentLandlord}/> : <Redirect to="/login-or-register"/>} />
-      <Route  path='/applicant/:pid' element={<ApplicantDashbord setFileLink = {setFileLink} uploadtoIPFS={uploadtoIPFS}/> } />
-      <Route  path='/login-or-register' element={<LoginAndRegister login={login} register={register}/>} />
+      {currentUser &&
+      <>
+      <Route exact path='/'  element={currentUser ? <Homepage user={currentUser}/> : <Redirect to='/login-or-register'/> }/>
+      <Route exact path='applicant' element={ currentUser ? <ApplicantDashboard  fetchProcesses={()=>fetchProcesses('applicant',currentUser.email)} currentUser ={currentUser}/> : <Redirect to='/login-or-register'/>}/>
+      <Route exact path='landlord' element={ currentUser ? <LandlordDashboard setTask = {setTask} createProcess={()=>createProcess(currentUser.id) } fetchProcesses={()=>fetchProcesses('landlord',currentUser.email)} currentLandlord ={currentUser}/> : <Redirect to='/login-or-register'/>}/>
+      <Route exact path='/applicant/:pid' element={currentUser ? <FileUpload currentUser={user} setFileLink = {setFileLink} uploadtoIPFS={uploadtoIPFS}/> : <Redirect to='/login-or-register'/>} />
+      </>
+       }
+      
+       
+      <Route exact path='/login-or-register'element= {!currentUser ? <LoginAndRegister/> : <Redirect to='/'/>} /> 
       </Routes>
       
       

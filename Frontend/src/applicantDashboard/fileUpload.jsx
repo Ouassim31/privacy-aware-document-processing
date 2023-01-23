@@ -10,7 +10,7 @@ import { useParams } from "react-router-dom";
 import { Container } from "react-bootstrap";
 
 export const { IExec } = require("iexec");
-function ApplicantDashbord(props) {
+function FileUpload(props) {
   //State variables
   const [requesterAddress, setRequesterAddress] = useState();
   const [selectedFile, setSelectedFile] = useState("");
@@ -18,7 +18,7 @@ function ApplicantDashbord(props) {
   // Paste your NFT.Storage API key into the quotes:
   const NFT_STORAGE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDQ2OTVCQkE5MzRFYjI4RTY1OTFEQ2NiZjlCOTU0ZTY0MDAwMzVhM0YiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY3MzM1Njc5MjY2OSwibmFtZSI6Imlvc2wifQ.OoOHlZLMuVIVKKedY4XOQHyvw-ygLnj6EYcUd7314B4';
 
-  const {setFileLink,uploadtoIPFS} = props
+  const {currentUser,setFileLink,uploadtoIPFS} = props
   const {pid} = useParams()
   
   //init requester address and datasets count
@@ -166,4 +166,4 @@ function ApplicantDashbord(props) {
     </Card>
   );
 }
-export default ApplicantDashbord;
+export default FileUpload;

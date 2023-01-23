@@ -28,24 +28,40 @@ const connect = async () => {
 const currentLandlord = {id : '639482f617bf5b744e5a5e71', username:'bill'}
 function Homepage(props) {
 
-  const {landlord} = props 
+  const {user} = props;
+  
   return (
     
-    <Card className=" p-2 homepage justify-items-end">
+    <Card className=" p-2 homepage">
+      <ListGroup horizontal>
       <ListGroup className='w-50'>
       <ListGroup.Item >
         <div className="ms-2 me-auto">
-          <div className="fw-bold">Username</div>
-          {landlord.username}</div>
+          <div className="fw-bold">username</div>
+          {user.nickname}</div>
+      </ListGroup.Item>
+      <ListGroup.Item >
+        <div className="ms-2 me-auto">
+          <div className="fw-bold">firstname</div>
+          {user.given_name}</div>
       </ListGroup.Item>
       <ListGroup.Item>
         <div className="ms-2 me-auto">
-          <div className="fw-bold">Landlord id</div>
-          {landlord.id}</div>
-      </ListGroup.Item>
+          <div className="fw-bold">lastname</div>
+          {user.family_name}</div>
+      </ListGroup.Item> 
+      <ListGroup.Item>
+        <div className="ms-2 me-auto">
+          <div className="fw-bold">email</div>
+          {user.email}</div>
+      </ListGroup.Item> 
+    </ListGroup> 
+       
+    <ListGroup.Item className="text-center h-100">
+      <img src={user.picture} className="img-thumbnail" alt="..."/>
+    </ListGroup.Item>
       
-    </ListGroup>  
-
+      </ListGroup>
 
       
     </Card>
