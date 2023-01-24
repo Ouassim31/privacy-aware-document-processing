@@ -3,7 +3,7 @@ const Process = require("../models/process");
 // CREATE PROCESS 
 exports.process_create = (req, res, next) => {
     Process.create(
-        { created_on: Date.now(), landlord_id: Object.values(req.body)[0], description: Object.values(req.body)[1] },
+        { created_on: Date.now(), landlord_id: req.body.landlord_id, description: req.body.description },
         (err, process) => {
             // If error, then log and pass to error handling middleware
             if (err) {
@@ -28,74 +28,119 @@ exports.process_delete = (req, res, next) => {
             if (err) {
                 console.log(`error ${err.message}`)
                 const error = new Error(`${err.message}`);
-                error.status = 404;
+                error.status = 400;
                 next(error);
                 return
             }
             // On success, return message
-            res.json("Process deleted successfully")
+            res.send("Process deleted successfully")
         }
     );
 };
 
 // UPDATE DESCRIPTION
 exports.process_update_description = (req, res, next) => {
-    Process.findByIdAndUpdate(
-        req.params.pid,
-        { description: Object.values(req.body)[0] },
-        (err, process) => {
-            // If error, then log and pass to error handling middleware
-            if (err) {
-                console.log(`error ${err.message}`)
-                const error = new Error(`${err.message}`);
-                error.status = 500;
-                next(error);
-                return
+    // If description parameter given -> continue, else throw error
+    if (req.body.hasOwnProperty("description")) {
+        Process.findByIdAndUpdate(
+            req.params.pid,
+            { description: req.body.description },
+            {new: true},
+            (err, process) => {
+                // If error, then log and pass to error handling middleware
+                if (err) {
+                    console.log(`error ${err.message}`)
+                    const error = new Error(`${err.message}`);
+                    error.status = 500;
+                    next(error);
+                    return
+                }
+                // On success, return process object in json format
+                res.json(process)
             }
-            // On success, return process object in json format
-            res.json(process)
-        }
-    );
+        );
+    } else {
+        const error = new Error("Description not specified in request body");
+        error.status = 400;
+        next(error);
+        return
+    }
+    
 };
 
 // SET APPLICANT & DATASET (set state == 2)
 exports.process_update_applicant_dataset = (req, res, next) => {
-    Process.findByIdAndUpdate(
-        req.params.pid,
-        { applicant_id: Object.values(req.body)[0], dataset_address: Object.values(req.body)[1], process_state: 2 },
-        (err, process) => {
-            // If error, then log and pass to error handling middleware
-            if (err) {
-                console.log(`error ${err.message}`)
-                const error = new Error(`${err.message}`);
-                error.status = 500;
-                next(error);
-                return
+    const hasApplicantId = req.body.hasOwnProperty("applicant_id");
+    const hasDatasetAddress = req.body.hasOwnProperty("dataset_address");
+
+    // If applicant_id & dataset_address parameters given -> continue, else throw error
+    if (hasApplicantId && hasDatasetAddress) {
+        Process.findByIdAndUpdate(
+            req.params.pid,
+            { applicant_id: req.body.applicant_id, dataset_address: req.body.dataset_address, process_state: 2 },
+            { new: true },
+            (err, process) => {
+                // If error, then log and pass to error handling middleware
+                if (err) {
+                    console.log(`error ${err.message}`)
+                    const error = new Error(`${err.message}`);
+                    error.status = 500;
+                    next(error);
+                    return
+                }
+                // On success, return process object in json format
+                res.json(process)
             }
-            // On success, return process object in json format
-            res.json(process)
+        );
+    } else {
+        if (hasApplicantId == true) {
+            const error = new Error("Dataset_address not specified in request body");
+            error.status = 400;
+            next(error);
+            return
         }
-    );
+        if (hasDatasetAddress == true) {
+            const error = new Error("Applicant_id not specified in request body");
+            error.status = 400;
+            next(error);
+            return
+        }
+
+        const error = new Error("Applicant_id and dataset_address not specified in request body");
+        error.status = 400;
+        next(error);
+        return
+    }
+
 };
 
 // SET TASK (set state == 3)
 exports.process_update_task = (req, res, next) => {
-    Process.findByIdAndUpdate(
-        req.params.pid,
-        { task_id: Object.values(req.body)[0], process_state: 3 },
-        (err, process) => {
-            // If error, then log and pass to error handling middleware
-            if (err) {
-                console.log(`error ${err.message}`)
-                const error = new Error(`${err.message}`);
-                error.status = 500;
-                next(error);
-                return
+    if (req.body.hasOwnProperty("task_id")) {
+       // If task_id parameter given -> continue, else throw error
+        Process.findByIdAndUpdate(
+            req.params.pid,
+            { task_id: req.body.task_id, process_state: 3 },
+            {new: true},
+            (err, process) => {
+                // If error, then log and pass to error handling middleware
+                if (err) {
+                    console.log(`error ${err.message}`)
+                    const error = new Error(`${err.message}`);
+                    error.status = 500;
+                    next(error);
+                    return
+                }
+                // On success, return process object in json format
+                res.json(process)
             }
-            // On success, return process object in json format
-            res.json(process)
-        }
-    );
+        );
+    } else {
+        const error = new Error("Task_id not specified in request body");
+        error.status = 400;
+        next(error);
+        return
+    }
 };
 
 // GET PROCESSES BY APPLICANT
