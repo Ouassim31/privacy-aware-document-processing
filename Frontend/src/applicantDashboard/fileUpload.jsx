@@ -1,19 +1,19 @@
-import Button from "react-bootstrap/Button";
+import {Button,Card,Form,Container,Spinner,Modal} from "react-bootstrap";
 import { redirect } from "react-router-dom";
-import Card from "react-bootstrap/Card";
-import Form from "react-bootstrap/Form";
+
 import { useEffect } from "react";
 import { useState } from "react";
 
 import { NFTStorage, File } from 'nft.storage'
 import { useParams } from "react-router-dom";
-import { Container } from "react-bootstrap";
+
 
 export const { IExec } = require("iexec");
 function FileUpload(props) {
   //State variables
   const [requesterAddress, setRequesterAddress] = useState();
   const [selectedFile, setSelectedFile] = useState("");
+  const [isUploading,setIsUploading] = useState(false)
   // Log into NFT.Storage via GitHub and create API token
   // Paste your NFT.Storage API key into the quotes:
   const NFT_STORAGE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDQ2OTVCQkE5MzRFYjI4RTY1OTFEQ2NiZjlCOTU0ZTY0MDAwMzVhM0YiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY3MzM1Njc5MjY2OSwibmFtZSI6Imlvc2wifQ.OoOHlZLMuVIVKKedY4XOQHyvw-ygLnj6EYcUd7314B4';
@@ -137,6 +137,7 @@ function FileUpload(props) {
   // handle file submit event
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setIsUploading(true)
     const datasetAddress = await handlePdfDocument(selectedFile);
     setFileLink(pid,datasetAddress);
     redirect('/applicant')
@@ -159,18 +160,18 @@ function FileUpload(props) {
             Connected with the Wallet ID : {requesterAddress}
           </Card.Subtitle>
           <h3>Process id : {pid}</h3>
-          <Form onSubmit={handleSubmit} className="w-75">
-        <Form.Group className="mb-3" controlId="formBasicEmail">
+          { isUploading ? <><><Spinner style={{width: '6rem', height: '6rem'}} className="m-2" animation="border" role="status"></Spinner><span className="fs-2 m-2">Please wait...</span></></> :<Form onSubmit={handleSubmit} className="w-75">
+          <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>File</Form.Label>
           <Form.Control className="w-100" onChange={handleChange} type="file"  />
           <Form.Text className="text-muted">
             We'll never share your data with anyone else.
           </Form.Text>
         </Form.Group>
-        <Button variant="primary" type="submit">
-          Submit
+        <Button className="d-flex" variant="primary" type="submit" disabled={isUploading}>
+         Submit
         </Button>
-      </Form>
+      </Form>}
         </Container>
       
     </Card>

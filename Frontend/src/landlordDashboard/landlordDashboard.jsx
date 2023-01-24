@@ -7,7 +7,10 @@ import {
   Form,
   FormGroup,
   Container,
+  Modal,
+  Spinner
 } from "react-bootstrap";
+import { BiWorld } from 'react-icons/bi';
 import FileSaver from "file-saver";
 import { useEffect, useState, useRef } from "react";
 import {v4 as uuidv4} from 'uuid';
@@ -17,14 +20,18 @@ export const { IExec } = require("iexec");
 function LandlordDashboard(props) {
   //State variables
   const { currentLandlord, fetchProcesses, createProcess,deleteProcess, setTask,connect } = props;
+  const [isLoading,setIsLoading] = useState([])
   const [processList, setProcessList] = useState([]);
+  const [selectedProcess, setSelectedProcess]=useState(null)
   const [requesterAddress, setRequesterAddress] = useState();
   const [myDeals, setMyDeals] = useState([]);
   const [appAddress, setAppaddress] = useState("0x1ED2F24927A26b8C6a90413EB005562b31aBB345");
   const [iexecParams, setIexecParams] = useState();
+  const [show, setShow] = useState(false);
+ 
   const incomeRef = useRef();
   const rentRef = useRef();
-  console.log(currentLandlord)
+  
   //get last task
   const getLastTask = async (dealId) => {
     const iexec_mod = new IExec({ ethProvider: window.ethereum });
@@ -80,6 +87,9 @@ function LandlordDashboard(props) {
     const secretName = "rent-" + uuidv4();
     const { isPushed } = await iexec.secrets.pushRequesterSecret(secretName, rent);
     console.log('pushed secret ' + secretName + ':', isPushed);
+    
+    
+    
     return secretName;
   }
 
@@ -88,6 +98,13 @@ function LandlordDashboard(props) {
    * EVENT HANDLING
    *
    */
+  const handleClose = () => {
+    setShow(false)
+    setSelectedProcess({})
+  };
+  const handleShow = (process) => {
+    setSelectedProcess(process)
+    setShow(true)};
   const handleIexecArgsChange = () => {
     if (rentRef.current.value  && appAddress == "0x5e4017Bd35CbA7827e0Fa193F4B9F4f158FA254E") {
 
@@ -116,7 +133,7 @@ function LandlordDashboard(props) {
       setAppaddress("0x1ED2F24927A26b8C6a90413EB005562b31aBB345")
   };
   const handleExecute = async (pid,dataset) => {
-    
+      
       if (appAddress === "0x90997fe5DA97e43621093CF6412505f5fb157B63") {
         let daddr = processList.filter((process)=>process._id === pid)[0].download_address
         console.log(daddr)
@@ -136,18 +153,21 @@ function LandlordDashboard(props) {
         {
           dataset : dataset,
           secret: res,
-          workerpool : 'v7-debug.main.pools.iexec.eth'
+          
         }
       )
     })
   }
     if(iexecParams && appAddress){
+      setIsLoading([...isLoading,pid])
       const dealid = await createIexecTask(appAddress, iexecParams);
       const tid = await getLastTask(dealid);
 
       setTask(pid, tid).then((res) => {
+        console.log(`setting task ${tid}`)
         fetchProcesses(currentLandlord.id).then((res) => setProcessList(res));
       });
+      setIsLoading(isLoading.filter(curr => curr != pid ))
     } 
   };
   const handleResults = async (tid) => {
@@ -192,7 +212,7 @@ function LandlordDashboard(props) {
   return (
      
     <Card className="mb-3 p-2">
-      
+        
       <Container fluid className="d-inline-flex align-items-center gap-2">
       <Button className="h-50" variant="primary" onClick={handleIexecArgsSubmit}>Add Process</Button>
       <DropdownButton
@@ -222,38 +242,72 @@ function LandlordDashboard(props) {
           <span>{app_name}</span>
         </Container>
     <Card.Body/>
-        {
-            <>
+        
             
-            <Form onSubmit={handleIexecArgsSubmit}>
-              <Container
+            
+          
+        { processList.length > 0 ?
+        <><Modal
+        show={show}
+        onHide={handleClose}
+        backdrop="static"
+        keyboard={false}
+      >
+        <Modal.Header closeButton/>
+        <Modal.Body>
+        
+              {isLoading.some((pid)=>pid === selectedProcess._id) ? 
+              <>
+              <div className="d-table-row"><Spinner className="mx-3" style={{width: '2rem', height: '2rem'}}  animation="border" role="status"></Spinner>
+              <span className="text-lg-start" >Please wait untill the iexec task finishes...</span></div>
+              <Container><span className="m-2 text-md-center d-block">Status :</span></Container>
+              </>
+               : <Container
                 fluid
                 className="m-2 gap-2 d-flex flex-column align-items-center"
               >
-                <FormGroup className="input-group w-50" controlId="rent">
-                  <span className="input-group-text">Rent</span>
+                <FormGroup className="input-group" controlId="rent">
+                <Form.Label className="table text-center ">please input a rent to compare it to the applicant income</Form.Label>
                   <Form.Control
+                    name="rent"
                     ref={rentRef}
                     onChange={handleIexecArgsChange}
                     type="text"
                   />
+                  <span className="input-group-text">
+                    € 
+                  </span>
                 </FormGroup>
-                {appAddress === "0x5e4017Bd35CbA7827e0Fa193F4B9F4f158FA254E" && <FormGroup className="input-group w-50" controlId="income">
+                {appAddress === "0x5e4017Bd35CbA7827e0Fa193F4B9F4f158FA254E" && 
+                <FormGroup className="input-group w-50" controlId="income">
                   <span className="input-group-text">
                     Income 
                   </span>
                   <Form.Control
+                  name="income"
                     ref={incomeRef}
                     onChange={handleIexecArgsChange}
                     type="text"
                   />
                 </FormGroup>}
                 
-              </Container>
-            </Form>
-          </>
-        }
-        { processList.length > 0 ?
+              </Container>}
+            
+        </Modal.Body>
+        <Modal.Footer>
+          
+          <Button variant="outline-primary" disabled={isLoading.some((pid)=>pid === selectedProcess._id)} onClick={() => {
+            if(rentRef.current){
+              console.log(selectedProcess)
+              handleExecute(selectedProcess._id,selectedProcess.dataset_address);
+            }
+            
+          }}>Execute</Button>
+          <Button variant="outline-danger"  onClick={handleClose}>
+            Cancel
+          </Button>
+        </Modal.Footer>
+      </Modal>
         <Table responsive striped bordered hover>
           <thead>
             <tr>
@@ -291,15 +345,18 @@ function LandlordDashboard(props) {
                     )}
                   </td>
                   <td>
-                    <a
+                    {process.process_state === 3 && <Button
+                      variant="warning"
                       target="_blank"
                       href={
                         "https://explorer.iex.ec/bellecour/task/" +
                         process.task_id
                       }
                     >
-                      {process.task_id}{" "}
-                    </a>
+                      
+                      <BiWorld/> Iexec Explorer
+                     
+                    </Button>}
                   </td>
 
                   <td>
@@ -316,18 +373,28 @@ function LandlordDashboard(props) {
                     )}
                   </td>
                   <td>
-                    {console.log(requesterAddress)}{process.process_state === 2  && requesterAddress && (
-                      <Button
+                    
+                    { requesterAddress && 
+                     (isLoading.some((pid)=>pid === process._id) ? <Button className="d-flex d-inline" variant="outline-warning" 
+                     onClick={
+                      (e) => {
+                          handleShow(process)
+                      }}>
+                     <Spinner style={{width: '1rem', height: '1rem'}} className="" animation="border" role="status"></Spinner>
+                     <span className="text-nowrap mx-2">Status</span></Button> :
+                       <Button
                         variant="outline-primary"
                         processid={index}
                         onClick={(e) => {
-                          console.log(process._id,process.dataset_address)
-                          handleExecute(process._id,process.dataset_address);
+                            
+                            handleShow(process)
+                            
+                          
                         }}
                       >
                         Execute
-                      </Button>
-                    )}
+                      </Button>) 
+                    }
                   </td>
                   <td>
                     
@@ -346,7 +413,7 @@ function LandlordDashboard(props) {
                 </tr>
               ))}
           </tbody>
-        </Table>
+        </Table></>
         :
         <Card className="mb-3 p-2">
         
