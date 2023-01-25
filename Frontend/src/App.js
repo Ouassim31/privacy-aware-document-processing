@@ -57,7 +57,7 @@ const createProcess = async (landlord) => {
     headers: { 'Content-Type': 'application/json'},
     url: 'http://localhost:3001/process/',
     data: {
-      'landlord-id' : landlord,
+      'landlord_id' : landlord,
       'description' : 'test'
 
     }
@@ -93,7 +93,7 @@ const setFileLink = async(email,pid,cid) =>{
     method : 'post',
     headers: { 'Content-Type': 'application/json'},
     url: `http://localhost:3001/process/${pid}/update/applicant_dataset`,
-    data: { applicant_id : email , dataset_addr : cid}
+    data: { applicant_id : email , dataset_address : cid}
   })
    return  res.data
 }
