@@ -18,9 +18,10 @@ import {v4 as uuidv4} from 'uuid';
 export const { IExec } = require("iexec");
 
 function LandlordDashboard(props) {
+
   //State variables
-  const { currentLandlord, fetchProcesses, createProcess,deleteProcess, setTask,connect } = props;
-  const [isLoading,setIsLoading] = useState([])
+  const { currentLandlord, fetchProcesses, createProcess, deleteProcess, setTask, connect } = props;
+  const [isLoading, setIsLoading] = useState([])
   const [processList, setProcessList] = useState([]);
   const [selectedProcess, setSelectedProcess]=useState(null)
   const [requesterAddress, setRequesterAddress] = useState();
@@ -31,6 +32,8 @@ function LandlordDashboard(props) {
  
   const incomeRef = useRef();
   const rentRef = useRef();
+
+  const WORKERPOOL_ADDRESS = "v7-debug.main.pools.iexec.eth";
   
   //get last task
   const getLastTask = async (dealId) => {
@@ -38,6 +41,7 @@ function LandlordDashboard(props) {
     const taskId = await iexec_mod.deal.computeTaskId(dealId, 0);
     return taskId;
   };
+
   //download result of a given task
   const getResult = async (taskId) => {
     const iexec_mod = new IExec({ ethProvider: window.ethereum });
@@ -48,36 +52,72 @@ function LandlordDashboard(props) {
     console.log("downloading results");
     FileSaver.saveAs(binary, "results.zip");
   };
+
   //create request order
   const createIexecTask = async (appAddress, iexec_params) => {
-    const iexec_mod = new IExec({ ethProvider: window.ethereum });
 
-    //fetch app from marketplace
-    const { count: app_count, orders: app_orders } =
-      await iexec_mod.orderbook.fetchAppOrderbook(appAddress);
+    const DATASET_ADDRESS = iexec_params.dataset;
+    const RENT_SECRET = iexec_params.rent_secret;
+    const configArgs = { ethProvider: window.ethereum,  chainId : 134};
+    const configOptions = { smsURL: 'https://v7.sms.debug-tee-services.bellecour.iex.ec' };
+    const iexec = new IExec(configArgs, configOptions);
 
-    //fetch workerpool from marketplace
-    const { count: wp_count, orders: wp_orders } =
-      await await iexec_mod.orderbook.fetchWorkerpoolOrderbook({ category: 0 });
+    console.log("DATASET: " + DATASET_ADDRESS);
+    console.log("RENT SECRET: " + RENT_SECRET);
 
-    //create and sign request order
-    const requestorderTemplate = await iexec_mod.order.createRequestorder({
+    //fetch app order from marketplace
+    const { orders } = await iexec.orderbook.fetchAppOrderbook(appAddress, {
+      workerpool: WORKERPOOL_ADDRESS,
+      minTag: 'tee'
+    });
+
+    const appOrder = orders && orders[0] && orders[0].order;
+    if (!appOrder) throw Error(`no apporder found for app ${appAddress}`);
+
+    // fetch worker pool
+    const workerPoolRes = await iexec.orderbook.fetchWorkerpoolOrderbook({
+      workerpool : WORKERPOOL_ADDRESS,
+      minTag : 'tee'
+    });
+    
+    const workerPoolOrders = workerPoolRes.orders;
+    const workerpoolOrder = workerPoolOrders && workerPoolOrders[0] && workerPoolOrders[0].order;
+    if (!workerpoolOrder)
+        throw Error('no workerpoolorder found for the selected options');
+
+    // fetch dataset order
+    const datasetOrderRes = await iexec.orderbook.fetchDatasetOrderbook(DATASET_ADDRESS, {
+      workerpool: WORKERPOOL_ADDRESS,
+      minTag: 'tee'
+    });
+
+    const datasetOrders = datasetOrderRes.orders;
+    const datasetOrder = datasetOrders && datasetOrders[0] && datasetOrders[0].order;
+    if (!datasetOrder)
+      throw Error('no datasetorder found for the selected options');
+  
+    const requestOrderToSign = await iexec.order.createRequestorder({
       app: appAddress,
+      workerpool: WORKERPOOL_ADDRESS,
+      dataset: DATASET_ADDRESS,
+      volume: 1,
       category: 0,
-      //iexec args
-      params: iexec_params,
+      tag : 'tee',
+      params : {iexec_secrets : {1: RENT_SECRET}}
     });
-    const signedrequestorder = await iexec_mod.order.signRequestorder(
-      requestorderTemplate
-    );
-    //match orders
-    const { dealid, txHash } = await iexec_mod.order.matchOrders({
-      apporder: app_orders[0]?.order,
-      workerpoolorder: wp_orders[0]?.order,
-      requestorder: signedrequestorder,
+
+    const requestOrder = await iexec.order.signRequestorder(requestOrderToSign);
+
+    // execute app with matching orders
+    const res = await iexec.order.matchOrders({
+      apporder: appOrder,
+      requestorder: requestOrder,
+      workerpoolorder: workerpoolOrder,
+      datasetorder: datasetOrder
     });
-    console.log(`created deal ${dealid} in tx ${txHash}`);
-    return dealid;
+
+    console.log(`created deal ${res.dealid} in tx ${res.txHash}`);
+    return res.dealid;
   };
 
   const pushRentAsSecret = async (rent) => {
@@ -87,9 +127,6 @@ function LandlordDashboard(props) {
     const secretName = "rent-" + uuidv4();
     const { isPushed } = await iexec.secrets.pushRequesterSecret(secretName, rent);
     console.log('pushed secret ' + secretName + ':', isPushed);
-    
-    
-    
     return secretName;
   }
 
@@ -102,77 +139,51 @@ function LandlordDashboard(props) {
     setShow(false)
     setSelectedProcess({})
   };
-  const handleShow = (process) => {
-    setSelectedProcess(process)
-    setShow(true)};
-  const handleIexecArgsChange = () => {
-    if (rentRef.current.value  && appAddress == "0x5e4017Bd35CbA7827e0Fa193F4B9F4f158FA254E") {
 
-        setIexecParams({
-          iexec_args: rentRef.current.value + " " + incomeRef.current.value,
-        });
-     
-  }};
+  const handleShow = (process) => {
+    setSelectedProcess(process);
+    setShow(true);
+  };
+  
   const handleIexecArgsSubmit = (event) => {
     event.preventDefault();
     
-      createProcess(currentLandlord.id, null).then((res) => {
-        console.log("created process id : " + res);
-        fetchProcesses(currentLandlord.id).then((res) => setProcessList(res));
-      });
+    createProcess(currentLandlord.id, null).then((res) => {
+      console.log("created process id : " + res);
+      fetchProcesses(currentLandlord.id).then((res) => setProcessList(res));
+    });
+  };
 
-      //createIexecTask(appAddress, iexecParams);
-  
-  };
-  const handleAppSelect = (e) => {
-    if (e == "non-tee-args")
-      setAppaddress("0x5e4017Bd35CbA7827e0Fa193F4B9F4f158FA254E");
-    else if (e == "non-tee-file")
-      setAppaddress("0x90997fe5DA97e43621093CF6412505f5fb157B63");
-    else if (e == "tee-file")
-      setAppaddress("0x1ED2F24927A26b8C6a90413EB005562b31aBB345")
-  };
-  const handleExecute = async (pid,dataset) => {
-      
-      if (appAddress === "0x90997fe5DA97e43621093CF6412505f5fb157B63") {
-        let daddr = processList.filter((process)=>process._id === pid)[0].download_address
-        console.log(daddr)
+  const handleExecute = async (pid, dataset) => {
+    setAppaddress("0x1ED2F24927A26b8C6a90413EB005562b31aBB345");
+
+    if (!iexecParams) {
+      pushRentAsSecret(rentRef.current.value).then((res) => {
         setIexecParams({
-        iexec_args: rentRef.current.value,
-        iexec_input_files: [daddr],
-      })
-    }
-    else if (appAddress === "0x5e4017Bd35CbA7827e0Fa193F4B9F4f158FA254E") {
-      setIexecParams({
-        iexec_args: rentRef.current.value + " " + incomeRef.current.value,
+          dataset : dataset,
+          rent_secret: res  
+        });
       });
     }
-    else if (appAddress === "0x1ED2F24927A26b8C6a90413EB005562b31aBB345"){
-      pushRentAsSecret(rentRef.current.value).then((res)=>{
-      setIexecParams(
-        {
-          dataset : dataset,
-          secret: res,
-          
-        }
-      )
-    })
-  }
-    if(iexecParams && appAddress){
-      setIsLoading([...isLoading,pid])
+
+    if (iexecParams && appAddress) {
+      setIsLoading([...isLoading, pid]);
       const dealid = await createIexecTask(appAddress, iexecParams);
       const tid = await getLastTask(dealid);
 
       setTask(pid, tid).then((res) => {
-        console.log(`setting task ${tid}`)
+        console.log(`setting task ${tid}`);
         fetchProcesses(currentLandlord.id).then((res) => setProcessList(res));
       });
-      setIsLoading(isLoading.filter(curr => curr != pid ))
+
+      setIsLoading(isLoading.filter(curr => curr != pid ));
     } 
   };
+
   const handleResults = async (tid) => {
     getResult(tid);
   };
+
   /**
    *
    * useEffect Hooks
@@ -181,6 +192,7 @@ function LandlordDashboard(props) {
   useEffect(() => {
     console.log(iexecParams);
   }, [iexecParams]);
+
   useEffect(() => {
     const getprocesses = async () => {
       const result = await fetchProcesses();
@@ -189,52 +201,34 @@ function LandlordDashboard(props) {
     connect().then((res) => setRequesterAddress(res))
     getprocesses();
   }, [currentLandlord]);
+
   useEffect(() => {
     console.log(processList);
   }, [processList]);
+
   useEffect(() => {
     //connect and set requester adress and my deals
     
-    
   }, []);
+
   /**
    *
    * Rendering
    *
    */
-  var app_name
-  if (appAddress == "0x5e4017Bd35CbA7827e0Fa193F4B9F4f158FA254E")
-    app_name = "Non TEE App using arguments";
-  else if (appAddress == "0x90997fe5DA97e43621093CF6412505f5fb157B63")
-    app_name = "Non TEE App using file";
-    else if (appAddress == "0x1ED2F24927A26b8C6a90413EB005562b31aBB345")
-    app_name = "TEE App using file";
+  var app_name = "TEE Payslip Analysis";
+
   return (
      
     <Card className="mb-3 p-2">
         
       <Container fluid className="d-inline-flex align-items-center gap-2">
       <Button className="h-50" variant="primary" onClick={handleIexecArgsSubmit}>Add Process</Button>
-      <DropdownButton
-        onSelect={handleAppSelect}
-        variant="success"
-        id="dropdown-basic-button"
-        title="Chose Dapp"
-        className="m-3 sticky-top"
-      >
-        <Dropdown.Item eventKey="non-tee-args">
-          Non Tee App With Args
-        </Dropdown.Item>
-        <Dropdown.Item eventKey="non-tee-file">
-          Non Tee App With File
-        </Dropdown.Item>
-        <Dropdown.Item eventKey="tee-file">Tee App With File</Dropdown.Item>
-      </DropdownButton>
       </Container>
       <Card.Body>
         <Container className="d-flex flex-column align-items-center">
           <Card.Title className="mb-3">
-            Welcome {currentLandlord.given_name +' ' + currentLandlord.family_name}
+            Welcome {currentLandlord.email}
           </Card.Title>
           <Card.Subtitle className="mb-3">
             Connected with the Wallet ID : {requesterAddress}
@@ -244,8 +238,6 @@ function LandlordDashboard(props) {
     <Card.Body/>
         
             
-            
-          
         { processList.length > 0 ?
         <><Modal
         show={show}
@@ -267,39 +259,26 @@ function LandlordDashboard(props) {
                 className="m-2 gap-2 d-flex flex-column align-items-center"
               >
                 <FormGroup className="input-group" controlId="rent">
-                <Form.Label className="table text-center ">please input a rent to compare it to the applicant income</Form.Label>
+                <Form.Label className="table text-center ">Please enter the monthly rent for your appartment.</Form.Label>
                   <Form.Control
                     name="rent"
                     ref={rentRef}
-                    onChange={handleIexecArgsChange}
                     type="text"
                   />
                   <span className="input-group-text">
                     € 
                   </span>
-                </FormGroup>
-                {appAddress === "0x5e4017Bd35CbA7827e0Fa193F4B9F4f158FA254E" && 
-                <FormGroup className="input-group w-50" controlId="income">
-                  <span className="input-group-text">
-                    Income 
-                  </span>
-                  <Form.Control
-                  name="income"
-                    ref={incomeRef}
-                    onChange={handleIexecArgsChange}
-                    type="text"
-                  />
-                </FormGroup>}
-                
+                </FormGroup>                
               </Container>}
             
         </Modal.Body>
         <Modal.Footer>
           
-          <Button variant="outline-primary" disabled={isLoading.some((pid)=>pid === selectedProcess._id)} onClick={() => {
-            if(rentRef.current){
-              console.log(selectedProcess)
-              handleExecute(selectedProcess._id,selectedProcess.dataset_address);
+          <Button variant="outline-primary" disabled={(isLoading.some((pid)=>pid === selectedProcess._id))} onClick={async () => {
+            console.log("Dataset: " + selectedProcess.dataset_address);
+            if (rentRef.current && selectedProcess.dataset_address) {
+              console.log(selectedProcess);
+              await handleExecute(selectedProcess._id, selectedProcess.dataset_address);
             }
             
           }}>Execute</Button>
