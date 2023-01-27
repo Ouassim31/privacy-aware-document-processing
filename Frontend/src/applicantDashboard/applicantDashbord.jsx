@@ -25,7 +25,7 @@ function ApplicantDashboard (props){
             <Card.Body>
             <Container className="d-flex flex-column align-items-center">
           <Card.Title className="mb-3">
-            Welcome {currentUser.given_name +' ' + currentUser.family_name}
+            Welcome {currentUser.nickname}
           </Card.Title>
           <Card.Subtitle className="mb-3">
             Connected with the Wallet ID : {requesterAddress}

@@ -1,24 +1,19 @@
 import {Button,Card,Form,Container,Spinner,Modal} from "react-bootstrap";
-import { redirect } from "react-router-dom";
-
 import { useEffect } from "react";
 import { useState } from "react";
-
-import { NFTStorage, File } from 'nft.storage'
+import { redirect } from "react-router-dom";
 import { useParams } from "react-router-dom";
-
+import { NFTStorage, File } from 'nft.storage'
 
 export const { IExec } = require("iexec");
+
+
 function FileUpload(props) {
   //State variables
   const [requesterAddress, setRequesterAddress] = useState();
   const [selectedFile, setSelectedFile] = useState("");
   const [isUploading,setIsUploading] = useState(false)
-  // Log into NFT.Storage via GitHub and create API token
-  // Paste your NFT.Storage API key into the quotes:
-  const NFT_STORAGE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDQ2OTVCQkE5MzRFYjI4RTY1OTFEQ2NiZjlCOTU0ZTY0MDAwMzVhM0YiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY3MzM1Njc5MjY2OSwibmFtZSI6Imlvc2wifQ.OoOHlZLMuVIVKKedY4XOQHyvw-ygLnj6EYcUd7314B4';
-
-  const {currentUser,setFileLink,uploadtoIPFS} = props
+  const {currentUser, setFileLink, uploadtoIPFS} = props
   const {pid} = useParams()
   
   //init requester address and datasets count
@@ -32,7 +27,7 @@ function FileUpload(props) {
         const balance = await iexec_mod.account.checkBalance(address[0]);
         
         setRequesterAddress(address[0]);
-        
+
       } else {
         alert("install metamask extension!!");
       }
@@ -65,7 +60,7 @@ function FileUpload(props) {
 
 
   async function uploadToIpfs(file) {
-    const nftstorage = new NFTStorage({ token: NFT_STORAGE_KEY });
+    const nftstorage = new NFTStorage({ token: process.env.REACT_APP_NFT_STORAGE_TOKEN });
     const cid = await nftstorage.storeBlob(file);
     const uploadUrl = 'https://' + cid + '.ipfs.nftstorage.link';
     console.log('Uploaded dataset to ' + uploadUrl);
