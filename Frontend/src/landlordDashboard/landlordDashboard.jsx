@@ -65,6 +65,11 @@ function LandlordDashboard(props) {
     console.log("DATASET: " + DATASET_ADDRESS);
     console.log("RENT SECRET: " + RENT_SECRET);
 
+    const storageToken = await iexec.storage.defaultStorageLogin();
+        await iexec.storage.pushStorageToken(storageToken, {
+            forceUpdate: true
+        });
+
     //fetch app order from marketplace
     const { orders } = await iexec.orderbook.fetchAppOrderbook(appAddress, {
       workerpool: WORKERPOOL_ADDRESS,
