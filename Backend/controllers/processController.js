@@ -180,3 +180,94 @@ exports.process_get_landlord = (req, res, next) => {
         }
     ).sort({ created_on: -1 });
 };
+
+// GET PROCESS BY ID
+exports.process_get = (req, res, next) => {
+    Process.findById(
+        req.params.pid,
+        (err, process) => {
+            // If error, then log and pass to error handling middleware
+            if (err) {
+                console.log(`error ${err.message}`)
+                const error = new Error(`${err.message}`);
+                error.status = 500;
+                next(error);
+                return
+            }
+            // On success, return process objects in json format
+            res.json(process)
+        }
+    );
+};
+
+// PUT SET STATE
+exports.process_update_state = (req, res, next) => {
+    // If state parameter given -> continue, else throw error
+    if (req.body.hasOwnProperty("state")) {
+        Process.findByIdAndUpdate(
+            req.params.pid,
+            { process_state: req.body.state },
+            { new: true },
+            (err, process) => {
+                // If error, then log and pass to error handling middleware
+                if (err) {
+                    console.log(`error ${err.message}`)
+                    const error = new Error(`${err.message}`);
+                    error.status = 500;
+                    next(error);
+                    return
+                }
+                // On success, return process object in json format
+                res.json(process)
+            }
+        );
+    } else {
+        const error = new Error("State not specified in request body");
+        error.status = 400;
+        next(error);
+        return
+    }
+
+};
+
+// PUT DEREFERENCE APPLICANT
+exports.process_dereference_applicant = (req, res, next) => {
+    Process.findByIdAndUpdate(
+        req.params.pid,
+        { applicant_id: undefined },
+        { new: true },
+        (err, process) => {
+            // If error, then log and pass to error handling middleware
+            if (err) {
+                console.log(`error ${err.message}`)
+                const error = new Error(`${err.message}`);
+                error.status = 500;
+                next(error);
+                return
+            }
+            // On success, return process object in json format
+            res.json(process)
+        }
+    );
+};
+
+// PUT RESET PROCESS TO INITIAL STATE (dereference applicant_id; delete dataset_address; set state == 1)
+exports.process_reset = (req, res, next) => {
+    Process.findByIdAndUpdate(
+        req.params.pid,
+        { process_state: 1, dataset_address: "", applicant_id: ""},
+        { new: true },
+        (err, process) => {
+            // If error, then log and pass to error handling middleware
+            if (err) {
+                console.log(`error ${err.message}`)
+                const error = new Error(`${err.message}`);
+                error.status = 500;
+                next(error);
+                return
+            }
+            // On success, return process object in json format
+            res.json(process)
+        }
+    );
+};
