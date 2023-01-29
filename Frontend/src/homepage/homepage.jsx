@@ -10,7 +10,6 @@ const detectEthereumProvider= require('@metamask/detect-provider');
 
 
 
-
 const connect = async () => {
   const provider = await detectEthereumProvider();
 
@@ -20,10 +19,6 @@ const connect = async () => {
     console.log('Please install MetaMask!');
   }
 }
-
-
-
-
 
 
 const currentLandlord = {id : '639482f617bf5b744e5a5e71', username:'bill'}
@@ -41,16 +36,6 @@ function Homepage(props) {
           <div className="fw-bold">username</div>
           {user.nickname}</div>
       </ListGroup.Item>
-      <ListGroup.Item >
-        <div className="ms-2 me-auto">
-          <div className="fw-bold">firstname</div>
-          {user.given_name}</div>
-      </ListGroup.Item>
-      <ListGroup.Item>
-        <div className="ms-2 me-auto">
-          <div className="fw-bold">lastname</div>
-          {user.family_name}</div>
-      </ListGroup.Item> 
       <ListGroup.Item>
         <div className="ms-2 me-auto">
           <div className="fw-bold">email</div>
