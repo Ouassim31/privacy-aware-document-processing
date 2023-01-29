@@ -348,6 +348,7 @@ function LandlordDashboard(props) {
                     {process.process_state === 3 && <Button
                       variant="warning"
                       target="_blank"
+                      data-cy="iexec-explorer-button"
                       href={
                         "https://explorer.iex.ec/bellecour/task/" +
                         process.task_id

@@ -12,5 +12,7 @@ module.exports = defineConfig({
     experimentalModifyObstructiveThirdPartyCode: true,
     "baseUrl":"http://localhost:3000/",
     "chromeWebSecurity": false,
+    "defaultCommandTimeout": 10000,
+    video: false
   }
 })
