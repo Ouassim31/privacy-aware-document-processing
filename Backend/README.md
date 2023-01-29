@@ -42,7 +42,7 @@ npx jest
 | `/process/:pid/update/task`      | POST       | `{ task_id: }`   | 200; 500    |process object | update iExec task_id; set state == 3  |
 | `/process/:pid/update/state`     | PUT       | `{ state: }`   | 200; 500    |process object| update state   |
 | `/process/:pid/dereference_applicant`     | PUT       |  | 200; 500    |process object| dereference applicant  |
-| `/process/:pid/reset`     | PUT       | | 200; 500    |process object| reset process to initial state (set state == 1; set applicant_id == ""; set dataset_address == "") |
-| `/process/:pid`     | GET       |    | 200; 400    |process object  | get process by _id    |
+| `/process/:pid/reset`     | PUT       | | 200; 500    |process object| reset process to initial state: set state == 1; set applicant_id == ""; set dataset_address == "" |
+| `/process/:pid`     | GET       |    | 200; 400    |process object  | get process by process_id    |
 | `/process/by_applicant?applicant=applicant_id`     | GET      |    | 200; 400    |list of process objects     | get processes by applicant_id   |
 | `/process/by_landlord?landlord=landlord_id`     | GET       |    | 200; 400    |list of process objects   | get processes by landlord_id    |
