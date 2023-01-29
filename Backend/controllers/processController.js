@@ -255,7 +255,7 @@ exports.process_dereference_applicant = (req, res, next) => {
 exports.process_reset = (req, res, next) => {
     Process.findByIdAndUpdate(
         req.params.pid,
-        { applicant_id: undefined, process_state: 1, dataset_address: undefined },
+        { process_state: 1, dataset_address: "", applicant_id: ""},
         { new: true },
         (err, process) => {
             // If error, then log and pass to error handling middleware
