@@ -415,7 +415,7 @@ function LandlordDashboard(props) {
           </tbody>
         </Table></>
         :
-        <Card className="mb-3 p-2">
+        <Card data-cy="no-processes-available-card" className="mb-3 p-2">
         
         No Processes available ..
       </Card>}
