@@ -11,7 +11,7 @@
     "assert": "^2.0.0",
     "axios": "^1.2.1",
     "bootstrap": "^5.2.3",
-    "cypress": "^12.3.0",
+    "cypress": "^10.8.0",
     "file-saver": "^2.0.5",
     "iexec": "^7.2.2",
     "ipfs-http-client": "^59.0.0",
@@ -31,7 +31,9 @@
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "cy:open": "cypress open",
+    "cy:run": "cypress run"
   },
   "eslintConfig": {
     "extends": [
@@ -54,6 +56,8 @@
   "devDependencies": {
     "constants-browserify": "^1.0.0",
     "crypto-browserify": "^3.12.0",
+    "cypress-social-logins": "^1.14.0",
+    "eslint-plugin-cypress": "^2.12.1",
     "process": "^0.11.10",
     "react-app-rewired": "^2.2.1",
     "react-router-dom": "^6.4.4",
