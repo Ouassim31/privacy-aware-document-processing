@@ -2,7 +2,7 @@
 
 This cient connects to the blockchain using iexec sdk
 
-##NFT Storage
+## NFT Storage
 
 1. create `.env.local` file in the `root` folder of this project (where package.json is located)
 2. log into [NFT.Storage](NFT.Storage) via GitHub and create an API token
