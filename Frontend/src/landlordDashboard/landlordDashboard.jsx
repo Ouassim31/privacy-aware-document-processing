@@ -264,7 +264,6 @@ function LandlordDashboard(props) {
                       <DropdownButton
                         id="action-dropdown"
                         title="Action"
-
                       >
                         {process.process_state === 3 && (
                         <Dropdown.Item 
