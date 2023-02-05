@@ -2,22 +2,21 @@
 //imports
 
 import { useEffect, useState } from 'react';
-
+import { connect } from './services/iexec-services';
 import NavBar from './navBar/NavBar';
 import LandlordDashboard from './landlordDashboard/landlordDashboard';
-import FileUpload from './applicantDashboard/fileUpload';
+
+import { setFileLink,fetchProcesses,setTask,createProcess } from './services/backed-services';
 
 import {create} from 'ipfs-http-client'
 import { useAuth0 } from "@auth0/auth0-react";
 
 import {
-  Navigate as Redirect,
   Routes,
   Route,
-  useLocation,
 } from "react-router-dom";
 import Homepage from './homepage/homepage';
-import axios from 'axios';
+
 import LoginAndRegister from './loginAndRegister/loginAndRegister';
 import ApplicantDashboard from './applicantDashboard/applicantDashbord';
 
@@ -28,75 +27,8 @@ const detectEthereumProvider= require('@metamask/detect-provider');
 
 
 
-const connect = async () => {
-  if (window.ethereum) {
-  const address = await window.ethereum.request({
-    method: "eth_requestAccounts",
-  });
-    return address
-  } else {
-    console.log('Please install MetaMask!');
-  }
-}
 
-const fetchProcesses = async (role,email) => {
-  console.log('fetching processes')
-  let res = await axios({
-    method: 'get',
-    headers: { 'Content-Type': 'application/json'},
-    url: `http://localhost:3001/process/by_${role}?${role}=${email}`,
-   })
 
-  return res.data
-}
-
-const createProcess = async (landlord) => {
-  console.log('creating process')
-  let res = await axios({
-    method: 'post',
-    headers: { 'Content-Type': 'application/json'},
-    url: 'http://localhost:3001/process/',
-    data: {
-      'landlord_id' : landlord,
-      'description' : 'test'
-
-    }
-
-   })
-   return  res.data
-}
-const deleteProcess = async (pid) => {
-  console.log('deleting process' + pid)
-  let res = await axios({
-    method: 'delete',
-    headers: { 'Content-Type': 'application/json'},
-    url: 'http://localhost:3001/process/'+pid,
-   })
-   return  res.data
-  }
-const setTask = async (pid,tid) => {
-  console.log('setting task to process ' + pid)
-  let res = await axios({
-    method: 'post',
-    headers: { 'Content-Type': 'application/json'},
-    url: 'http://localhost:3001/process/'+pid+'/update/task',
-    data: {
-      task_id : tid
-    }
-   })
-   return  res.data
-}
-const setFileLink = async(email,pid,cid) =>{
-  console.log('setting file to process ' + pid)
-  
-  let res = await axios({
-    method : 'post',
-    headers: { 'Content-Type': 'application/json'},
-    url: `http://localhost:3001/process/${pid}/update/applicant_dataset`,
-    data: { applicant_id : email , dataset_address : cid}
-  })
-   return  res.data
-}
 
 
 const uploadtoIPFS = async (file) => {
@@ -104,34 +36,28 @@ const uploadtoIPFS = async (file) => {
   const { cid } = await client.add(file)
   return cid.toString()
 }
-const connecting = async () => {
-  if (window.ethereum) {
-    const address = await window.ethereum.request({
-      method: "eth_requestAccounts",
-    });
-    const iexec_mod = new IExec({ ethProvider: window.ethereum });
-    const balance = await iexec_mod.account.checkBalance(address[0]);
-    const { deals, count } = await iexec_mod.deal.fetchRequesterDeals(
-      address[0]
-    );
-    //setRequesterAddress(address[0]);
-    const deals_list = [];
-    //add task id to state variable to use it later
-    for (const deal of deals) {
-      //const lasttaskid = await getLastTask(deal.dealid);
-      //deal.lasttaskid = lasttaskid;
-      deals_list.push(deal);
-    }
-    //setMyDeals(deals_list);
-  } else {
-    alert("install metamask extension!!");
-  }
-};
 
+
+
+const stateToText = (pid)=>{
+  switch (pid) {
+    case 1:
+      return 'Waiting for the document upload'
+    case 2 :
+      return 'Document upload completed'
+    case 3 :
+      return 'IExec task started'
+    case 4 :
+    return 'IExec task completed'
+  
+    default:
+     return 'UNKNOWN_STATE'
+  }
+}
 function App() {
   const {user, isAuthenticated, isLoading} = useAuth0();
 const TestcurrentLandlord = {id : '639482f617bf5b744e5a5e71', username:'bill'}
-const [currentUser,setCurrentUser] = useState()
+const [currentUser,setCurrentUser] = useState({})
 const [RequesterAddress,setRequesterAddress] = useState(null)
 
 
@@ -157,24 +83,23 @@ useEffect(()=>{
 
 
 
-  console.log(isLoading)
+ 
   return (
     
     <div className="App">
            
-       {currentUser && <NavBar user={currentUser}/>}
+       {currentUser.email && <NavBar resetCurrentuser = {()=> setCurrentUser({})} user={currentUser}/>}
       <Routes>
-      { currentUser &&
-        <>
-      <Route exact path='applicant' element={  <ApplicantDashboard deleteProcess={deleteProcess} connect={connect}  fetchProcesses={()=>fetchProcesses('applicant',currentUser.email)} currentUser ={currentUser}/> }/>
-      <Route exact path='landlord' element={  <LandlordDashboard connect={connect} deleteProcess={deleteProcess} setTask = {setTask} createProcess={()=>createProcess(currentUser.email) } fetchProcesses={()=>fetchProcesses('landlord',currentUser.email)} currentLandlord ={currentUser}/> }/>
-      <Route exact path='/applicant/:pid' element={ <FileUpload currentUser={user} setFileLink = {(pid,cid) =>setFileLink(user.email,pid,cid)} uploadtoIPFS={uploadtoIPFS}/>} />
-      <Route exact path='/'  element={<Homepage user={currentUser}/>}/>
-      </>
-      }
-      <Route exact path='/login'  element={<LoginAndRegister/>}/>
+      
+      <Route exact path='applicant' element={  <ApplicantDashboard stateToText={stateToText} setFileLink = {(pid,cid) =>setFileLink(user.email,pid,cid)}  fetchProcesses={()=>fetchProcesses('applicant',currentUser.email)} currentUser ={currentUser}/> }/>
+      <Route exact path='landlord' element={  <LandlordDashboard stateToText={stateToText}   setTask = {setTask} createProcess={()=>createProcess(currentUser.email) } fetchProcesses={()=>fetchProcesses('landlord',currentUser.email)} currentLandlord ={currentUser}/> }/>
+      
+      <Route exact path='/'  element={ <Homepage user={currentUser}/>}/>
       
      
+     
+      
+    
       </Routes>
       
       

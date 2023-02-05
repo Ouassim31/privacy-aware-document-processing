@@ -13,12 +13,14 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
      
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
+  <BrowserRouter>
   <Auth0Provider
   domain="dev-uejzocs8t80y1t5j.eu.auth0.com"
   clientId="7Mn9dEYbMauPKegKpXRLGiCcMe8RiGLC"
   redirectUri={window.location.origin}
-  ><BrowserRouter><App/></BrowserRouter>
+  ><App/>
   </Auth0Provider>
+  </BrowserRouter>
     
     
  
