@@ -1,12 +1,13 @@
 import {Button,Card,Form,Container,Spinner,Modal} from "react-bootstrap";
 import { redirect } from "react-router-dom";
+import { withAuthenticationRequired } from '@auth0/auth0-react';
 
 import { useEffect } from "react";
 import { useState } from "react";
 
-import { NFTStorage, File } from 'nft.storage'
-import { useParams } from "react-router-dom";
 
+import { useParams } from "react-router-dom";
+import { encryptDataset,uploadToIpfs,deployEncryptedDataset,pushDatasetSecretToSMS,publishDataset } from "../services/iexec-services";
 
 export const { IExec } = require("iexec");
 function FileUpload(props) {
@@ -14,12 +15,10 @@ function FileUpload(props) {
   const [requesterAddress, setRequesterAddress] = useState();
   const [selectedFile, setSelectedFile] = useState("");
   const [isUploading,setIsUploading] = useState(false)
-  // Log into NFT.Storage via GitHub and create API token
-  // Paste your NFT.Storage API key into the quotes:
-  const NFT_STORAGE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDQ2OTVCQkE5MzRFYjI4RTY1OTFEQ2NiZjlCOTU0ZTY0MDAwMzVhM0YiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY3MzM1Njc5MjY2OSwibmFtZSI6Imlvc2wifQ.OoOHlZLMuVIVKKedY4XOQHyvw-ygLnj6EYcUd7314B4';
-
-  const {currentUser,setFileLink,uploadtoIPFS} = props
-  const {pid} = useParams()
+  const [UploadStatus,setUploadStatus] = useState([])
+  
+  const {setFileLink,pid,handleClose} = props
+  
   
   //init requester address and datasets count
   useEffect(() => {
@@ -41,95 +40,20 @@ function FileUpload(props) {
   }, []);
 
 
-  async function encryptDataset(datasetFile) {
-    
-    // convert file to bytestream
-    const fileBytes = await new Promise((resolve, reject) => {
-      const fileReader = new FileReader();
-      fileReader.readAsArrayBuffer(datasetFile);
-      fileReader.onload = (e) => resolve(e.target.result);
-      fileReader.onerror = () =>
-        reject(Error(`Failed to read file: ${fileReader.error}`));
-      fileReader.onabort = () => reject(Error(`Failed to read file: aborted`));
-    });
-
-    const iexec_mod = new IExec({ ethProvider: window.ethereum });
-    const encryptionKey = iexec_mod.dataset.generateEncryptionKey();
-    const encryptedDataset = await iexec_mod.dataset.encrypt(
-      fileBytes,
-      encryptionKey
-    );
-
-    return [encryptedDataset, encryptionKey];
-  };
-
-
-  async function uploadToIpfs(file) {
-    const nftstorage = new NFTStorage({ token: NFT_STORAGE_KEY });
-    const cid = await nftstorage.storeBlob(file);
-    const uploadUrl = 'https://' + cid + '.ipfs.nftstorage.link';
-    console.log('Uploaded dataset to ' + uploadUrl);
-    return uploadUrl;
-  }
-
-
-  async function deployEncryptedDataset(encryptedDataset, ipfsAddress) {
-    const configArgs = { ethProvider: window.ethereum,  chainId : 134};
-    const configOptions = { smsURL: 'https://v7.sms.debug-tee-services.bellecour.iex.ec' };
-    const iexec_mod = new IExec(configArgs, configOptions);
-
-    const checksum = await iexec_mod.dataset.computeEncryptedFileChecksum(
-      encryptedDataset
-    );
-
-    const { address } = await iexec_mod.dataset.deployDataset({
-      owner: requesterAddress,
-      name: "payslip",
-      multiaddr: ipfsAddress,
-      checksum: checksum,
-    });
-
-    console.log("deployed at", address);
-    return address;
-  };
-
-
-  async function pushDatasetSecretToSMS(datasetAddress, encryptionKey) {
-    const configArgs = { ethProvider: window.ethereum,  chainId : 134};
-    const configOptions = { smsURL: 'https://v7.sms.debug-tee-services.bellecour.iex.ec' };
-    const iexec = new IExec(configArgs, configOptions);
-    const pushed = await iexec.dataset.pushDatasetSecret(datasetAddress, encryptionKey);
-    console.log('secret pushed:', pushed);
-  }
-
-
-  async function publishDataset(datasetAddress) {
-    const configArgs = { ethProvider: window.ethereum,  chainId : 134};
-    const configOptions = { smsURL: 'https://v7.sms.debug-tee-services.bellecour.iex.ec' };
-    const iexec = new IExec(configArgs, configOptions);
-
-    const signedOrder = await iexec.order.signDatasetorder(
-      await iexec.order.createDatasetorder({
-        dataset: datasetAddress,
-        datasetprice: "0",
-        volume: "1000",
-        tag: ["tee"]
-      })
-    );
-
-    const orderHash = await iexec.order.publishDatasetorder(signedOrder);
-    return orderHash;
-  }
-
 
   async function handlePdfDocument(file) {
     const encryptedKeyValue = await encryptDataset(file);
+    setUploadStatus([...UploadStatus,'Document encrypted'])
     const encryptedDataset = encryptedKeyValue.at(0);
     const encryptionKey = encryptedKeyValue.at(1);
     const ipfsUrl = await uploadToIpfs(new Blob([encryptedDataset]));
-    const datasetAddress = await deployEncryptedDataset(encryptedDataset, ipfsUrl);
+    setUploadStatus([...UploadStatus,'Document uploaded to IPFS'])
+    const datasetAddress = await deployEncryptedDataset(requesterAddress,encryptedDataset, ipfsUrl);
+    setUploadStatus([...UploadStatus,'Encrypted Document deployed'])
     await pushDatasetSecretToSMS(datasetAddress, encryptionKey);
+    setUploadStatus([...UploadStatus,'Encryption secret pushed'])
     await publishDataset(datasetAddress);
+    
     return datasetAddress;
   }
 
@@ -139,8 +63,9 @@ function FileUpload(props) {
     event.preventDefault();
     setIsUploading(true)
     const datasetAddress = await handlePdfDocument(selectedFile);
+    setUploadStatus([...UploadStatus,'Document succesfuly uploaded'])
     setFileLink(pid,datasetAddress);
-    redirect('/applicant')
+    handleClose()
     
   };
 
@@ -151,18 +76,16 @@ function FileUpload(props) {
   
  
   return (
-    <Card className="m-3 p-3">
-      <Container className="d-flex flex-column align-items-center">
-          <Card.Title className="mb-3">
-            Welcome {currentUser.given_name +' ' + currentUser.family_name}
-          </Card.Title>
-          <Card.Subtitle className="mb-3">
-            Connected with the Wallet ID : {requesterAddress}
-          </Card.Subtitle>
-          <h3>Process id : {pid}</h3>
-          { isUploading ? <><><Spinner style={{width: '6rem', height: '6rem'}} className="m-2" animation="border" role="status"></Spinner><span className="fs-2 m-2">Please wait...</span></></> :<Form onSubmit={handleSubmit} className="w-75">
+    
+      <Container className="d-flex flex-column align-items-center my-4 ">
+          <div className="text-center">
+          <p>Process id : {pid}</p>
+          </div>
+          { isUploading ? <><Spinner style={{width: '6rem', height: '6rem'}} className="m-2" animation="border" role="status"></Spinner>{UploadStatus.length > 0 ? <ul>{UploadStatus.map(e => <li>{e}</li>)}</ul> : <span className="fs-2 m-2">Please wait...</span>}</>
+          :<Form onSubmit={handleSubmit} className="w-100">
+          
           <Form.Group className="mb-3" controlId="formBasicEmail">
-          <Form.Label>File</Form.Label>
+          <Form.Label >File</Form.Label>
           <Form.Control className="w-100" onChange={handleChange} type="file"  />
           <Form.Text className="text-muted">
             We'll never share your data with anyone else.
@@ -174,7 +97,9 @@ function FileUpload(props) {
       </Form>}
         </Container>
       
-    </Card>
+    
   );
 }
-export default FileUpload;
+export default withAuthenticationRequired(FileUpload, {
+  onRedirecting: () => 'you need to be logged in to be able to see the content',
+});
