@@ -60,7 +60,7 @@ function ApplicantDashboard(props) {
         <Modal.Header closeButton>Upload document</Modal.Header>
         <Modal.Body className="m-2 p-2 g-2">
           <Form.Group>
-            <Form.Label>Please enter a valid process id</Form.Label>
+            <Form.Label>Please enter a valid Process-ID</Form.Label>
             <Form.Control
               className="w-100"
               onChange={handlePidChange}
@@ -79,9 +79,9 @@ function ApplicantDashboard(props) {
       </Modal>
       <Card.Body>
         <Container className="d-flex flex-column align-items-center">
-          <Card.Title className="mb-3">Welcome {currentUser.email}</Card.Title>
+          <Card.Title className="mb-3">Welcome, {currentUser.email}</Card.Title>
           <Card.Subtitle className="mb-3">
-            Connected with the Wallet ID : {requesterAddress}
+            Connected with Wallet-ID : {requesterAddress}
           </Card.Subtitle>
         </Container>
         <Container fluid className="d-inline-flex align-items-begin p-2">
@@ -90,7 +90,7 @@ function ApplicantDashboard(props) {
             variant="outline-primary"
             onClick={handleShow}
           >
-            Upload document
+            Upload Document
           </Button>
         </Container>
 
@@ -99,9 +99,9 @@ function ApplicantDashboard(props) {
             <thead>
               <tr>
                 <th>#</th>
-                <th>ProcessID</th>
-                <th>Process State</th>
-                <th>Iexec Task ID</th>
+                <th>Request-ID</th>
+                <th>Request State</th>
+                <th>iExec Task-ID</th>
               </tr>
             </thead>
             <tbody>
@@ -124,7 +124,7 @@ function ApplicantDashboard(props) {
                               process.task_id
                             }
                           >
-                            <BiWorld /> IExec Explorer
+                            <BiWorld /> iExec Explorer
                           </Dropdown.Item>
                         )}
 

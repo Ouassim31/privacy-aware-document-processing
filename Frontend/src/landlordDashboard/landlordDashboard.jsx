@@ -140,8 +140,8 @@ function LandlordDashboard(props) {
   return (
     <Card className="mb-3 p-2">
       <Container className="lead d-flex flex-column align-items-center text-center">
-        <p className="">Welcome {currentLandlord.email}</p>
-        <p className="">Connected with the Wallet ID : {requesterAddress}</p>
+        <p className="">Welcome, {currentLandlord.email}</p>
+        <p className="">Connected with Wallet-ID : {requesterAddress}</p>
         <p>{app_name}</p>
       </Container>
 
@@ -151,7 +151,7 @@ function LandlordDashboard(props) {
           variant="primary"
           onClick={handleIexecArgsSubmit}
         >
-          Add Process
+          Add Request
         </Button>
       </Container>
 
@@ -175,7 +175,7 @@ function LandlordDashboard(props) {
                       role="status"
                     ></Spinner>
                     <span className="text-lg-start">
-                      Please wait untill the iexec task finishes...
+                      Please wait untill the iExec task finishes...
                     </span>
                   </div>
                   <Container>
@@ -189,7 +189,7 @@ function LandlordDashboard(props) {
                 >
                   <FormGroup className="input-group" controlId="rent">
                     <Form.Label className="table text-center ">
-                      Please enter the monthly rent for your appartment.
+                      Please enter the monthly rent for your apartment.
                     </Form.Label>
                     <Form.Control name="rent" ref={rentRef} type="text" />
                     <span className="input-group-text">€</span>
@@ -226,7 +226,7 @@ function LandlordDashboard(props) {
                 <th>Request-ID</th>
                 <th>Request State</th>
                 <th>Description</th>
-                <th>Task State</th>
+                <th>iExec Task State</th>
                 <th></th>
               </tr>
             </thead>
@@ -274,7 +274,7 @@ function LandlordDashboard(props) {
                             process.task_id
                           }
                         >
-                          <BiWorld /> Iexec Explorer
+                          <BiWorld /> iExec Explorer
                         </Dropdown.Item >
                       )}
                         {requesterAddress &&
@@ -338,7 +338,7 @@ function LandlordDashboard(props) {
         </>
       ) : (
         <Card data-cy="no-processes-available-card" className="mb-3 p-2">
-          No Processes available ..
+          No requests available ..
         </Card>
       )}
     </Card>

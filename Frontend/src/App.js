@@ -42,13 +42,13 @@ const uploadtoIPFS = async (file) => {
 const stateToText = (pid)=>{
   switch (pid) {
     case 1:
-      return 'Waiting for the document upload'
+      return 'Waiting for document upload'
     case 2 :
       return 'Document upload completed'
     case 3 :
-      return 'IExec task started'
+      return 'iExec task started'
     case 4 :
-    return 'IExec task completed'
+    return 'iExec task completed'
   
     default:
      return 'UNKNOWN_STATE'
