@@ -26,9 +26,8 @@
 
 Cypress.Commands.add('loginByGoogle', () => {
         
-    cy.visit('/login')
-    cy.contains('Log In').click();
- cy.contains('button', 'Continue with Google')
+    cy.visit('/')
+    cy.contains('button', 'Continue with Google')
         .click({force: true}) 
 
     

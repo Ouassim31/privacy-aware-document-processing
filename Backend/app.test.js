@@ -489,3 +489,241 @@ describe("GET BY LANDLORD", () => {
         })     
     })
 })
+
+/// GET /process/:pid
+describe("GET /process/:pid", () => {
+    // On success
+    describe("Given existing process_id", () => {
+        let processId;
+
+        beforeEach(async () => {
+            // Create a process object in the database
+            const createProcessResponse = await request(app)
+                .post("/process")
+                .send({ landlord_id: "landlord@test.com" });
+            processId = createProcessResponse.body._id;
+        });
+        // Status code 200
+        test("Should respond with status code 200", async () => {
+            const response = await request(app)
+                .get(`/process/${processId}`)
+            expect(response.status).toBe(200);
+        })
+    })
+
+    // On failure
+    describe("Missing process_id", () => {
+        const processId = "";
+        // Status code 404
+        test("Should respond with status code 404", async () => {
+            const response = await request(app)
+                .get(`/process/${processId}`)
+            expect(response.status).toBe(404);
+        })      
+    })
+
+    // On failure
+    describe("Invalid process_id", () => {
+        const processId1 = "test";
+        // Status code 400
+        test("Should respond with status code 400", async () => {
+            const response = await request(app)
+                .get(`/process/${processId1}`)
+            expect(response.status).toBe(500);
+        })
+    })
+})
+
+/// PUT /process/:pid/update/state
+describe("PUT /process/:pid/update/state", () => {
+    // On success
+    describe("Given existing process_id and state", () => {
+        let processId;
+        const newState = 4;
+
+        beforeEach(async () => {
+            // Create a process object in the database
+            const createProcessResponse = await request(app)
+                .post("/process")
+                .send({ landlord_id: "landlord@test.com" });
+            processId = createProcessResponse.body._id;
+        });
+
+        // JSON object with process
+        test("Should respond with valid json object", async () => {
+            const updateStateResponse = await request(app)
+                .put(`/process/${processId}/update/state`)
+                .send({ state: newState });
+            expect(updateStateResponse.body.process_state).toEqual(newState);
+        });
+
+        // Status code 200
+        test("Should respond with status code 200", async () => {
+            const updateStateResponse = await request(app)
+                .put(`/process/${processId}/update/state`)
+                .send({ state: newState });
+            expect(updateStateResponse.status).toBe(200);
+        });
+
+        // Should specify json in content type header
+        test("Should specify json in content type header", async () => {
+            const updateStateResponse = await request(app)
+                .put(`/process/${processId}/update/state`)
+                .send({ state: newState });
+            expect(updateStateResponse.headers['content-type']).toEqual(expect.stringContaining("json"));
+        });
+    })
+    // On failure
+    describe("Wrong or missing process_id", () => {
+        test("Should respond with status code 500", async () => {
+            const processId = "c55e55c";
+            const newState = 4;
+
+            const response = await request(app)
+                .put(`/process/${processId}/update/state`)
+                .send({ state: newState });
+            expect(response.status).toBe(500);   
+        });
+
+        test("Should respond with status code 404", async () => {
+            const processId = "";
+            const newState = 4;
+
+            const response = await request(app)
+            .put(`/process/${processId}/update/state`)
+            .send({ state: newState });
+            expect(response.status).toBe(404);   
+        });
+    })
+})
+
+/// PUT /process/:pid/dereference_applicant
+
+describe("PUT /process/:pid/dereference_applicant", () => {
+    // On success
+    describe("Given existing process_id", () => {
+        let processId;
+        const landlordId = "landlord@test.com";
+        const applicantId = "applicant@test.com";
+        const datasetAddress = "0xD";
+
+        beforeEach(async () => {
+            // Create a process object in the database
+            const createProcessResponse = await request(app)
+                .post("/process")
+                .send({ landlord_id: landlordId });
+            processId = createProcessResponse.body._id;
+        });
+
+        beforeEach(async () => {
+            // Add applicant_id and data_set address to process object
+            const createResponse = await request(app)
+                .post(`/process/${processId}/update/applicant_dataset`)
+                .send({ applicant_id: applicantId, dataset_address: datasetAddress });
+        });
+        
+        // JSON object with processes
+        test("Should respond with valid json object", async () => {
+            const response = await request(app)
+                .put(`/process/${processId}/dereference_applicant`);
+            expect(response.body).not.toHaveProperty("applicant_id");
+        })
+
+        // Status code 200
+        test("Should respond with status code 200", async () => {
+            const response = await request(app)
+                .put(`/process/${processId}/dereference_applicant`);
+            expect(response.status).toBe(200);
+        })
+
+        // Should specify json in content type header
+        test("Should specify json in content type header", async () => {
+            const response = await request(app)
+                .put(`/process/${processId}/dereference_applicant`);
+            expect(response.headers['content-type']).toEqual(expect.stringContaining("json"))
+        })
+    })
+
+    // On failure
+    describe("Wrong or missing process_id", () => {
+        test("Should respond with status code 500", async () => {
+            const processId = "c55e55c";
+            const response = await request(app)
+                .put(`/process/${processId}/dereference_applicant`);
+            expect(response.status).toBe(500);   
+        });
+
+        test("Should respond with status code 404", async () => {
+            const processId = "";
+            const response = await request(app)
+                .put(`/process/${processId}/dereference_applicant`);
+            expect(response.status).toBe(404);   
+        });
+    })
+})
+
+/// PUT /process/:pid/reset
+describe("PUT /process/:pid/reset", () => {
+    // On success
+    describe("Given existing process_id", () => {
+        let processId;
+        const landlordId = "landlord@test.com";
+        const applicantId = "applicant@test.com";
+        const datasetAddress = "0xD";
+
+        beforeEach(async () => {
+            // Create a process object in the database
+            const createProcessResponse = await request(app)
+                .post("/process")
+                .send({ landlord_id: landlordId });
+            processId = createProcessResponse.body._id;
+        });
+
+        beforeEach(async () => {
+            // Add applicant_id and data_set address to process object
+            const createResponse = await request(app)
+                .post(`/process/${processId}/update/applicant_dataset`)
+                .send({ applicant_id: applicantId, dataset_address: datasetAddress });
+        });
+        
+        // JSON object with processes
+        test("Should respond with valid json object", async () => {
+            const response = await request(app)
+                .put(`/process/${processId}/reset`);
+            expect(response.body.applicant_id).toEqual("");
+            expect(response.body.dataset_address).toEqual("");
+            expect(response.body.process_state).toEqual(1);
+        })
+
+        // Status code 200
+        test("Should respond with status code 200", async () => {
+            const response = await request(app)
+                .put(`/process/${processId}/reset`);
+            expect(response.status).toBe(200);
+        })
+
+        // Should specify json in content type header
+        test("Should specify json in content type header", async () => {
+            const response = await request(app)
+                .put(`/process/${processId}/reset`);
+            expect(response.headers['content-type']).toEqual(expect.stringContaining("json"))
+        })
+    })
+
+    // On failure
+    describe("Wrong or missing process_id", () => {
+        test("Should respond with status code 500", async () => {
+            const processId = "c55e55c";
+            const response = await request(app)
+                .put(`/process/${processId}/reset`);
+            expect(response.status).toBe(500);   
+        });
+
+        test("Should respond with status code 404", async () => {
+            const processId = "";
+            const response = await request(app)
+                .put(`/process/${processId}/reset`);
+            expect(response.status).toBe(404);   
+        });
+    })
+})
