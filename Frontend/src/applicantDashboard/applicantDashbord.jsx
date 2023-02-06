@@ -5,8 +5,6 @@ import {
   Container,
   Modal,
   Form,
-  Dropdown,
-  DropdownButton,
 } from "react-bootstrap";
 
 import { useState, useEffect, useRef } from "react";
@@ -15,7 +13,7 @@ import FileUpload from "./fileUpload";
 import { BiWorld } from "react-icons/bi";
 import { deleteProcess, getProcessByID } from "../services/backed-services";
 import { connect } from "../services/iexec-services";
-
+import Process from "../landlordDashboard/process";
 function ApplicantDashboard(props) {
   const { currentUser, stateToText, setFileLink, fetchProcesses } = props;
   const [requesterAddress, setRequesterAddress] = useState();
@@ -23,6 +21,12 @@ function ApplicantDashboard(props) {
   const [show, setShow] = useState(false);
   const [pidRef, setPidRef] = useState();
 
+  const handleDelete = (pid) => {
+    deleteProcess();
+    setProcessList(
+      processList.filter((p) => p._id != pid)
+    );
+  }
   const handlePidChange = (e) => {
     getProcessByID(e.target.value).then((res) => {
       //TODO check if exists
@@ -49,7 +53,7 @@ function ApplicantDashboard(props) {
     console.log(pidRef);
   }, [pidRef]);
   return (
-    <Card className="mb-3 p-2">
+    <><Card className="mw-100">
       <Modal
         show={show}
         onHide={handleClose}
@@ -77,13 +81,14 @@ function ApplicantDashboard(props) {
           )}
         </Modal.Body>
       </Modal>
-      <Card.Body>
-        <Container className="d-flex flex-column align-items-center">
-          <Card.Title className="mb-3">Welcome, {currentUser.email}</Card.Title>
-          <Card.Subtitle className="mb-3">
-            Connected with Wallet-ID : {requesterAddress}
-          </Card.Subtitle>
-        </Container>
+
+      
+      <Container className="lead d-flex flex-column align-items-center text-center">
+        <p className="">Welcome {currentUser.email}</p>
+        <p className="">Connected with the Wallet ID : {requesterAddress}</p>
+        
+      </Container>
+
         <Container fluid className="d-inline-flex align-items-begin p-2">
           <Button
             className="h-50"
@@ -93,63 +98,24 @@ function ApplicantDashboard(props) {
             Upload Document
           </Button>
         </Container>
-
         {processList.length > 0 ? (
-          <Table responsive striped bordered hover>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Request-ID</th>
-                <th>Request State</th>
-                <th>iExec Task-ID</th>
-              </tr>
-            </thead>
-            <tbody>
-              {processList.length > 0 &&
-                processList.map((process, index) => (
-                  <tr key={"process-" + index}>
-                    <td>{index}</td>
-                    <td>{process._id}</td>
-                    <td>{stateToText(process.process_state)}</td>
-                    <td>
-                      <DropdownButton
-                      variant="outline-primary"
-                        id="dropdown-action-button"
-                        title="More"
-                      >
-                        {process.process_state === 3 && (
-                          <Dropdown.Item
-                            href={
-                              "https://explorer.iex.ec/bellecour/task/" +
-                              process.task_id
-                            }
-                          >
-                            <BiWorld /> iExec Explorer
-                          </Dropdown.Item>
-                        )}
 
-                        <Dropdown.Item
-                          processid={index}
-                          onClick={(e) => {
-                            deleteProcess(process._id);
-                            setProcessList(
-                              processList.filter((p) => p._id != process._id)
-                            );
-                          }}
-                        >
-                          Delete
-                        </Dropdown.Item>
-                      </DropdownButton>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </Table>
-        ) : (
+        <Container fluid className="d-flex flex-wrap gap-4 m-3 justify-content-center">
+          
+          
+                {processList.map((process, index) => (<Process process={{_id:process._id,process_state:process.process_state,landlord_id:process.landlord_id,task_id:process.task_id}}  deleteProcess={handleDelete}/>))}
+                
+                
+          </Container>
+        )
+  
+         : (
+
           <Card className="mb-3 p-2">No Processes available ..</Card>
         )}
-      </Card.Body>
-    </Card>
+      </Card>
+    
+    </>
   );
 }
 export default withAuthenticationRequired(ApplicantDashboard, {

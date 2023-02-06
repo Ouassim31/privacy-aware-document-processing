@@ -27,7 +27,7 @@ const handleCancel = () => {
     </Form>
     
   ) : (
-    <p onClick={() => setIsEditing(true)}>{content}</p>
+    <p onClick={() => setIsEditing(true)}>{content ? content : 'Please add a description'}</p>
   );
 }
 export default DescriptionCell;
