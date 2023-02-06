@@ -27,4 +27,16 @@ router.get("/by_applicant", process_controller.process_get_applicant);
 // GET: Get processes by landlord
 router.get("/by_landlord", process_controller.process_get_landlord);
 
+// GET: Get process by ID 
+router.get("/:pid", process_controller.process_get);
+
+// PUT: Set state
+router.put("/:pid/update/state", process_controller.process_update_state);
+
+// PUT: Dereference applicant
+router.put("/:pid/dereference_applicant", process_controller.process_dereference_applicant);
+
+// PUT: Reset process to initial state (state 1)
+router.put("/:pid/reset", process_controller.process_reset);
+
 module.exports = router;
