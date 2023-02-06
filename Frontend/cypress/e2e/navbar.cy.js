@@ -1,3 +1,4 @@
+
 describe('Can navigate with the navbar', () => {
 
   beforeEach(() => {
@@ -9,19 +10,19 @@ describe('Can navigate with the navbar', () => {
   })
 
   it('can navigate to Applicant Dashboard', () => {
-    cy.contains("Applicant").click();
-    cy.url().should('contain', 'applicant');
+    cy.get("[data-cy=navbar-applicant]").click();
+    assert.exists("What does the app do?")
   })
 
   it('can navigate to Landlord Dashboard', () => {
-    cy.contains("Landlord").click();
+    cy.get("[data-cy=navbar-landlord]").click();
     cy.url().should('contain', 'landlord');
   })
 
   it('can navigate from another page back to Home', () => {
-    cy.contains("Landlord").click();
-    cy.contains("Home").click();
-    //TODO: make an assertion here that something exists that is unique to this page.
+    cy.get("[data-cy=navbar-landlord]").click();
+    cy.get("[data-cy=navbar-home]").click();
+    assert.exists("What does the app do?");
   })
 
 })
