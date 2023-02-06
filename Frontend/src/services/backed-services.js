@@ -49,8 +49,6 @@ export const fetchProcesses = async (role,email) => {
       url: 'http://localhost:3001/process/',
       data: {
         'landlord_id' : landlord,
-        'description' : 'test'
-  
       }
   
      })

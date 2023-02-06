@@ -1,9 +1,6 @@
 import {
   Card,
-  Table,
   Button,
-  DropdownButton,
-  Dropdown,
   Form,
   FormGroup,
   Container,
@@ -15,10 +12,10 @@ import { BiWorld, BiCopyAlt } from "react-icons/bi";
 import { useEffect, useState, useRef } from "react";
 
 import { withAuthenticationRequired } from "@auth0/auth0-react";
-import TaskBtn from "./taskBtn";
+
 import {fetchProcesses,deleteProcess, updateDescription} from '../services/backed-services'
 import { connect,pushRentAsSecret,createIexecTask,getLastTask,getResult } from "../services/iexec-services";
-import DescriptionCell from "./descriptionCell";
+import Process from "./process";
 
 
 
@@ -26,7 +23,6 @@ function LandlordDashboard(props) {
   //State variables
   const {
     currentLandlord,
-    stateToText,
     fetchProcesses,
     createProcess,
     setTask
@@ -54,6 +50,12 @@ function LandlordDashboard(props) {
    * EVENT HANDLING
    *
    */
+  const handleDelete = (pid) => {
+    deleteProcess();
+    setProcessList(
+      processList.filter((p) => p._id != pid)
+    );
+  }
   const handleClose = () => {
     setShow(false);
     setSelectedProcess({});
@@ -219,123 +221,14 @@ function LandlordDashboard(props) {
               </Button>
             </Modal.Footer>
           </Modal>
-          <Table responsive striped bordered hover className="m-3">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Request-ID</th>
-                <th>Request State</th>
-                <th>Description</th>
-                <th>Task State</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {processList.length > 0 &&
-                processList.map((process, index) => (
-                  <tr key={"process-" + index}>
-                    <td>{index}</td>
-                    <td className="d-flex justify-content-between">
-                      {process._id}{" "}
-                      {process.process_state === 1 && (
-                        <Button
-                          variant="outline-primary"
-                          processid={index}
-                          onClick={(e) => {
-                            let url = window.location.origin;
-                            navigator.clipboard.writeText(process._id);
-                          }}
-                        >
-                          <BiCopyAlt />
-                        </Button>
-                      )}
-                    </td>
-                    <td>{stateToText(process.process_state)}</td>
+          <Container fluid className="d-flex flex-wrap gap-4 m-3 justify-content-center">
+          {processList.length > 0 &&
+          
+                processList.map((process, index) => (<Process process={process} isLoading={isLoading.some((pid) => pid === process._id)} handleShow={handleShow} deleteProcess={handleDelete}/>))
+                
+                }
+          </Container>
 
-                    <td><DescriptionCell updateDescription={(content)=> updateDescription(process._id,content)} description={process.description}/></td>
-                    <td>{process.task_id && requesterAddress && (
-                        <TaskBtn
-                        task_id={process.task_id}
-                        processid={process._id}
-                        getResult={getResult}
-                      />
-                      )}</td>
-                    <td className="d-flex justify-content-center gap-2">
-                      <DropdownButton
-                        id="action-dropdown"
-                        title="Action"
-
-                      >
-                        {process.process_state === 3 && (
-                        <Dropdown.Item 
-                          
-                          target="_blank"
-                          href={
-                            "https://explorer.iex.ec/bellecour/task/" +
-                            process.task_id
-                          }
-                        >
-                          <BiWorld /> Iexec Explorer
-                        </Dropdown.Item >
-                      )}
-                        {requesterAddress &&
-                        process.process_state === 2 &&
-                        (isLoading.some((pid) => pid === process._id) ? (
-                          <Dropdown.Item
-                            className="d-flex d-inline"
-                            variant="outline-warning"
-                            onClick={(e) => {
-                              handleShow(process);
-                            }}
-                          >
-                            <Spinner
-                              style={{ width: "1rem", height: "1rem" }}
-                              className=""
-                              animation="border"
-                              role="status"
-                            ></Spinner>
-                            <span className="text-nowrap mx-2">Status</span>
-                          </Dropdown.Item>
-                        ) : (
-                          <Dropdown.Item
-                            variant="outline-primary"
-                            processid={index}
-                            onClick={(e) => {
-                              handleShow(process);
-                            }}
-                          >
-                            Execute
-                          </Dropdown.Item>
-                        ))}
-                        
-                        
-                      <Dropdown.Item
-                        variant="outline-danger"
-                        
-                        processid={index}
-                        onClick={(e) => {
-                          deleteProcess(process._id);
-                          setProcessList(
-                            processList.filter((p) => p._id != process._id)
-                          );
-                        }}
-                      >
-                        Delete
-                      </Dropdown.Item>
-                      </DropdownButton>
-                        
-                      
-
-                      
-
-                     
-
-                      
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </Table>
         </>
       ) : (
         <Card data-cy="no-processes-available-card" className="mb-3 p-2">

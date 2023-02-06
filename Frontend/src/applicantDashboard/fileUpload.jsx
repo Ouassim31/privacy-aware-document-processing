@@ -5,8 +5,6 @@ import { withAuthenticationRequired } from '@auth0/auth0-react';
 import { useEffect } from "react";
 import { useState } from "react";
 
-
-import { useParams } from "react-router-dom";
 import { encryptDataset,uploadToIpfs,deployEncryptedDataset,pushDatasetSecretToSMS,publishDataset } from "../services/iexec-services";
 
 export const { IExec } = require("iexec");
@@ -81,9 +79,8 @@ function FileUpload(props) {
           <div className="text-center">
           <p>Process id : {pid}</p>
           </div>
-          { isUploading ? <><Spinner style={{width: '6rem', height: '6rem'}} className="m-2" animation="border" role="status"></Spinner>{UploadStatus.length > 0 ? <ul>{UploadStatus.map(e => <li>{e}</li>)}</ul> : <span className="fs-2 m-2">Please wait...</span>}</>
+          { isUploading ? <><Spinner style={{width: '6rem', height: '6rem'}} className="m-2" animation="border" role="status"></Spinner>{UploadStatus.length > 0 ? <ol>{UploadStatus.map((e,index) => <li  id={index}>{e}</li>)}</ol> : <span className="fs-2 m-2">Please wait...</span>}</>
           :<Form onSubmit={handleSubmit} className="w-100">
-          
           <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label >File</Form.Label>
           <Form.Control className="w-100" onChange={handleChange} type="file"  />
