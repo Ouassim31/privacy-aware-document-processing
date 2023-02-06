@@ -20,7 +20,7 @@ function NavBar(props) {
             <NavLink className="nav-link active" data-cy="navbar-applicant" to="/applicant">Applicant</NavLink>
             </Nav.Item>
             <Nav.Item className='d-flex flex-row'>
-            <span className="ms-3 text-center align-self-center">Welcome, {user.nickname}</span>
+            <span style={{color:'white'}} className="ms-3 text-center align-self-center">Welcome, {user.nickname}</span>
             <NavLink  className="me-3 nav-link active"  data-cy="logout-button" as="button" onClick={() => { logout({ returnTo: window.location.origin + '/login' }) ;resetCurrentuser();}}>Logout</NavLink>
             </Nav.Item>
             
