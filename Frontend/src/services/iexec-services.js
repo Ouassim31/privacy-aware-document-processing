@@ -33,6 +33,7 @@ export async function encryptDataset(datasetFile) {
 
 
 export async function uploadToIpfs(file) {
+  console.log(NFT_STORAGE_KEY)
   const nftstorage = new NFTStorage({ token: NFT_STORAGE_KEY });
   const cid = await nftstorage.storeBlob(file);
   const uploadUrl = 'https://' + cid + '.ipfs.nftstorage.link';

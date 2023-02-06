@@ -7,7 +7,7 @@ function TaskBtn(props) {
  const handleResults = (tid) => {
     getResult(tid)
  }
- const [taskState,setTaskState] = useState(null)
+ const [taskState,setTaskState] = useState('UNSET')
  
  const waitFinalState = async (taskid) => {
  const iexec_mod = new IExec({ ethProvider: window.ethereum });

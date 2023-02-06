@@ -85,11 +85,11 @@ function LandlordDashboard(props) {
           rent_secret: res,
         });
       });
-      setIsLoading([...isLoading, {pid:pid,status:['Rent pushed as secret']}]);
-    }
+      
 
     if (iexecParams && appAddress) {
-     
+      setIsLoading([...isLoading, {pid:pid,status:['Rent pushed as secret']}]);
+    }
       const dealid = await createIexecTask(appAddress, iexecParams);
       const tid = await getLastTask(dealid);
       setIsLoading(isLoading.map((process)=> process.pid === pid && {pid:process.pid,status:[...process.status,'deal signed and created']} ))
@@ -167,7 +167,7 @@ function LandlordDashboard(props) {
           >
             <Modal.Header closeButton />
             <Modal.Body>
-              {isLoading.some((pid) => pid === selectedProcess._id) ? (
+              {isLoading.some(({pid}) => pid === selectedProcess._id) ? (
                 <>
                   <div className="d-table-row">
                     <Spinner
@@ -182,6 +182,9 @@ function LandlordDashboard(props) {
                   </div>
                   <Container>
                     <span className="m-2 text-md-center d-block">Status :</span>
+                    <ol>
+                      {isLoading.filter(({pid})=>selectedProcess._id)[0].status.map((status,index)=><li id={index}>{status}</li>)}
+                    </ol>
                   </Container>
                 </>
               ) : (
@@ -202,7 +205,7 @@ function LandlordDashboard(props) {
             <Modal.Footer>
               <Button
                 variant="outline-primary"
-                disabled={isLoading.some((pid) => pid === selectedProcess._id)}
+                disabled={isLoading.some(({pid}) => pid === selectedProcess._id)}
                 onClick={async () => {
                   console.log("Dataset: " + selectedProcess.dataset_address);
                   if (rentRef.current && selectedProcess.dataset_address) {
@@ -225,7 +228,7 @@ function LandlordDashboard(props) {
           <Container fluid className="d-flex flex-wrap gap-4 m-3 justify-content-center">
           {processList.length > 0 &&
           
-                processList.map((process, index) => (<Process process={process} isLoading={isLoading.some((pid) => pid === process._id)} handleShow={handleShow} deleteProcess={handleDelete}/>))
+                processList.map((process, index) => (<Process key={index} requesterAddress={requesterAddress} process={process} isLoading={isLoading.some(({pid}) => pid === process._id)} handleShow={handleShow} deleteProcess={handleDelete}/>))
                 
                 }
           </Container>

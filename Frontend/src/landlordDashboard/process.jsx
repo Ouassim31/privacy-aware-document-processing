@@ -9,6 +9,7 @@ import { updateDescription } from "../services/backed-services"
 
 
 function Process({process,handleShow,deleteProcess,requesterAddress,isLoading}) {
+   
     const view = useLocation().pathname;
     console.log(view)
     const stateToText = (pid)=>{

@@ -103,7 +103,7 @@ function ApplicantDashboard(props) {
         <Container fluid className="d-flex flex-wrap gap-4 m-3 justify-content-center">
           
           
-                {processList.map((process, index) => (<Process process={{_id:process._id,process_state:process.process_state,landlord_id:process.landlord_id,task_id:process.task_id}}  deleteProcess={handleDelete}/>))}
+                {processList.map((process, index) => (<Process key={index} process={{_id:process._id,process_state:process.process_state,landlord_id:process.landlord_id,task_id:process.task_id}}  deleteProcess={handleDelete}/>))}
                 
                 
           </Container>

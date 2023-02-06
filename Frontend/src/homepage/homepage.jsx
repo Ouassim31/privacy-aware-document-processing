@@ -1,7 +1,7 @@
 //imports
 
 import { useState } from "react";
-import { Card, ListGroup, Accordion, Container,Tabs,Tab } from "react-bootstrap";
+import { Card,Carousel, ListGroup, Accordion, Container,Tabs,Tab } from "react-bootstrap";
 import { withAuthenticationRequired } from "@auth0/auth0-react";
 
 export const { IExec } = require("iexec");
@@ -21,21 +21,33 @@ function Homepage(props) {
   const { user } = props;
 
   return (
-    <Card className="p-2 homepage lead ">
-      <Container className="w-75 d-flex flex-column">
-      <h2 className="display-5 text-center">What does the app do?</h2>
-      <Container className="w-75 text-center">
+    
+    <Carousel variant="dark">
+
+    <Carousel.Item className="mb-4">
+    <h2 className="display-5 text-center">What does the app do?</h2>
+    <Container className="w-75 text-center">
+        <p className="">
+          Imagine a setting where a landlord wants to rent out an apartment and
+          make sure that the candidate applying for the apartment makes enough
+          money to cover the monthly rent. In a traditional setting, the
+          landlord would ask the applicant to hand in a payslip and check the
+          applicant's income manually. This procedure is not privacy-perserving
+          as a lot of sensitive personal information is exposed on the payslip
+          that is not relevant for the rental.
+        </p>
         <p>
-          This application is intended to be used in apartment application
-          procedures where documents need to be verified. It allows a landlord
-          to process (verify) a document provided by an applicant in a
-          privacy-preserving way. The landlord can specify the processing task
-          by selecting a <strong>DApp</strong> that meets the requirements.
+          {" "}
+          To solve this problem the landlord can make use of the 
+          <strong>Payslip Analysis DApp</strong> which will analyze the
+          applicant's payslip document and then output a response to the
+          question "is the applicant's income sufficient to cover the monthly rent".
         </p>
       </Container>
-      <hr className="hr my-3 w-25 align-self-center" />
+    </Carousel.Item>
+    <Carousel.Item className="mb-4">
+      <div>
       <h2 className="display-5 text-center">Example use case</h2>
-
       <Container className="w-75 text-center">
         <p className="">
           Imagine a setting where a landlord wants to rent out an apartment and
@@ -54,9 +66,10 @@ function Homepage(props) {
           question "is the applicant's income sufficient to cover the monthly rent".
         </p>
       </Container>
-      <hr className="hr my-3 w-25 align-self-center" />
-      <h2 className="display-5 text-center">Next steps</h2>
-      <Container className="m-3 d-flex flex-column align-items-center">
+      </div>
+    </Carousel.Item>
+    <Carousel.Item>
+    <Container className="m-3 d-flex flex-column align-items-center">
       <Tabs
       defaultActiveKey="landlord"
       id="fill-tab-example"
@@ -125,8 +138,9 @@ function Homepage(props) {
       
     </Tabs>
       </Container>
-      </Container>
-    </Card>
+    </Carousel.Item>
+  </Carousel>
+
   );
 }
 
