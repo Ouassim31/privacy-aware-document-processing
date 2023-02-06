@@ -8,7 +8,7 @@ function NavBar(props) {
   const { logout } = useAuth0();
   
   return (
-    <Navbar bg="light" expand="lg">
+    <Navbar bg="primary" variant="dark" expand="lg">
       <Container>
         <Navbar.Brand href="#home">Privacy-Aware Document Processing</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
