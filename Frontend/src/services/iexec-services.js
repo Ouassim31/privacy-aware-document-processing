@@ -6,7 +6,7 @@ const { IExec } = require("iexec");
 const WORKERPOOL_ADDRESS = "v7-debug.main.pools.iexec.eth";
 // Log into NFT.Storage via GitHub and create API token
   // Paste your NFT.Storage API key into the quotes:
-  const NFT_STORAGE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDQ2OTVCQkE5MzRFYjI4RTY1OTFEQ2NiZjlCOTU0ZTY0MDAwMzVhM0YiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY3MzM1Njc5MjY2OSwibmFtZSI6Imlvc2wifQ.OoOHlZLMuVIVKKedY4XOQHyvw-ygLnj6EYcUd7314B4';
+  const NFT_STORAGE_KEY = process.env.REACT_APP_NFT_STORAGE_TOKEN;
 
 
 export async function encryptDataset(datasetFile) {

@@ -47,7 +47,7 @@ function FileUpload(props) {
     const ipfsUrl = await uploadToIpfs(new Blob([encryptedDataset]));
     setUploadStatus([...UploadStatus,'Document uploaded to IPFS'])
     const datasetAddress = await deployEncryptedDataset(requesterAddress,encryptedDataset, ipfsUrl);
-    setUploadStatus([...UploadStatus,'Encrypted Document deployed'])
+    setUploadStatus([...UploadStatus,'Encrypted document deployed'])
     await pushDatasetSecretToSMS(datasetAddress, encryptionKey);
     setUploadStatus([...UploadStatus,'Encryption secret pushed'])
     await publishDataset(datasetAddress);
@@ -77,7 +77,7 @@ function FileUpload(props) {
     
       <Container className="d-flex flex-column align-items-center my-4 ">
           <div className="text-center">
-          <p>Process id : {pid}</p>
+          <p>Process-ID : {pid}</p>
           </div>
           { isUploading ? <><Spinner style={{width: '6rem', height: '6rem'}} className="m-2" animation="border" role="status"></Spinner>{UploadStatus.length > 0 ? <ol>{UploadStatus.map((e,index) => <li  id={index}>{e}</li>)}</ol> : <span className="fs-2 m-2">Please wait...</span>}</>
           :<Form onSubmit={handleSubmit} className="w-100">

@@ -142,8 +142,8 @@ function LandlordDashboard(props) {
   return (
     <Card className="mb-3 p-2">
       <Container className="lead d-flex flex-column align-items-center text-center">
-        <p className="">Welcome {currentLandlord.email}</p>
-        <p className="">Connected with the Wallet ID : {requesterAddress}</p>
+        <p className="">Welcome, {currentLandlord.email}</p>
+        <p className="">Connected with Wallet-ID : {requesterAddress}</p>
         <p>{app_name}</p>
       </Container>
 
@@ -153,7 +153,7 @@ function LandlordDashboard(props) {
           variant="primary"
           onClick={handleIexecArgsSubmit}
         >
-          Add Process
+          Add Request
         </Button>
       </Container>
 
@@ -177,7 +177,7 @@ function LandlordDashboard(props) {
                       role="status"
                     ></Spinner>
                     <span className="text-lg-start">
-                      Please wait untill the iexec task finishes...
+                      Please wait untill the iExec task finishes...
                     </span>
                   </div>
                   <Container>
@@ -191,7 +191,7 @@ function LandlordDashboard(props) {
                 >
                   <FormGroup className="input-group" controlId="rent">
                     <Form.Label className="table text-center ">
-                      Please enter the monthly rent for your appartment.
+                      Please enter the monthly rent for your apartment.
                     </Form.Label>
                     <Form.Control name="rent" ref={rentRef} type="text" />
                     <span className="input-group-text">€</span>
@@ -221,6 +221,7 @@ function LandlordDashboard(props) {
               </Button>
             </Modal.Footer>
           </Modal>
+
           <Container fluid className="d-flex flex-wrap gap-4 m-3 justify-content-center">
           {processList.length > 0 &&
           
@@ -229,10 +230,11 @@ function LandlordDashboard(props) {
                 }
           </Container>
 
+
         </>
       ) : (
         <Card data-cy="no-processes-available-card" className="mb-3 p-2">
-          No Processes available ..
+          No requests available ..
         </Card>
       )}
     </Card>

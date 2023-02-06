@@ -64,7 +64,7 @@ function ApplicantDashboard(props) {
         <Modal.Header closeButton>Upload document</Modal.Header>
         <Modal.Body className="m-2 p-2 g-2">
           <Form.Group>
-            <Form.Label>Please enter a valid process id</Form.Label>
+            <Form.Label>Please enter a valid Process-ID</Form.Label>
             <Form.Control
               className="w-100"
               onChange={handlePidChange}
@@ -81,22 +81,25 @@ function ApplicantDashboard(props) {
           )}
         </Modal.Body>
       </Modal>
+
       
       <Container className="lead d-flex flex-column align-items-center text-center">
         <p className="">Welcome {currentUser.email}</p>
         <p className="">Connected with the Wallet ID : {requesterAddress}</p>
         
       </Container>
+
         <Container fluid className="d-inline-flex align-items-begin p-2">
           <Button
             className="h-50"
             variant="outline-primary"
             onClick={handleShow}
           >
-            Upload document
+            Upload Document
           </Button>
         </Container>
         {processList.length > 0 ? (
+
         <Container fluid className="d-flex flex-wrap gap-4 m-3 justify-content-center">
           
           
@@ -107,6 +110,7 @@ function ApplicantDashboard(props) {
         )
   
          : (
+
           <Card className="mb-3 p-2">No Processes available ..</Card>
         )}
       </Card>

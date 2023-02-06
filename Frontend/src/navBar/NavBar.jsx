@@ -8,16 +8,16 @@ function NavBar(props) {
   const { logout } = useAuth0();
   
   return (
-    <Navbar bg="light" expand="lg">
+    <Navbar bg="primary" variant="dark" expand="lg">
       <Container>
         <Navbar.Brand href="#home">Privacy-Aware Document Processing</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="d-flex w-100 basic-navbar-nav">
           <Nav className="me-auto w-100 d-flex justify-content-between">  
             <Nav.Item className='d-flex flex-row'>
-            <NavLink className="nav-link active" to="/" >Home</NavLink>
-            <NavLink className="nav-link active"  to="/landlord">Landlord</NavLink>
-            <NavLink className="nav-link active"  to="/applicant">Applicant</NavLink>
+            <NavLink className="nav-link active" data-cy="navbar-home" to="/" >Home</NavLink>
+            <NavLink className="nav-link active" data-cy="navbar-landlord" to="/landlord">Landlord</NavLink>
+            <NavLink className="nav-link active" data-cy="navbar-applicant" to="/applicant">Applicant</NavLink>
             </Nav.Item>
             <Nav.Item className='d-flex flex-row'>
             <span className="ms-3 text-center align-self-center">Welcome, {user.nickname}</span>

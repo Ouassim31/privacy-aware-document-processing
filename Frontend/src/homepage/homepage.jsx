@@ -30,11 +30,11 @@ function Homepage(props) {
           procedures where documents need to be verified. It allows a landlord
           to process (verify) a document provided by an applicant in a
           privacy-preserving way. The landlord can specify the processing task
-          by selecting a <strong>Dapp</strong> that meets the requirements.
+          by selecting a <strong>DApp</strong> that meets the requirements.
         </p>
       </Container>
       <hr className="hr my-3 w-25 align-self-center" />
-      <h2 className="display-5 text-center">Example use-case</h2>
+      <h2 className="display-5 text-center">Example use case</h2>
 
       <Container className="w-75 text-center">
         <p className="">
@@ -48,10 +48,10 @@ function Homepage(props) {
         </p>
         <p>
           {" "}
-          To solve this problem the landlord can make use of the
-          <strong>Payslip Analysis Dapp</strong> which will analyze the
+          To solve this problem the landlord can make use of the 
+          <strong>Payslip Analysis DApp</strong> which will analyze the
           applicant's payslip document and then output a response to the
-          question "is the applicant's income sufficient to cover the rent".
+          question "is the applicant's income sufficient to cover the monthly rent".
         </p>
       </Container>
       <hr className="hr my-3 w-25 align-self-center" />
@@ -71,7 +71,7 @@ function Homepage(props) {
           </p>
           <ol>
             <li>
-              Go to the <strong>Landlord Board</strong> section (this section
+              Go to the <strong>Landlord</strong> section (this section
               gives you an overview of all of your requests)
             </li>
             <li> Create a new request </li>
@@ -83,13 +83,13 @@ function Homepage(props) {
             <li>
               {" "}
               Once the document was uploaded, select the <strong>
-                Dapp
+                DApp
               </strong>{" "}
               for the type of processing task you are interested in and execute
               the task{" "}
             </li>
             <li>
-            Once the task is completed, you can download the resolt
+            Once the task is completed, you can download the result
             </li>
             <li>
               {" "}
@@ -108,7 +108,7 @@ function Homepage(props) {
             {" "}
             <li>
               {" "}
-              Go to the <strong>Applicant Board</strong> section{" "}
+              Go to the <strong>Applicant</strong> section{" "}
             </li>
             <li>
             Click on the <strong>Upload Document</strong> button
