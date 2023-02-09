@@ -84,8 +84,8 @@ function ApplicantDashboard(props) {
 
       
       <Container className="lead d-flex flex-column align-items-center text-center">
-        <p className="">Welcome {currentUser.email}</p>
-        <p className="">Connected with the Wallet ID : {requesterAddress}</p>
+        <p className="">Welcome, {currentUser.email}</p>
+        <p className="">Connected with the Wallet-ID : {requesterAddress}</p>
         
       </Container>
 

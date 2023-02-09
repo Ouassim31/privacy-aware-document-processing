@@ -13,7 +13,7 @@ function FileUpload(props) {
   const [requesterAddress, setRequesterAddress] = useState();
   const [selectedFile, setSelectedFile] = useState("");
   const [isUploading,setIsUploading] = useState(false)
-  const [UploadStatus,setUploadStatus] = useState([])
+  const [uploadStatus,setUploadStatus] = useState([])
   
   const {setFileLink,pid,handleClose} = props
   
@@ -40,18 +40,22 @@ function FileUpload(props) {
 
 
   async function handlePdfDocument(file) {
+    console.log(uploadStatus)
     const encryptedKeyValue = await encryptDataset(file);
-    setUploadStatus([...UploadStatus,'Document encrypted'])
+    setUploadStatus([...uploadStatus,'Document encrypted '])
+    console.log(uploadStatus)
     const encryptedDataset = encryptedKeyValue.at(0);
     const encryptionKey = encryptedKeyValue.at(1);
     const ipfsUrl = await uploadToIpfs(new Blob([encryptedDataset]));
-    setUploadStatus([...UploadStatus,'Document uploaded to IPFS'])
+    setUploadStatus([...uploadStatus,'Document uploaded to IPFS'])
+    console.log(uploadStatus)
     const datasetAddress = await deployEncryptedDataset(requesterAddress,encryptedDataset, ipfsUrl);
-    setUploadStatus([...UploadStatus,'Encrypted document deployed'])
+    setUploadStatus([...uploadStatus,'Encrypted document deployed'])
+    console.log(uploadStatus)
     await pushDatasetSecretToSMS(datasetAddress, encryptionKey);
-    setUploadStatus([...UploadStatus,'Encryption secret pushed'])
+    setUploadStatus([...uploadStatus,'Encryption secret pushed'])
     await publishDataset(datasetAddress);
-    
+    console.log(uploadStatus)
     return datasetAddress;
   }
 
@@ -61,7 +65,7 @@ function FileUpload(props) {
     event.preventDefault();
     setIsUploading(true)
     const datasetAddress = await handlePdfDocument(selectedFile);
-    setUploadStatus([...UploadStatus,'Document succesfuly uploaded'])
+    setUploadStatus([...uploadStatus,'Document succesfuly uploaded'])
     setFileLink(pid,datasetAddress);
     handleClose()
     
@@ -79,7 +83,7 @@ function FileUpload(props) {
           <div className="text-center">
           <p>Process-ID : {pid}</p>
           </div>
-          { isUploading ? <><Spinner style={{width: '6rem', height: '6rem'}} className="m-2" animation="border" role="status"></Spinner>{UploadStatus.length > 0 ? <ol>{UploadStatus.map((e,index) => <li  id={index}>{e}</li>)}</ol> : <span className="fs-2 m-2">Please wait...</span>}</>
+          { isUploading ? <><Spinner style={{width: '6rem', height: '6rem'}} className="m-2" animation="border" role="status"></Spinner>{uploadStatus.length > 0 ? <ol>{uploadStatus.map((e,index) => <li  key={index}>{e}</li>)}</ol> : <span className="fs-2 m-2">Please wait...</span>}</>
           :<Form onSubmit={handleSubmit} className="w-100">
           <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label >File</Form.Label>

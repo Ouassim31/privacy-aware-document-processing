@@ -15,13 +15,13 @@ function Process({process,handleShow,deleteProcess,requesterAddress,isLoading}) 
     const stateToText = (pid)=>{
         switch (pid) {
           case 1:
-            return 'Waiting for the document upload'
-          case 2 :
-            return 'Document upload completed'
-          case 3 :
-            return 'IExec task started'
-          case 4 :
-          return 'IExec task completed'
+            return 'Waiting for document upload'
+            case 2 :
+              return 'Document upload completed'
+            case 3 :
+              return 'iExec task started'
+            case 4 :
+            return 'iExec task completed'
         
           default:
            return 'UNKNOWN_STATE'
@@ -64,7 +64,7 @@ function Process({process,handleShow,deleteProcess,requesterAddress,isLoading}) 
                             process.task_id
                           }
                         >
-                          <BiWorld /> Iexec Explorer
+                          <BiWorld /> iExec Explorer
                         </Dropdown.Item >
                       )}
                         {requesterAddress &&

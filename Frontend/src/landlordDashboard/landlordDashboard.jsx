@@ -13,37 +13,35 @@ import { useEffect, useState, useRef } from "react";
 
 import { withAuthenticationRequired } from "@auth0/auth0-react";
 
-import {fetchProcesses,deleteProcess, updateDescription} from '../services/backed-services'
-import { connect,pushRentAsSecret,createIexecTask,getLastTask,getResult } from "../services/iexec-services";
+import {
+  fetchProcesses,
+  deleteProcess,
+  updateDescription,
+} from "../services/backed-services";
+import {
+  connect,
+  pushRentAsSecret,
+  createIexecTask,
+  getLastTask,
+  getResult,
+} from "../services/iexec-services";
 import Process from "./process";
-
-
 
 function LandlordDashboard(props) {
   //State variables
-  const {
-    currentLandlord,
-    fetchProcesses,
-    createProcess,
-    setTask
-
-  } = props;
+  const { currentLandlord, fetchProcesses, createProcess, setTask } = props;
   const [isLoading, setIsLoading] = useState([]);
   const [processList, setProcessList] = useState([]);
   const [selectedProcess, setSelectedProcess] = useState(null);
   const [requesterAddress, setRequesterAddress] = useState();
-  
+
   const [appAddress, setAppaddress] = useState(
     "0x1ED2F24927A26b8C6a90413EB005562b31aBB345"
   );
-  const [iexecParams, setIexecParams] = useState();
+  const [iexecParams, setIexecParams] = useState({});
   const [show, setShow] = useState(false);
 
   const rentRef = useRef();
-
-  
-
-
 
   /**
    *
@@ -52,10 +50,8 @@ function LandlordDashboard(props) {
    */
   const handleDelete = (pid) => {
     deleteProcess();
-    setProcessList(
-      processList.filter((p) => p._id != pid)
-    );
-  }
+    setProcessList(processList.filter((p) => p._id != pid));
+  };
   const handleClose = () => {
     setShow(false);
     setSelectedProcess({});
@@ -78,21 +74,28 @@ function LandlordDashboard(props) {
   const handleExecute = async (pid, dataset) => {
     setAppaddress("0x1ED2F24927A26b8C6a90413EB005562b31aBB345");
 
-    if(rentRef.current){
-      pushRentAsSecret(rentRef.current.value).then((res) => {
-        setIexecParams({
-          dataset: dataset,
-          rent_secret: res,
-        });
-      });
+    if (rentRef.current) {
+      const rent_secret = await pushRentAsSecret(rentRef.current.value);
       
-
-    if (iexecParams && appAddress) {
-      setIsLoading([...isLoading, {pid:pid,status:['Rent pushed as secret']}]);
-    }
-      const dealid = await createIexecTask(appAddress, iexecParams);
+      setIsLoading([
+        ...isLoading,
+        { pid: pid, status: ["Rent pushed as secret"] },
+      ]);
+      console.log(iexecParams)
+      const dealid = await createIexecTask(appAddress,{
+        dataset: dataset,
+        rent_secret: rent_secret,
+      });
       const tid = await getLastTask(dealid);
-      setIsLoading(isLoading.map((process)=> process.pid === pid && {pid:process.pid,status:[...process.status,'deal signed and created']} ))
+      setIsLoading(
+        isLoading.map(
+          (process) =>
+            process.pid === pid && {
+              pid: process.pid,
+              status: [...process.status, "deal signed and created"],
+            }
+        )
+      );
       setTask(pid, tid).then((res) => {
         console.log(`setting task ${tid}`);
         fetchProcesses(currentLandlord.id).then((res) => setProcessList(res));
@@ -167,7 +170,7 @@ function LandlordDashboard(props) {
           >
             <Modal.Header closeButton />
             <Modal.Body>
-              {isLoading.some(({pid}) => pid === selectedProcess._id) ? (
+              {isLoading.some(({ pid }) => pid === selectedProcess._id) ? (
                 <>
                   <div className="d-table-row">
                     <Spinner
@@ -183,7 +186,11 @@ function LandlordDashboard(props) {
                   <Container>
                     <span className="m-2 text-md-center d-block">Status :</span>
                     <ol>
-                      {isLoading.filter(({pid})=>selectedProcess._id)[0].status.map((status,index)=><li id={index}>{status}</li>)}
+                      {isLoading
+                        .filter(({ pid }) => selectedProcess._id)[0]
+                        .status.map((status, index) => (
+                          <li id={index}>{status}</li>
+                        ))}
                     </ol>
                   </Container>
                 </>
@@ -205,7 +212,9 @@ function LandlordDashboard(props) {
             <Modal.Footer>
               <Button
                 variant="outline-primary"
-                disabled={isLoading.some(({pid}) => pid === selectedProcess._id)}
+                disabled={isLoading.some(
+                  ({ pid }) => pid === selectedProcess._id
+                )}
                 onClick={async () => {
                   console.log("Dataset: " + selectedProcess.dataset_address);
                   if (rentRef.current && selectedProcess.dataset_address) {
@@ -225,15 +234,22 @@ function LandlordDashboard(props) {
             </Modal.Footer>
           </Modal>
 
-          <Container fluid className="d-flex flex-wrap gap-4 m-3 justify-content-center">
-          {processList.length > 0 &&
-          
-                processList.map((process, index) => (<Process key={index} requesterAddress={requesterAddress} process={process} isLoading={isLoading.some(({pid}) => pid === process._id)} handleShow={handleShow} deleteProcess={handleDelete}/>))
-                
-                }
+          <Container
+            fluid
+            className="d-flex flex-wrap gap-4 m-3 justify-content-center"
+          >
+            {processList.length > 0 &&
+              processList.map((process, index) => (
+                <Process
+                  key={index}
+                  requesterAddress={requesterAddress}
+                  process={process}
+                  isLoading={isLoading.some(({ pid }) => pid === process._id)}
+                  handleShow={handleShow}
+                  deleteProcess={handleDelete}
+                />
+              ))}
           </Container>
-
-
         </>
       ) : (
         <Card data-cy="no-processes-available-card" className="mb-3 p-2">
