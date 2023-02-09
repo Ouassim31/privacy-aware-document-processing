@@ -28,21 +28,21 @@ npx jest
 
 ## Notes
 - On local host access server via `http://localhost:3001`
-- `landlord_id` and `applicant_id` parameters are required to be of type `email`
+- `landlord_id` and `applicant_id` properties are required to be of type `email`
 - `/process` endpoint does not require arguments for `description` (optional) 
 - `/process/update/applicant_dataset` endpoint requires both arguments
 ## Overview
 
-| Endpoint    | Method      | Input (in Request Body as JSON Object) | Output (Status Code)  | Output (in Response Body as JSON Object)  | Description     |
+| Endpoint    | Method      | Input (Properties in JSON Object) | Output (Status Code)  | Output (JSON Object) | Description     |
 | :---        |    :---   |    :---   |    :---   |     :---   |          :--- |
-| `/process`      | POST      | `{ landlord_id: , description: }` | 200; 500  |process object| create process; set state == 1 |
+| `/process`      | POST      | `landlord_id`, `description` | 200; 500  |`process`| create process; set state == 1 |
 | `/process/:pid`      | DELETE       |    | 200; 404  || delete process  |
-| `/process/:pid/update/description`     | POST       | `{ description: }`   | 200; 500    |process object| update description   |
-| `/process/:pid/update/applicant_dataset`      | POST       | `{ applicant_id: , dataset_address: }`| 200; 500    |process object  | update applicant_id and dataset_address; set state == 2   |
-| `/process/:pid/update/task`      | POST       | `{ task_id: }`   | 200; 500    |process object | update iExec task_id; set state == 3  |
-| `/process/:pid/update/state`     | PUT       | `{ state: }`   | 200; 500    |process object| update state   |
-| `/process/:pid/dereference_applicant`     | PUT       |  | 200; 500    |process object| dereference applicant  |
-| `/process/:pid/reset`     | PUT       | | 200; 500    |process object| reset process to initial state: set state == 1; set applicant_id == ""; set dataset_address == "" |
-| `/process/:pid`     | GET       |    | 200; 400    |process object  | get process by process_id    |
-| `/process/by_applicant?applicant=applicant_id`     | GET      |    | 200; 400    |list of process objects     | get processes by applicant_id   |
-| `/process/by_landlord?landlord=landlord_id`     | GET       |    | 200; 400    |list of process objects   | get processes by landlord_id    |
+| `/process/:pid/update/description`     | POST       | `description`   | 200; 500    |`process`| update description   |
+| `/process/:pid/update/applicant_dataset`      | POST       | `applicant_id`, `dataset_address`| 200; 500    |`process`  | update applicant_id and dataset_address; set state == 2   |
+| `/process/:pid/update/task`      | POST       | `task_id`   | 200; 500    |`process` | update task_id; set state == 3  |
+| `/process/:pid/update/state`     | PUT       | `state`   | 200; 500    |`process`| update state   |
+| `/process/:pid/dereference_applicant`     | PUT       |  | 200; 500    |`process`| dereference applicant  |
+| `/process/:pid/reset`     | PUT       | | 200; 500    |`process`| reset process to initial state: set state == 1; set applicant_id == ""; set dataset_address == "" |
+| `/process/:pid`     | GET       |    | 200; 400    |`process`  | get process by process_id    |
+| `/process/by_applicant?applicant=applicant_id`     | GET      |    | 200; 400    |`list of processes`     | get processes by applicant_id   |
+| `/process/by_landlord?landlord=landlord_id`     | GET       |    | 200; 400    |`list of processes`   | get processes by landlord_id    |
