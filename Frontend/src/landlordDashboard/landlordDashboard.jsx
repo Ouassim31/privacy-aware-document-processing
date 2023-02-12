@@ -146,7 +146,7 @@ function LandlordDashboard(props) {
     <Card className="mb-3 p-2">
       <Container className="lead d-flex flex-column align-items-center text-center">
         <p className="">Welcome, {currentLandlord.email}</p>
-        <p className="">Connected with Wallet-ID : {requesterAddress}</p>
+        <p className="">Connected with Wallet-ID: {requesterAddress}</p>
         <p>{app_name}</p>
       </Container>
 

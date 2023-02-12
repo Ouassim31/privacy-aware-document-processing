@@ -31,9 +31,9 @@ function Homepage(props) {
   return (
     <Container style={{height: '100vh'}} className="d-flex flex-column justify-content-center" >
 
-    <Carousel variant="dark" >
+    <Carousel interval={null} variant="dark" >
       <Carousel.Item className="mb-4">
-        <h2 className="display-5 text-center">What does the app do?</h2>
+        <h2 className="display-5 text-center">What does the App do?</h2>
         <Container className="w-75 text-center">
           <p className="">
             This application is intended to be used in apartment application
@@ -46,10 +46,10 @@ function Homepage(props) {
       </Carousel.Item>
       <Carousel.Item className="mb-4">
         <div>
-          <h2 className="display-5 text-center">Example use case</h2>
+          <h2 className="display-5 text-center">Example Use Case</h2>
           <Container className="w-75 text-center">
             <p className="">
-              Imagine a setting where a landlord wants to rent out an apartment
+              Imagine a landlord that wants to rent out an apartment
               and make sure that the candidate applying for the apartment makes
               enough money to cover the monthly rent. In a traditional setting,
               the landlord would ask the applicant to hand in a payslip and
@@ -59,8 +59,8 @@ function Homepage(props) {
             </p>
             <p>
               {" "}
-              To solve this problem the landlord can make use of the
-              <strong>Payslip Analysis DApp</strong> which will analyze the
+              To solve this problem the landlord can make use of the 
+              <strong> Payslip Analysis DApp</strong> which will analyze the
               applicant's payslip document and then output a response to the
               question "is the applicant's income sufficient to cover the
               monthly rent".
