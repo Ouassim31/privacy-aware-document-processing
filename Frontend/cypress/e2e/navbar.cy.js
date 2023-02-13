@@ -11,7 +11,7 @@ describe('Can navigate with the navbar', () => {
 
   it('can navigate to Applicant Dashboard', () => {
     cy.get("[data-cy=navbar-applicant]").click();
-    assert.exists("What does the app do?")
+    cy.url().should('contain', 'applicant');
   })
 
   it('can navigate to Landlord Dashboard', () => {

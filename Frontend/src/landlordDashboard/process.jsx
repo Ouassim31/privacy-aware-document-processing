@@ -29,9 +29,10 @@ function Process({process,handleShow,deleteProcess,requesterAddress,isLoading}) 
       }
     return <Card style={{ width: '20rem' }}>
     <Card.Body>
-      <Card.Title className="row"><p>{process._id}</p> {process.process_state === 1 && (
+      <Card.Title className="row" data-cy="process-title"><p>{process._id}</p> {process.process_state === 1 && (
                         <Button
                           variant="outline-primary"
+                          data-cy="process-id-copy-button"
                           processid={process._id}
                           onClick={(e) => {
                             let url = window.location.origin;
@@ -53,7 +54,7 @@ function Process({process,handleShow,deleteProcess,requesterAddress,isLoading}) 
       <DropdownButton
                         id="action-dropdown"
                         title="More"
-
+                        data-cy="dropdown-button"
                       >
                         {process.process_state === 3 && (
                         <Dropdown.Item 

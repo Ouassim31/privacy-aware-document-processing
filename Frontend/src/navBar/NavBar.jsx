@@ -10,7 +10,7 @@ function NavBar(props) {
   return (
     <Navbar  bg="primary" variant="dark" expand="lg">
       
-        <Navbar.Brand className='mx-2' href="/">Privacy-Aware Document Processing</Navbar.Brand>
+        <Navbar.Brand className='mx-2' data-cy="navbar-home" href="/">Privacy-Aware Document Processing</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="d-flex w-100 basic-navbar-nav">
           <Nav className="mx-2 w-100 d-flex justify-content-between">  
