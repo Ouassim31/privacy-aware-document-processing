@@ -15,7 +15,7 @@ describe('Can use functions on the landlord dashboard', () => {
     cy.get('[data-cy="no-processes-available-card"]').should('exist')
   })
 
-  it.only('can click "Add Request" button to create a new process', () => {
+  it('can click "Add Request" button to create a new process', () => {
     cy.intercept(
       {
         method: 'POST',
