@@ -8,14 +8,14 @@ function NavBar(props) {
   const { logout } = useAuth0();
   
   return (
-    <Navbar bg="primary" variant="dark" expand="lg">
-      <Container>
-        <Navbar.Brand href="#home">Privacy-Aware Document Processing</Navbar.Brand>
+    <Navbar  bg="primary" variant="dark" expand="lg">
+      
+        <Navbar.Brand className='mx-2' data-cy="navbar-home" href="/">Privacy-Aware Document Processing</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="d-flex w-100 basic-navbar-nav">
-          <Nav className="me-auto w-100 d-flex justify-content-between">  
+          <Nav className="mx-2 w-100 d-flex justify-content-between">  
             <Nav.Item className='d-flex flex-row'>
-            <NavLink className="nav-link active" data-cy="navbar-home" to="/" >Home</NavLink>
+            
             <NavLink className="nav-link active" data-cy="navbar-landlord" to="/landlord">Landlord</NavLink>
             <NavLink className="nav-link active" data-cy="navbar-applicant" to="/applicant">Applicant</NavLink>
             </Nav.Item>
@@ -27,7 +27,7 @@ function NavBar(props) {
             
           </Nav>
         </Navbar.Collapse>
-      </Container>
+      
     </Navbar>
   );
 }

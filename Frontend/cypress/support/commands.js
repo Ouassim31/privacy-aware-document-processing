@@ -52,7 +52,7 @@ Cypress.Commands.add('loginByGoogle', () => {
     Cypress.Commands.add('assertValueCopiedToClipboard', value => {
         cy.window().then(win => {
             win.navigator.clipboard.readText().then(text => {
-            assert.include(text, 'http://localhost:3000/applicant/')
+            assert.include(text, value)
     })
   })
 })

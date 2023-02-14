@@ -13,7 +13,7 @@ function FileUpload(props) {
   const [requesterAddress, setRequesterAddress] = useState();
   const [selectedFile, setSelectedFile] = useState("");
   const [isUploading,setIsUploading] = useState(false)
-  const [UploadStatus,setUploadStatus] = useState([])
+  const [uploadStatus,setUploadStatus] = useState([])
   
   const {setFileLink,pid,handleClose} = props
   
@@ -40,18 +40,22 @@ function FileUpload(props) {
 
 
   async function handlePdfDocument(file) {
+    console.log(uploadStatus)
     const encryptedKeyValue = await encryptDataset(file);
-    setUploadStatus([...UploadStatus,'Document encrypted'])
+    setUploadStatus([...uploadStatus,'Document encrypted '])
+    console.log(uploadStatus)
     const encryptedDataset = encryptedKeyValue.at(0);
     const encryptionKey = encryptedKeyValue.at(1);
     const ipfsUrl = await uploadToIpfs(new Blob([encryptedDataset]));
-    setUploadStatus([...UploadStatus,'Document uploaded to IPFS'])
+    setUploadStatus([...uploadStatus,'Document uploaded to IPFS'])
+    console.log(uploadStatus)
     const datasetAddress = await deployEncryptedDataset(requesterAddress,encryptedDataset, ipfsUrl);
-    setUploadStatus([...UploadStatus,'Encrypted document deployed'])
+    setUploadStatus([...uploadStatus,'Encrypted document deployed'])
+    console.log(uploadStatus)
     await pushDatasetSecretToSMS(datasetAddress, encryptionKey);
-    setUploadStatus([...UploadStatus,'Encryption secret pushed'])
+    setUploadStatus([...uploadStatus,'Encryption secret pushed'])
     await publishDataset(datasetAddress);
-    
+    console.log(uploadStatus)
     return datasetAddress;
   }
 
@@ -61,7 +65,7 @@ function FileUpload(props) {
     event.preventDefault();
     setIsUploading(true)
     const datasetAddress = await handlePdfDocument(selectedFile);
-    setUploadStatus([...UploadStatus,'Document succesfuly uploaded'])
+    setUploadStatus([...uploadStatus,'Document succesfuly uploaded'])
     setFileLink(pid,datasetAddress);
     handleClose()
     

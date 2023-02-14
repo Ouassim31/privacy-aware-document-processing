@@ -1,6 +1,6 @@
 const Process = require("../models/process");
 
-// CREATE PROCESS 
+// CREATE PROCESS  
 exports.process_create = (req, res, next) => {
     Process.create(
         { created_on: Date.now(), landlord_id: req.body.landlord_id, description: req.body.description },
@@ -68,7 +68,7 @@ exports.process_update_description = (req, res, next) => {
     
 };
 
-// SET APPLICANT & DATASET (set state == 2)
+// SET APPLICANT & DATASET (set state = 2)
 exports.process_update_applicant_dataset = (req, res, next) => {
     const hasApplicantId = req.body.hasOwnProperty("applicant_id");
     const hasDatasetAddress = req.body.hasOwnProperty("dataset_address");
@@ -114,7 +114,7 @@ exports.process_update_applicant_dataset = (req, res, next) => {
 
 };
 
-// SET TASK (set state == 3)
+// SET TASK (set state = 3)
 exports.process_update_task = (req, res, next) => {
     if (req.body.hasOwnProperty("task_id")) {
        // If task_id parameter given -> continue, else throw error
@@ -251,7 +251,7 @@ exports.process_dereference_applicant = (req, res, next) => {
     );
 };
 
-// PUT RESET PROCESS TO INITIAL STATE (dereference applicant_id; delete dataset_address; set state == 1)
+// PUT RESET PROCESS TO INITIAL STATE (dereference applicant_id; delete dataset_address; set state = 1)
 exports.process_reset = (req, res, next) => {
     Process.findByIdAndUpdate(
         req.params.pid,

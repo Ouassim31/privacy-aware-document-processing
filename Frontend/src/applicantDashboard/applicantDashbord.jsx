@@ -61,7 +61,7 @@ function ApplicantDashboard(props) {
         keyboard={false}
         className="lead"
       >
-        <Modal.Header closeButton>Upload document</Modal.Header>
+        <Modal.Header closeButton data-cy="applicant-upload-document-button" >Upload document</Modal.Header>
         <Modal.Body className="m-2 p-2 g-2">
           <Form.Group>
             <Form.Label>Please enter a valid Process-ID</Form.Label>
@@ -69,6 +69,7 @@ function ApplicantDashboard(props) {
               className="w-100"
               onChange={handlePidChange}
               type="text"
+              data-cy="process-id-textfield"
             />
           </Form.Group>
           {pidRef && (
@@ -84,8 +85,8 @@ function ApplicantDashboard(props) {
 
       
       <Container className="lead d-flex flex-column align-items-center text-center">
-        <p className="">Welcome {currentUser.email}</p>
-        <p className="">Connected with the Wallet ID : {requesterAddress}</p>
+        <p className="">Welcome, {currentUser.email}</p>
+        <p className="">Connected with Wallet-ID: {requesterAddress}</p>
         
       </Container>
 
@@ -111,7 +112,7 @@ function ApplicantDashboard(props) {
   
          : (
 
-          <Card className="mb-3 p-2">No Processes available ..</Card>
+          <Card className="mb-3 p-2" data-cy="no-processes-available-card-applicant" >No Processes available ..</Card>
         )}
       </Card>
     

@@ -1,7 +1,7 @@
 import request from "supertest";
 import app from "./app.js";
 
-/// POST /process
+// POST /process
 
 describe("POST /process", () => {
     // On success
@@ -78,7 +78,7 @@ describe("POST /process", () => {
     })
 })
 
-/// POST /process/:pid/update/description
+// POST /process/:pid/update/description
 
 describe("POST /process/:pid/update/description", () => {
     // On success
@@ -128,7 +128,7 @@ describe("POST /process/:pid/update/description", () => {
             const response = await request(app)
                 .post(`/process/${processId}/update/description`)
                 .send({ description: newDescription });
-            expect(response.status).toBe(500);   
+            expect(response.status).toBe(500);
         });
 
         test("Should respond with status code 404", async () => {
@@ -138,12 +138,12 @@ describe("POST /process/:pid/update/description", () => {
             const response = await request(app)
                 .post(`/process/${processId}/update/description`)
                 .send({ description: newDescription });
-            expect(response.status).toBe(404);   
+            expect(response.status).toBe(404);
         });
     })
 })
 
-/// POST /process/:pid/update/applicant_dataset
+// POST /process/:pid/update/applicant_dataset
 
 describe("POST /process/:pid/update/applicant_dataset", () => {
     // On success
@@ -160,8 +160,8 @@ describe("POST /process/:pid/update/applicant_dataset", () => {
             processId = createProcessResponse.body._id;
         });
 
-         // JSON object with process
-         test("Should respond with valid json object", async () => {
+        // JSON object with process
+        test("Should respond with valid json object", async () => {
             const response = await request(app)
                 .post(`/process/${processId}/update/applicant_dataset`)
                 .send({ applicant_id: applicantId, dataset_address: datasetAddress });
@@ -196,7 +196,7 @@ describe("POST /process/:pid/update/applicant_dataset", () => {
                 .post(`/process/${processId}/update/applicant_dataset`)
                 .send({ applicant_id: applicantId, dataset_address: datasetAddress });
             expect(response.status).toBe(500);
-             
+
         });
 
         test("Should respond with a status code of 404", async () => {
@@ -206,7 +206,7 @@ describe("POST /process/:pid/update/applicant_dataset", () => {
             const response = await request(app)
                 .post(`/process/${processId}/update/applicant_dataset`)
                 .send({ applicant_id: applicantId, dataset_address: datasetAddress });
-            expect(response.status).toBe(404);  
+            expect(response.status).toBe(404);
         });
     })
 
@@ -223,7 +223,7 @@ describe("POST /process/:pid/update/applicant_dataset", () => {
         test("Should respond with a status code of 400", async () => {
             const applicantId = "applicant@test.com";
             const datasetAddress = "0xD";
-            
+
             const bodyData = [
                 {},
                 { applicant_id: applicantId },
@@ -232,7 +232,7 @@ describe("POST /process/:pid/update/applicant_dataset", () => {
 
             for (const body of bodyData) {
                 const response = await request(app)
-                .post(`/process/${processId}/update/applicant_dataset`)
+                    .post(`/process/${processId}/update/applicant_dataset`)
                 //.send({ applicant_id: applicantId, dataset_address: datasetAddress });
                 expect(response.status).toBe(400);
             }
@@ -240,7 +240,7 @@ describe("POST /process/:pid/update/applicant_dataset", () => {
     })
 })
 
-/// POST /process/:pid/update/task
+// POST /process/:pid/update/task
 
 describe("POST /process/:pid/update/task", () => {
     // On success
@@ -256,8 +256,8 @@ describe("POST /process/:pid/update/task", () => {
             processId = createProcessResponse.body._id;
         });
 
-         // JSON object with process
-         test("Should respond with valid json object", async () => {
+        // JSON object with process
+        test("Should respond with valid json object", async () => {
             const response = await request(app)
                 .post(`/process/${processId}/update/task`)
                 .send({ task_id: taskId });
@@ -290,13 +290,13 @@ describe("POST /process/:pid/update/task", () => {
                 .post(`/process/${processId}/update/task`)
                 .send({ task_id: taskId });
             expect(response.status).toBe(500);
-             
+
         });
 
         test("Should respond with status code 404", async () => {
             const processId = "";
             const taskId = "0xT"
-            
+
             const response = await request(app)
                 .post(`/process/${processId}/update/task`)
                 .send({ task_id: taskId });
@@ -325,7 +325,8 @@ describe("POST /process/:pid/update/task", () => {
     })
 })
 
-/// DELETE /process/:pid
+// DELETE /process/:pid
+
 describe("DELETE /process/:pid", () => {
     // On success
     describe("Given existing process_id", () => {
@@ -354,7 +355,7 @@ describe("DELETE /process/:pid", () => {
             const response = await request(app)
                 .delete(`/process/${processId}`)
             expect(response.status).toBe(404);
-        })      
+        })
     })
 
     // On failure
@@ -369,7 +370,8 @@ describe("DELETE /process/:pid", () => {
     })
 })
 
-/// GET /process/by_applicant?applicant=applicant_id
+// GET /process/by_applicant?applicant=applicant_id
+
 describe("GET BY APPLICANT", () => {
     // On success
     describe("Given existing applicant_id", () => {
@@ -392,7 +394,7 @@ describe("GET BY APPLICANT", () => {
                 .post(`/process/${processId}/update/applicant_dataset`)
                 .send({ applicant_id: applicantId, dataset_address: datasetAddress });
         });
-        
+
         // JSON object with processes
         test("Should respond with valid json object", async () => {
             const response = await request(app).get(`/process/by_applicant?applicant=${applicantId}`)
@@ -417,24 +419,25 @@ describe("GET BY APPLICANT", () => {
     describe("Missing or invalid applicant_id", () => {
         // Status code 200
         test("Should respond with status code 200", async () => {
-            const applicantIds = ["","landlord@test.com"];
-            for (const applicant of applicantIds){
+            const applicantIds = ["", "landlord@test.com"];
+            for (const applicant of applicantIds) {
                 const response = await request(app).get(`/process/by_applicant?applicant=${applicant}`)
                 expect(response.status).toBe(200);
-            }        
+            }
         })
         // Empty body
         test("Should return empty list in response body", async () => {
-            const applicantIds = ["","landlord@test.com"];
-            for (const applicant of applicantIds){
+            const applicantIds = ["", "landlord@test.com"];
+            for (const applicant of applicantIds) {
                 const response = await request(app).get(`/process/by_applicant?applicant=${applicant}`)
                 expect(response.body).toEqual([]);
-            }        
-        })     
+            }
+        })
     })
 })
 
-/// GET /process/by_landlord?landlord=landlord_id
+// GET /process/by_landlord?landlord=landlord_id
+
 describe("GET BY LANDLORD", () => {
     // On success
     describe("Given existing landlord_id", () => {
@@ -448,7 +451,7 @@ describe("GET BY LANDLORD", () => {
                 .send({ landlord_id: landlordId });
             processId = createProcessResponse.body._id;
         });
-        
+
         // JSON object with processes
         test("Should respond with valid json object", async () => {
             const response = await request(app).get(`/process/by_landlord?landlord=${landlordId}`)
@@ -473,24 +476,25 @@ describe("GET BY LANDLORD", () => {
     describe("Missing or invalid landlord_id", () => {
         // Status code 200
         test("Should respond with status code 200", async () => {
-            const landlordIds = ["","applicant@test.com"];
-            for (const landlord of landlordIds){
+            const landlordIds = ["", "applicant@test.com"];
+            for (const landlord of landlordIds) {
                 const response = await request(app).get(`/process/by_landlord?landlord=${landlord}`)
                 expect(response.status).toBe(200);
-            }        
-        })    
+            }
+        })
         // Empty body
         test("Should return empty list in response body", async () => {
-            const landlordIds = ["","applicant@test.com"];
-            for (const landlord of landlordIds){
+            const landlordIds = ["", "applicant@test.com"];
+            for (const landlord of landlordIds) {
                 const response = await request(app).get(`/process/by_landlord?landlord=${landlord}`)
                 expect(response.body).toEqual([]);
-            }        
-        })     
+            }
+        })
     })
 })
 
-/// GET /process/:pid
+// GET /process/:pid
+
 describe("GET /process/:pid", () => {
     // On success
     describe("Given existing process_id", () => {
@@ -519,7 +523,7 @@ describe("GET /process/:pid", () => {
             const response = await request(app)
                 .get(`/process/${processId}`)
             expect(response.status).toBe(404);
-        })      
+        })
     })
 
     // On failure
@@ -534,7 +538,8 @@ describe("GET /process/:pid", () => {
     })
 })
 
-/// PUT /process/:pid/update/state
+// PUT /process/:pid/update/state
+
 describe("PUT /process/:pid/update/state", () => {
     // On success
     describe("Given existing process_id and state", () => {
@@ -582,7 +587,7 @@ describe("PUT /process/:pid/update/state", () => {
             const response = await request(app)
                 .put(`/process/${processId}/update/state`)
                 .send({ state: newState });
-            expect(response.status).toBe(500);   
+            expect(response.status).toBe(500);
         });
 
         test("Should respond with status code 404", async () => {
@@ -590,14 +595,14 @@ describe("PUT /process/:pid/update/state", () => {
             const newState = 4;
 
             const response = await request(app)
-            .put(`/process/${processId}/update/state`)
-            .send({ state: newState });
-            expect(response.status).toBe(404);   
+                .put(`/process/${processId}/update/state`)
+                .send({ state: newState });
+            expect(response.status).toBe(404);
         });
     })
 })
 
-/// PUT /process/:pid/dereference_applicant
+// PUT /process/:pid/dereference_applicant
 
 describe("PUT /process/:pid/dereference_applicant", () => {
     // On success
@@ -621,7 +626,7 @@ describe("PUT /process/:pid/dereference_applicant", () => {
                 .post(`/process/${processId}/update/applicant_dataset`)
                 .send({ applicant_id: applicantId, dataset_address: datasetAddress });
         });
-        
+
         // JSON object with processes
         test("Should respond with valid json object", async () => {
             const response = await request(app)
@@ -650,19 +655,20 @@ describe("PUT /process/:pid/dereference_applicant", () => {
             const processId = "c55e55c";
             const response = await request(app)
                 .put(`/process/${processId}/dereference_applicant`);
-            expect(response.status).toBe(500);   
+            expect(response.status).toBe(500);
         });
 
         test("Should respond with status code 404", async () => {
             const processId = "";
             const response = await request(app)
                 .put(`/process/${processId}/dereference_applicant`);
-            expect(response.status).toBe(404);   
+            expect(response.status).toBe(404);
         });
     })
 })
 
-/// PUT /process/:pid/reset
+// PUT /process/:pid/reset
+
 describe("PUT /process/:pid/reset", () => {
     // On success
     describe("Given existing process_id", () => {
@@ -685,7 +691,7 @@ describe("PUT /process/:pid/reset", () => {
                 .post(`/process/${processId}/update/applicant_dataset`)
                 .send({ applicant_id: applicantId, dataset_address: datasetAddress });
         });
-        
+
         // JSON object with processes
         test("Should respond with valid json object", async () => {
             const response = await request(app)
@@ -716,14 +722,14 @@ describe("PUT /process/:pid/reset", () => {
             const processId = "c55e55c";
             const response = await request(app)
                 .put(`/process/${processId}/reset`);
-            expect(response.status).toBe(500);   
+            expect(response.status).toBe(500);
         });
 
         test("Should respond with status code 404", async () => {
             const processId = "";
             const response = await request(app)
                 .put(`/process/${processId}/reset`);
-            expect(response.status).toBe(404);   
+            expect(response.status).toBe(404);
         });
     })
 })
