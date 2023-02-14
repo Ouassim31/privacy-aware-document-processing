@@ -3,13 +3,14 @@ const cors = require('cors');
 var indexRouter = require('./routes/index');
 const processRouter = require('./routes/process'); 
 
+var app = express();
+
+// Error handler
 const errorHandler = (error, request, response, next) => {
     console.log( `error ${error.message}`)
     const status = error.status || 400
     response.status(status).send(error.message) 
 }
-
-var app = express();
 
 // Set up mongodb connection
 var mongoose = require('mongoose');
