@@ -33,7 +33,7 @@ npx jest
 - `/process/update/applicant_dataset` endpoint requires both arguments
 ## Overview
 
-| Endpoint    | Method      | Input (Properties in JSON Object) | Status Code (Success \| Failure))  | Output (JSON Object) | Description     |
+| Endpoint    | Method      | Input (Properties in JSON Object) | Status Code (Success \| Failure)  | Output (JSON Object) | Description     |
 | :---        |    :---   |    :---   |    :---   |     :---   |          :--- |
 | `/process`      | POST      | `landlord_id`, `description` | 200 \| 500  |`process`| Create process; set state = 1 |
 | `/process/:pid`      | DELETE       |    | 200; 404  || Delete process  |
