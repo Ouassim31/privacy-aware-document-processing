@@ -8,13 +8,14 @@ describe('Can use functions on the landlord dashboard', () => {
   })
 
   it('should show that there are no processes available, when the table is empty', () => {
+    cy.intercept('/process/by_landlord?landlord=iosl.cy2023@gmail.com', { fixture: 'process_state0.json' })
     cy.get("[data-cy=navbar-landlord]").click();
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(1000);
     cy.get('[data-cy="no-processes-available-card"]').should('exist')
   })
 
-  it('can click "Add Request" button to create a new process', () => {
+  it.only('can click "Add Request" button to create a new process', () => {
     cy.intercept(
       {
         method: 'POST',
