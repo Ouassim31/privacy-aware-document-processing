@@ -6,7 +6,9 @@ const { IExec } = require("iexec");
 const WORKERPOOL_ADDRESS = "v7-debug.main.pools.iexec.eth";
 // Log into NFT.Storage via GitHub and create API token
   // Paste your NFT.Storage API key into the quotes:
-  const NFT_STORAGE_KEY = process.env.REACT_APP_NFT_STORAGE_TOKEN
+const NFT_STORAGE_KEY = process.env.REACT_APP_NFT_STORAGE_TOKEN;
+
+const APP_ADDRESS = '0xA748F9904b2106210CA91a217fBF8E7D6ec18c05';  
 
 
 export async function encryptDataset(datasetFile) {
@@ -33,7 +35,6 @@ export async function encryptDataset(datasetFile) {
 
 
 export async function uploadToIpfs(file) {
-  console.log(NFT_STORAGE_KEY)
   const nftstorage = new NFTStorage({ token: NFT_STORAGE_KEY });
   const cid = await nftstorage.storeBlob(file);
   const uploadUrl = 'https://' + cid + '.ipfs.nftstorage.link';
@@ -80,6 +81,7 @@ export async function publishDataset(datasetAddress) {
   const signedOrder = await iexec.order.signDatasetorder(
     await iexec.order.createDatasetorder({
       dataset: datasetAddress,
+      apprestrict: APP_ADDRESS,
       datasetprice: "0",
       volume: "1000",
       tag: ["tee"]
@@ -163,6 +165,7 @@ export const connect = async () => {
         DATASET_ADDRESS,
         {
           workerpool: WORKERPOOL_ADDRESS,
+          app: APP_ADDRESS,
           minTag: "tee",
         }
       );

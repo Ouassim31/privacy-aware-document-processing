@@ -34,7 +34,7 @@ function LandlordDashboard(props) {
   const [requesterAddress, setRequesterAddress] = useState();
   
   const [appAddress, setAppaddress] = useState(
-    "0x1ED2F24927A26b8C6a90413EB005562b31aBB345"
+    "0xA748F9904b2106210CA91a217fBF8E7D6ec18c05"
   );
   const [iexecParams, setIexecParams] = useState();
   const [show, setShow] = useState(false);
@@ -51,7 +51,7 @@ function LandlordDashboard(props) {
    *
    */
   const handleDelete = (pid) => {
-    deleteProcess();
+    deleteProcess(pid);
     setProcessList(
       processList.filter((p) => p._id != pid)
     );
@@ -76,7 +76,7 @@ function LandlordDashboard(props) {
   };
 
   const handleExecute = async (pid, dataset) => {
-    setAppaddress("0x1ED2F24927A26b8C6a90413EB005562b31aBB345");
+    setAppaddress("0xA748F9904b2106210CA91a217fBF8E7D6ec18c05");
 
     if(rentRef.current){
       pushRentAsSecret(rentRef.current.value).then((res) => {

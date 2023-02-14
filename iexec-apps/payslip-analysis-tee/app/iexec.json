@@ -16,22 +16,22 @@
     "callback": "0x0000000000000000000000000000000000000000"
   },
   "app": {
-    "owner": "0x127bc6a1860d66438D645C54585E2fFD10Ea5289",
+    "owner": "0x82f440AB656AD4bDf4c9772860e422Ce471ceb9E",
     "name": "payslip-analysis-tee",
     "type": "DOCKER",
-    "multiaddr": "docker.io/chrissc96/payslip-analysis-tee:1.0.3",
-    "checksum": "0x0cd3c99e4695e1b9c3f752fc88ed7019f8f996823ea963b047c02bcafb5a123a",
+    "multiaddr": "docker.io/chrissc96/payslip-analysis-tee:1.0.4",
+    "checksum": "0x6da581575bfb32f9470a5165e28fa4f524f9c09098c68c5865365a8eab017092",
     "mrenclave": {
       "provider": "SCONE",
       "version": "v5",
       "entrypoint": "python /app/app.py",
       "heapSize": 1073741824,
-      "fingerprint": "5944fa468aa71784df30a79516f394d8d3747fe8f01d260b94238d0b6d4d2017"
+      "fingerprint": "cf4b55013ebc1aecf125c752c3b95a798e74972440b3b49a3f82f78e289b3ff8"
     }
   },
   "order": {
     "apporder": {
-      "app": "0x1ED2F24927A26b8C6a90413EB005562b31aBB345",
+      "app": "0xA748F9904b2106210CA91a217fBF8E7D6ec18c05",
       "appprice": "0",
       "volume": "1000000",
       "tag": ["tee"],

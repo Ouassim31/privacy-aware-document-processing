@@ -34,9 +34,9 @@ def convert_to_float(str_in):
 
 def makes_enough_money(income, rent):
     if 3 * rent < income:
-        return "Tenant's income of " + str(income) + " is higher than 3 times the rent of " + str(rent)
+        return "Tenant's income is higher than three times the rent."
     else:
-        return "Tenant's income of " + str(income) + " is lower than 3 times the rent of " + str(rent)
+        return "Tenant's income is lower than three times the rent."
 
 
 def get_document_text(pdf_file):

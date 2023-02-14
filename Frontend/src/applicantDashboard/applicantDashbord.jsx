@@ -22,7 +22,7 @@ function ApplicantDashboard(props) {
   const [pidRef, setPidRef] = useState();
 
   const handleDelete = (pid) => {
-    deleteProcess();
+    deleteProcess(pid);
     setProcessList(
       processList.filter((p) => p._id != pid)
     );
