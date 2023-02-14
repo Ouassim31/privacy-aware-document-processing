@@ -3,8 +3,8 @@ require('mongoose-type-email');
 
 const Schema = mongoose.Schema;
 
+// Define schema (data model)
 const ProcessSchema = new Schema({
-  // Basics
   created_on: { type: Date, immutable: true },
   landlord_id: { type: mongoose.SchemaTypes.Email, required: true},
   process_state: { type: Number, default: 1, enum: [1, 2, 3, 4] },
@@ -14,5 +14,4 @@ const ProcessSchema = new Schema({
   task_id: { type: String },
 });
 
-// Export model
 module.exports = mongoose.model("Process", ProcessSchema);
