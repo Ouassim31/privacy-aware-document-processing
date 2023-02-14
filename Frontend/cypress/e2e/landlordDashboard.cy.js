@@ -63,29 +63,26 @@ describe('Can use functions on the landlord dashboard', () => {
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(1000);
     cy.get('[data-cy=no-processes-available-card]').should('be.visible');
-
   })
 
-  it('can have a process in state 2 with some assertion', () => {
-    //TODO: Need help here with correct fixture content
+  it('can have a process in state 2', () => {
     cy.intercept('http://localhost:3001/process/by_landlord?landlord=iosl.cy2023@gmail.com', { fixture: 'process_state2.json' })
     cy.get("[data-cy=navbar-landlord]").click();
-    //TODO: Do some assertion?
+    assert.exists("Document Upload Completed");
   })
 
   it('can have a process in state 3 that contains a link to the iExec task', () => {
-    //TODO: Need help here with correct fixture content
     cy.intercept('http://localhost:3001/process/by_landlord?landlord=iosl.cy2023@gmail.com', { fixture: 'process_state3.json' })
     cy.get("[data-cy=navbar-landlord]").click();
-    cy.get('[data-cy="iexec-explorer-button"]').should('have.attr', 'href', 'https://explorer.iex.ec/bellecour/task/undefined')
+    cy.get('[data-cy="dropdown-button"]').click();
+    cy.contains('iExec Explorer').should('have.attr', 'href', 'https://explorer.iex.ec/bellecour/task/0x225172019a388fa4a5cb3dcadb5537993c59a161dbca9c10f8738a90d8e122f5')
   })
 
-  it('can have a process in state 4 with some assertion', () => {
-    //TODO: Need help here with correct fixture content
-    cy.intercept('http://localhost:3001/process/by_landlord?landlord=iosl.cy2023@gmail.com', { fixture: 'process_state3.json' })
+  it('can have a process in state 4', () => {
+    cy.intercept('http://localhost:3001/process/by_landlord?landlord=iosl.cy2023@gmail.com', { fixture: 'process_state4.json' })
     cy.get("[data-cy=navbar-landlord]").click();
-    cy.get('[data-cy="iexec-explorer-button"]').should('have.attr', 'href', 'https://explorer.iex.ec/bellecour/task/undefined')
-  })
+    assert.exists("iExec task completed");
+ })
 
 
 })

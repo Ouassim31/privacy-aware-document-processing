@@ -2,8 +2,9 @@
     "_id":"63d51d049fa2c2dbe9e576e3",
     "created_on":"2023-02-13T18:23:43.405Z",
     "landlord_id":"ioslcypress2023@gmail.com",
-    "process_state":2,
+    "process_state":4,
     "__v":0,
     "applicant_id":"ioslcypress2023@gmail.com",
-    "dataset_address":"0xe1429B598Bf003669122ec25Ca62d9E11BF6A285"
+    "dataset_address":"0xe1429B598Bf003669122ec25Ca62d9E11BF6A285",
+    "task_id":"0x225172019a388fa4a5cb3dcadb5537993c59a161dbca9c10f8738a90d8e122f5"
 }]
