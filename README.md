@@ -1,4 +1,4 @@
-# Privacy-aware Document Processing
+# Privacy-Aware Document Processing
 
 ## Introduction
 
@@ -13,7 +13,7 @@ Imagine a setting where a landlord wants to rent out an apartment and make sure 
 
 Make sure to install the [Metamask browser extension](https://metamask.io/) and to create an ethereum wallet. This will be needed to sign transactions. A **Google account** is also required to login.
 
-## Getting started
+## Getting Started
 
 1. Start the [backend & database](Backend/README.md)
 2. Start the [frontend](Frontend/README.md)
