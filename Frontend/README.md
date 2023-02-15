@@ -3,7 +3,7 @@
 This README file provides an overview of the React app and instructions for developers to set up and run the app. The app is designed to interact with the iExec platform through their SDK in order to execute off-chain computations.
 
 ## Getting Started
-To get started, you will need to have Node.js and npm installed on your machine. Once you have those installed, follow these steps:
+To get started, you will need to have Node.js and npm installed on your machine and Metamask on your webbrowser. Once you have those installed, follow these steps:
 
 1. install dependecies :\
 `npm install`
