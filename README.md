@@ -7,7 +7,18 @@ The processing task is handled remotely by the **Payslip Analysis DApp** that is
 
 ## Example Use Case
 
-Imagine a setting where a landlord wants to rent out an apartment and make sure that the candidate applying for the apartment makes enough money to cover the monthly rent. In a traditional setting, the landlord would ask the applicant to hand in a payslip and check the applicant's income manually. This procedure is not privacy-perserving as a lot of sensitive personal information is exposed on the payslip that is not relevant for the rental. To solve this problem the landlord can make use of the **Payslip Analysis DApp** which will analyze the applicant's payslip document and then output a response to the question *"is the applicant's income sufficient to cover the rent"*.
+Imagine a setting where a landlord wants to rent out an apartment and make sure that the candidate applying for the apartment makes enough money to cover the monthly rent. In a traditional setting, the landlord would ask the applicant to hand in a payslip and check the applicant's income manually. This procedure is not privacy-perserving as a lot of sensitive personal information is exposed on the payslip that is not relevant for the rental. To solve this problem the landlord can make use of the [Payslip Analysis DApp](iexec-apps/payslip-analysis-tee) which will analyze the applicant's payslip document and then output a response to the question *"is the applicant's income sufficient to cover the rent"*. 
+
+## Payslip Analysis DApp
+The payslip analysis app is limited to only accept text based PDF documents. It uses a simple algorithm to search for the keywords 
+`[nettoentgelt, überweisung, income]` in the extracted text. If a keyword is found and a floating point number is written horizontally to the
+right of the word, it takes this number as the income and verifies if it is larger than three times the monthly rent.
+
+The limitation of this approach is that the income value has to be located horizontally to the right
+side of the corresponding keyword on the PDF file. Payslips that use another format are currently not 
+supported in the implementation.
+
+This [dummy payslip](iexec-apps/payslip-analysis-tee/dataset/datasets/original/dummy-payslip.pdf) follows the requirement and can be used to test the architecture.
 
 ## Prerequisites
 
