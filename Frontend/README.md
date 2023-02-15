@@ -5,7 +5,7 @@ This README file provides an overview of the React app and instructions for deve
 ## Getting Started
 To get started, you will need to have Node.js and npm installed on your machine and Metamask on your webbrowser. Once you have those installed, follow these steps:
 
-1. install dependecies :\
+1. install dependecies:\
 `npm install`
 
 2. create `.env.local` file in the `root` folder of this project (where package.json is located)
@@ -14,7 +14,7 @@ To get started, you will need to have Node.js and npm installed on your machine 
 ```
 REACT_APP_NFT_STORAGE_TOKEN=<your-api-token>
 ```
-5. run the dev-server :\
+5. run the dev-server:\
 `npm run start` and open [http://localhost:3000](http://localhost:3000) to view it in your browser
 The page will reload when you make changes.
 
