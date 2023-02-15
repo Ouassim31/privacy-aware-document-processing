@@ -10,7 +10,8 @@ The processing task is handled remotely by the **Payslip Analysis DApp** that is
 Imagine a setting where a landlord wants to rent out an apartment and make sure that the candidate applying for the apartment makes enough money to cover the monthly rent. In a traditional setting, the landlord would ask the applicant to hand in a payslip and check the applicant's income manually. This procedure is not privacy-perserving as a lot of sensitive personal information is exposed on the payslip that is not relevant for the rental. To solve this problem the landlord can make use of the [Payslip Analysis DApp](iexec-apps/payslip-analysis-tee) which will analyze the applicant's payslip document and then output a response to the question *"is the applicant's income sufficient to cover the rent"*. 
 
 ## Payslip Analysis DApp
-The payslip analysis app is limited to only accept text based PDF documents. It uses a simple algorithm to search for the keywords 
+The [Payslip Analysis DApp](iexec-apps/payslip-analysis-tee/app/src/app.py) was developed to demonstrate the architecture.
+It is limited to only accept text based PDF documents. It uses a simple algorithm to search for the keywords 
 `[nettoentgelt, überweisung, income]` in the extracted text. If a keyword is found and a floating point number is written horizontally to the
 right of the word, it takes this number as the income and verifies if it is larger than three times the monthly rent.
 
