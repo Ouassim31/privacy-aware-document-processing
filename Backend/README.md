@@ -4,7 +4,7 @@
 
 Install [MongoDB](https://www.mongodb.com/docs/manual/administration/install-community/) database on your local machine and ⚠️ **make sure the database is running** ⚠️ whenever testing and in production.
 
-## Getting started
+## Getting Started
 
 ### Server
 
