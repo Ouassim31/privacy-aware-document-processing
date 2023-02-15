@@ -10,17 +10,19 @@ import {
 import { useState, useEffect, useRef } from "react";
 import { withAuthenticationRequired } from "@auth0/auth0-react";
 import FileUpload from "./fileUpload";
-import { BiWorld } from "react-icons/bi";
 import { deleteProcess, getProcessByID } from "../services/backed-services";
 import { connect } from "../services/iexec-services";
 import Process from "../landlordDashboard/process";
+
 function ApplicantDashboard(props) {
+  //State Variable
   const { currentUser, stateToText, setFileLink, fetchProcesses } = props;
   const [requesterAddress, setRequesterAddress] = useState();
   const [processList, setProcessList] = useState([]);
   const [show, setShow] = useState(false);
   const [pidRef, setPidRef] = useState();
 
+  //Event Handling
   const handleDelete = (pid) => {
     deleteProcess(pid);
     setProcessList(
@@ -29,7 +31,6 @@ function ApplicantDashboard(props) {
   }
   const handlePidChange = (e) => {
     getProcessByID(e.target.value).then((res) => {
-      //TODO check if exists
       setPidRef(e.target.value);
     });
     setPidRef(e.target.value);
@@ -41,6 +42,7 @@ function ApplicantDashboard(props) {
   const handleShow = (process) => {
     setShow(true);
   };
+  //USE EFFECT HOOKS
   useEffect(() => {
     const getprocesses = async () => {
       const result = await fetchProcesses();
@@ -52,6 +54,8 @@ function ApplicantDashboard(props) {
   useEffect(() => {
     console.log(pidRef);
   }, [pidRef]);
+  
+  //RENDERING
   return (
     <><Card className="mw-100">
       <Modal

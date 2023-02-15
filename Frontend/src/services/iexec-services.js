@@ -3,14 +3,16 @@ import FileSaver from "file-saver";
 import { NFTStorage, File } from 'nft.storage'
 import { v4 as uuidv4 } from "uuid";
 const { IExec } = require("iexec");
-const WORKERPOOL_ADDRESS = "v7-debug.main.pools.iexec.eth";
-// Log into NFT.Storage via GitHub and create API token
-  // Paste your NFT.Storage API key into the quotes:
-const NFT_STORAGE_KEY = process.env.REACT_APP_NFT_STORAGE_TOKEN;
 
+const WORKERPOOL_ADDRESS = "v7-debug.main.pools.iexec.eth";
+const NFT_STORAGE_KEY = process.env.REACT_APP_NFT_STORAGE_TOKEN;
 const APP_ADDRESS = '0xA748F9904b2106210CA91a217fBF8E7D6ec18c05';  
 
-
+/**
+ * encrypt dataset
+ * @param {*} datasetFile - file to encrypt
+ * @returns 
+ */
 export async function encryptDataset(datasetFile) {
     
   // convert file to bytestream
@@ -33,7 +35,11 @@ export async function encryptDataset(datasetFile) {
   return [encryptedDataset, encryptionKey];
 };
 
-
+/**
+ * upload file to IPFS (NFTStorage)
+ * @param {*} file - to uploaded
+ * @returns 
+ */
 export async function uploadToIpfs(file) {
   const nftstorage = new NFTStorage({ token: NFT_STORAGE_KEY });
   const cid = await nftstorage.storeBlob(file);
@@ -42,7 +48,13 @@ export async function uploadToIpfs(file) {
   return uploadUrl;
 }
 
-
+/**
+ * depoloy the encrypted dataset to SMS
+ * @param {*} requesterAddress - public key of the applicant
+ * @param {*} encryptedDataset - the encrypted dataset
+ * @param {*} ipfsAddress - ipfs address
+ * @returns 
+ */
 export const deployEncryptedDataset = async (requesterAddress,encryptedDataset, ipfsAddress) =>{
   const configArgs = { ethProvider: window.ethereum,  chainId : 134};
   const configOptions = { smsURL: 'https://v7.sms.debug-tee-services.bellecour.iex.ec' };
@@ -63,7 +75,11 @@ export const deployEncryptedDataset = async (requesterAddress,encryptedDataset, 
   return address;
 };
 
-
+/**
+ * push encryption secret to SMS
+ * @param {*} datasetAddress dataset adress
+ * @param {*} encryptionKey secret to be pushed
+ */
 export async function pushDatasetSecretToSMS(datasetAddress, encryptionKey) {
   const configArgs = { ethProvider: window.ethereum,  chainId : 134};
   const configOptions = { smsURL: 'https://v7.sms.debug-tee-services.bellecour.iex.ec' };
@@ -72,7 +88,11 @@ export async function pushDatasetSecretToSMS(datasetAddress, encryptionKey) {
   console.log('secret pushed:', pushed);
 }
 
-
+/**
+ * publish dataset 
+ * @param {*} datasetAddress - dataset to be pushed
+ * @returns 
+ */
 export async function publishDataset(datasetAddress) {
   const configArgs = { ethProvider: window.ethereum,  chainId : 134};
   const configOptions = { smsURL: 'https://v7.sms.debug-tee-services.bellecour.iex.ec' };
@@ -91,7 +111,10 @@ export async function publishDataset(datasetAddress) {
   const orderHash = await iexec.order.publishDatasetorder(signedOrder);
   return orderHash;
 }
-
+/**
+ * connect metamask 
+ * @returns 
+ */
 export const connect = async () => {
     if (window.ethereum) {
     const address = await window.ethereum.request({
@@ -102,15 +125,21 @@ export const connect = async () => {
       console.log('Please install MetaMask!');
     }
   }
-
-    //get last task
+/**
+ * get the last executed task of a given deal
+ * @param {*} dealId 
+ * @returns 
+ */
    export const getLastTask = async (dealId) => {
       const iexec_mod = new IExec({ ethProvider: window.ethereum });
       const taskId = await iexec_mod.deal.computeTaskId(dealId, 0);
       return taskId;
     };
   
-    //download result of a given task
+    /**
+     * get result of a given task 
+     * @param {*} taskId 
+     */
    export const getResult = async (taskId) => {
       const iexec_mod = new IExec({ ethProvider: window.ethereum });
       const response = await iexec_mod.task.fetchResults(taskId);
@@ -121,7 +150,12 @@ export const connect = async () => {
       FileSaver.saveAs(binary, "results.zip");
     };
   
-    //create request order
+  /**
+   * create and sign Iexec request order 
+   * @param {*} appAddress - the dapp to execute
+   * @param {*} iexec_params - dapp required params
+   * @returns 
+   */
   export  const createIexecTask = async (appAddress, iexec_params) => {
       const DATASET_ADDRESS = iexec_params.dataset;
       const RENT_SECRET = iexec_params.rent_secret;
@@ -199,7 +233,11 @@ export const connect = async () => {
       console.log(`created deal ${res.dealid} in tx ${res.txHash}`);
       return res.dealid;
     };
-  
+  /**
+   * push rent to sms
+   * @param {*} rent 
+   * @returns 
+   */
    export const pushRentAsSecret = async (rent) => {
       const configArgs = { ethProvider: window.ethereum, chainId: 134 };
       const configOptions = {

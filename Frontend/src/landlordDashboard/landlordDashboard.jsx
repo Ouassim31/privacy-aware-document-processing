@@ -76,13 +76,13 @@ function LandlordDashboard(props) {
 
     if (rentRef.current) {
       const rent_secret = await pushRentAsSecret(rentRef.current.value);
-      
+
       setIsLoading([
         ...isLoading,
         { pid: pid, status: ["Rent pushed as secret"] },
       ]);
-      console.log(iexecParams)
-      const dealid = await createIexecTask(appAddress,{
+      console.log(iexecParams);
+      const dealid = await createIexecTask(appAddress, {
         dataset: dataset,
         rent_secret: rent_secret,
       });
