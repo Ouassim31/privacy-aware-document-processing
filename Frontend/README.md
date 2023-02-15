@@ -2,14 +2,6 @@
 
 This README file provides an overview of the React app and instructions for developers to set up and run the app. The app is designed to interact with the iExec platform through their SDK in order to execute off-chain computations.
 
-## NFT Storage
-
-1. create `.env.local` file in the `root` folder of this project (where package.json is located)
-2. log into [NFT.Storage](NFT.Storage) via GitHub and create an API token
-3. paste the API token into .env.local as 
-```
-REACT_APP_NFT_STORAGE_TOKEN=<your-api-token>
-```
 ## Getting Started
 To get started, you will need to have Node.js and npm installed on your machine. Once you have those installed, follow these steps:
 
