@@ -14,6 +14,12 @@ import {
 } from "../services/iexec-services";
 
 export const { IExec } = require("iexec");
+
+/**
+ * This function describes and renders the file upload pop-up.
+ * @param {*} props - Properties
+ * @returns a renderes instance of the file upload pop-up
+ */
 function FileUpload(props) {
   //State variables
   const [requesterAddress, setRequesterAddress] = useState();
@@ -41,6 +47,11 @@ function FileUpload(props) {
     connect();
   }, []);
 
+  /**
+   * This function handles uploading a PDF that was entered into the file upload widget.
+   * @param {*} file - The file to be uploaded to IPFS
+   * @returns datasetAddress - The address to the file uploaded to IPFS
+   */
   async function handlePdfDocument(file) {
     console.log(uploadStatus);
     const encryptedKeyValue = await encryptDataset(file);

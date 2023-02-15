@@ -2,6 +2,11 @@ import { useEffect, useState, useRef } from "react";
 import { Button, Form, FormGroup } from "react-bootstrap";
 import { AiOutlineEdit, AiOutlineClose } from "react-icons/ai";
 
+/**
+ * This function describes and renders the description of a task
+ * @param {*} description, updateDescription 
+ * @returns 
+ */
 function DescriptionCell({ description, updateDescription }) {
   const [isEditing, setIsEditing] = useState(false);
   const [content, setContent] = useState(description);

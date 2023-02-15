@@ -2,6 +2,11 @@ import React, { useState } from "react";
 import { Card, Button, Container } from "react-bootstrap";
 import { useAuth0 } from "@auth0/auth0-react";
 
+/**
+ * This function redirects the login page to auth0.
+ * @param {} props - Properties
+ * @returns a rendered instance of the login page
+ */
 function LoginAndRegister(props) {
   const { loginWithRedirect } = useAuth0();
 

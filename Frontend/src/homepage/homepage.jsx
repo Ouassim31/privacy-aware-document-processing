@@ -21,6 +21,11 @@ const connect = async () => {
   }
 };
 
+/**
+ * This function describes and renders the landing page of the application.
+ * @param {} props - Properties
+ * @returns a rendered instance of the landing page.
+ */
 function Homepage(props) {
   const { user } = props;
 

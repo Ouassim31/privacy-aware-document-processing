@@ -2,6 +2,11 @@ import { Button } from "react-bootstrap";
 import { useState, useEffect } from "react";
 export const { IExec } = require("iexec");
 
+/**
+ * This function describes and renders the button that starts a request.
+ * @param {*} props - Properties
+ * @returns a rendered instance of the task button
+ */
 function TaskBtn(props) {
   const { task_id, processid, getResult } = props;
   const handleResults = (tid) => {

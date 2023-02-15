@@ -27,6 +27,11 @@ import {
 } from "../services/iexec-services";
 import Process from "./process";
 
+/**
+ * This function describes and renders the landlord dashboard.
+ * @param {*} props - Properties
+ * @returns a rendered instance of the landlord
+ */
 function LandlordDashboard(props) {
   //State variables
   const { currentLandlord, fetchProcesses, createProcess, setTask } = props;

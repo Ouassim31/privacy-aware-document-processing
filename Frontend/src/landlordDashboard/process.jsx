@@ -14,6 +14,11 @@ import { BiWorld, BiCopyAlt } from "react-icons/bi";
 import { getResult } from "../services/iexec-services";
 import { updateDescription } from "../services/backed-services";
 
+/**
+ * This function handles the process widget.
+ * @param {*} param0 
+ * @returns a rendered instance of the process widget
+ */
 function Process({
   process,
   handleShow,

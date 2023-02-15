@@ -3,6 +3,12 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import { NavLink } from "react-router-dom";
 import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
+
+/**
+ * This function describes and renders the navigation bar.
+ * @param {*} props - Properties
+ * @returns a rendered instance of the navigation bar
+ */
 function NavBar(props) {
   const { user, resetCurrentuser } = props;
   const { logout } = useAuth0();

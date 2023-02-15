@@ -14,6 +14,11 @@ import { deleteProcess, getProcessByID } from "../services/backed-services";
 import { connect } from "../services/iexec-services";
 import Process from "../landlordDashboard/process";
 
+/**
+ * This function describes and renders the applicant dashboard.
+ * @param {*} props - Properties
+ * @returns a rendered instance of the applicant dashboard
+ */
 function ApplicantDashboard(props) {
   //State Variable
   const { currentUser, stateToText, setFileLink, fetchProcesses } = props;
