@@ -1,37 +1,41 @@
-# Setup
+# Backend
 
-## Backend Server
+## Prerequisits
 
-Install dependencies
+Install [MongoDB](https://www.mongodb.com/docs/manual/administration/install-community/) database on your local machine and ⚠️ **make sure the database is running** ⚠️ whenever testing and in production.
+
+## Getting started
+
+### Server
+
+1. Install dependencies
 ```bash
 npm install
 ```
 
-Start server
+2. Start server
 ```bash
 npm start
 ```
-## Database
 
-Install [MongoDB](https://www.mongodb.com/docs/manual/administration/install-community/) on your local machine and ⚠️ **make sure the database is running** ⚠️ whenever testing and in production.
+## Testing
 
-# Testing
-
-Tests can be found on in the file `app.test.js`.
+Unit tests can be found on in the file `app.test.js`.
 
 To run the tests use
 ```bash
 npx jest
 ```
 
-# Endpoints
+## API Endpoints
 
-## Notes
+### Notes
 - On local host access server via `http://localhost:3001`
 - `landlord_id` and `applicant_id` properties are required to be of type `email`
 - `/process` endpoint does not require arguments for `description` (optional) 
 - `/process/update/applicant_dataset` endpoint requires both arguments
-## Overview
+
+### Overview
 
 | Endpoint    | Method      | Input (Properties in JSON Object) | Status Code (Success \| Failure)  | Output (JSON Object) | Description     |
 | :---        |    :---   |    :---   |    :---   |     :---   |          :--- |
