@@ -23,7 +23,10 @@ This [dummy payslip](iexec-apps/payslip-analysis-tee/dataset/datasets/original/d
 
 ## Prerequisites
 
-Make sure to install the [Metamask browser extension](https://metamask.io/) and to create an ethereum wallet. This will be needed to sign transactions. A **Google account** is also required to login.
+Make sure to install the [Metamask browser extension](https://metamask.io/) and to create an ethereum wallet. This will be needed to sign transactions. Then, go to the [iExec marketplace](https://iex.ec/marketplace/), log in with MetaMask and
+and allow the site to add a network to your MetaMask account. Now, switch the network. This way, you can run the application on iExec's sidechain Bellecour, which is free of charge.
+
+Also, a **Google account** is required to login.
 
 ## Getting Started
 
